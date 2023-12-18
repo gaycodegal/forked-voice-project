@@ -1,11 +1,11 @@
-function shift_left(ctx, n) {
+function shift_left(ctx: CanvasRenderingContext2D, n: Number) {
 	ctx.globalCompositeOperation = "copy";
 	ctx.drawImage(ctx.canvas,-n, 0);
 	// reset back to normal for subsequent operations.
 	ctx.globalCompositeOperation = "source-over"
 }
 
-function make_column(ctx, data, canvas: HTMLCanvasElement) {
+function make_column(ctx: CanvasRenderingContext2D, data: Uint8Array, canvas: HTMLCanvasElement) {
 	let imgData = ctx.createImageData(1,canvas.height);
 	for (let i = 0; i < imgData.data.length; i += 4) {
 		imgData.data[i+0] = 200;
@@ -46,7 +46,7 @@ function spectrum(stream) {
 		shift_left(ctx, 1);
 		analyser.getByteFrequencyData(data);
 		ctx.putImageData(make_column(ctx, data, canvas), canvas.width-1, 0);
-	}, 1000 * canvas.width / audioCtx.sampleRate);
+	}, 1);
 };
 
 navigator.mediaDevices.getUserMedia({audio: true}).then(spectrum).catch(console.log);

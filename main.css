@@ -16,3 +16,15 @@ h1 {
 #ToggleRecordButton{
 	color: green;
 }
+
+th {
+	min-width: 10%;
+}
+
+td {
+	text-align: right;
+}
+
+table, th, td {
+  border: 1px solid white;
+}

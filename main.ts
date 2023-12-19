@@ -124,13 +124,14 @@ function mark_main_freq(img: Uint8Array, data: Uint8Array, hertz_per_bin: number
 	const imax = max_index(data);
 	const max_amplitude = data[imax];
 	if (max_amplitude > current_threshold) {
+		const max_freq = imax * hertz_per_bin;
 		const white = new color(255,255,255);
 		write_pixel(img, imax-1, white);
 		write_pixel(img, imax,   white);
 		write_pixel(img, imax+1, white);
-		state_main_frequency(imax * hertz_per_bin);
+		state_main_frequency(max_freq);
 		if (current_recording != null) {
-			current_recording.push(max_amplitude * hertz_per_bin);
+			current_recording.push(max_freq);
 		}
 	} else {
 		state_main_frequency(null);
@@ -197,26 +198,11 @@ function show_recording_results(stats: RecordStats) {
 	td0.innerHTML = "#" + (++record_counter).toFixed(0);
 	tr.appendChild(td0);
 
-	let td1 = document.createElement("td");
-	td1.innerHTML = (100 * stats[Gender.Fem] / total).toFixed(0) + "%";
-	tr.appendChild(td1);
-
-
-	let td2 = document.createElement("td");
-	td2.innerHTML = (100 * stats[Gender.Masc] / total).toFixed(0) + "%";
-	tr.appendChild(td2);
-
-	let td3 = document.createElement("td");
-	td3.innerHTML = (100 * stats[Gender.InfraFem] / total).toFixed(0) + "%";
-	tr.appendChild(td3);
-
-	let td4 = document.createElement("td");
-	td4.innerHTML = (100 * stats[Gender.UltraMasc] / total).toFixed(0) + "%" ;
-	tr.appendChild(td4);
-
-	let td5 = document.createElement("td");
-	td5.innerHTML = (100 * stats[Gender.Enby] / total).toFixed(0) + "%";
-	tr.appendChild(td5);
+	for (const gender of [Gender.Fem, Gender.Masc, Gender.InfraFem, Gender.UltraMasc, Gender.Enby]) {
+		let td = document.createElement("td");
+		td.innerHTML = (100 * stats[gender] / total).toFixed(0) + "%";
+		tr.appendChild(td);
+	}
 
 	results_table.appendChild(tr);
 }

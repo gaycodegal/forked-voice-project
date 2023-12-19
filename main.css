@@ -1,8 +1,14 @@
 
+html {
+	color: white;
+	background-color: black;
+}
+
 h1 {
 	text-align: center;
 }
 
 #canvas {
-	border: solid black;
+	border: solid purple;
+	background-color: black;
 }

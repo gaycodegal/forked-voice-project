@@ -1,3 +1,8 @@
+
+let current_threshold = 0;
+let current_recording : number[] | null = null;
+let record_counter = 0;
+
 function shift_left(ctx: CanvasRenderingContext2D, n: Number) {
 	ctx.globalCompositeOperation = "copy";
 	ctx.drawImage(ctx.canvas,-n, 0);
@@ -31,7 +36,7 @@ class color {
 };
 
 
-enum Gender {
+const enum Gender {
 	UltraMasc,
 	Masc,
 	Enby,
@@ -39,7 +44,9 @@ enum Gender {
 	InfraFem,
 };
 
-function freqency_to_gender(freq: number): Gender {
+const genders = [Gender.UltraMasc, Gender.Masc, Gender.Enby, Gender.Fem, Gender.InfraFem];
+
+function frequency_to_gender(freq: number): Gender {
 	if (freq < 85) {
 		return Gender.UltraMasc;
 	} else if (freq <= 155) {
@@ -63,8 +70,8 @@ function gender_to_color(g: Gender): color {
 	}
 }
 
-function freqency_to_color(freq: number) : color {
-	return gender_to_color(freqency_to_gender(freq));
+function frequency_to_color(freq: number) : color {
+	return gender_to_color(frequency_to_gender(freq));
 }
 
 function make_background(ctx: CanvasRenderingContext2D, hertz_per_bin: number) : ImageData {
@@ -72,7 +79,7 @@ function make_background(ctx: CanvasRenderingContext2D, hertz_per_bin: number) :
 	let imgData = ctx.createImageData(1,height);
 	let freq = 0;
 	for (let i = 0; i < imgData.data.length; ++i) {
-		write_pixel(imgData.data, i, freqency_to_color(freq));
+		write_pixel(imgData.data, i, frequency_to_color(freq));
 		freq += hertz_per_bin;
 	}
 	return imgData;
@@ -82,7 +89,7 @@ function draw_specturm(img: Uint8Array, data: Uint8Array, hertz_per_bin: number)
 	const height = img.length / 4;
 	for (let i = 0; i < data.length ; ++i) {
 		let d = data[i]
-		img[4*(height-i)-1] = Math.max(64,d);
+		img[4*(height-i)-1] = Math.max(current_threshold,d);
 	}
 }
 
@@ -106,17 +113,22 @@ function state_main_frequency(freq: number) {
 	const freq_out = document.getElementById("freq-out");
 	if (freq_out == null) {throw "Missing freq-out-element in document";}
 	freq_out.innerText = freq == 0 ? "-" : String(freq) + " Hz";
-	freq_out.style.color = freqency_to_color(freq).to_str();
+	freq_out.style.color = frequency_to_color(freq).to_str();
 }
 
 function mark_main_freq(img: Uint8Array, data: Uint8Array, hertz_per_bin: number) {
 	const imax = max_index(data);
-	const white = new color(255,255,255);
-	write_pixel(img, imax-1, white);
-	write_pixel(img, imax,   white);
-	write_pixel(img, imax+1, white);
-	state_main_frequency(imax * hertz_per_bin);
-
+	const max_amplitude = data[imax];
+	if (max_amplitude > current_threshold) {
+		const white = new color(255,255,255);
+		write_pixel(img, imax-1, white);
+		write_pixel(img, imax,   white);
+		write_pixel(img, imax+1, white);
+		state_main_frequency(imax * hertz_per_bin);
+		if (current_recording != null) {
+			current_recording.push(max_amplitude);
+		}
+	}
 }
 
 function render_analysis(ctx: CanvasRenderingContext2D, data: Uint8Array, hertz_per_bin: number): ImageData {
@@ -153,4 +165,83 @@ function spectrum(stream: MediaStream) {
 	}, 1);
 };
 
-navigator.mediaDevices.getUserMedia({audio: true}).then(spectrum).catch(console.log);
+type RecordStats = {[key in Gender]: number};
+
+function analyze_recording(freq_data: number[]): RecordStats {
+	let stats : RecordStats = {
+		[Gender.InfraFem]: 0,
+		[Gender.Fem]: 0,
+		[Gender.Enby]: 0,
+		[Gender.Masc]: 0,
+		[Gender.UltraMasc]: 0
+	};
+	for (const freq of freq_data) {
+		stats[frequency_to_gender(freq)] += 1;
+	}
+	return stats;
+}
+
+function show_recording_results(stats: RecordStats) {
+	let results_table = document.getElementById("RecordResultTableBody") as HTMLElement;
+	let total = stats[Gender.InfraFem] + stats[Gender.Fem] + stats[Gender.Enby] + stats[Gender.Masc] + stats[Gender.UltraMasc];
+	let tr = document.createElement("tr");
+
+	let td0 = document.createElement("td");
+	td0.innerHTML = "#" + (++record_counter).toFixed(0);
+	tr.appendChild(td0);
+
+	let td1 = document.createElement("td");
+	td1.innerHTML = (100 * stats[Gender.Fem] / total).toFixed(0) + "%";
+	tr.appendChild(td1);
+
+
+	let td2 = document.createElement("td");
+	td2.innerHTML = (100 * stats[Gender.Masc] / total).toFixed(0) + "%";
+	tr.appendChild(td2);
+
+	let td3 = document.createElement("td");
+	td3.innerHTML = (100 * stats[Gender.InfraFem] / total).toFixed(0) + "%";
+	tr.appendChild(td3);
+
+	let td4 = document.createElement("td");
+	td4.innerHTML = (100 * stats[Gender.UltraMasc] / total).toFixed(0) + "%" ;
+	tr.appendChild(td4);
+
+	let td5 = document.createElement("td");
+	td5.innerHTML = (100 * stats[Gender.Enby] / total).toFixed(0) + "%";
+	tr.appendChild(td5);
+
+	results_table.appendChild(tr);
+}
+
+function toggle_recording(toggle_element: HTMLInputElement) {
+	if (current_recording === null) {
+		current_recording = [];
+		toggle_element.style.color = "red";
+		toggle_element.innerText="Stop Recording"
+	} else {
+		let recording = current_recording;
+		current_recording = null;
+		toggle_element.style.color = "green";
+		toggle_element.innerText="Start Recording";
+
+		show_recording_results(analyze_recording(recording));
+	}
+}
+
+window.onload =
+(() => {
+	let threshold_selector = document.getElementById("VolumeThresholdSelector") as HTMLInputElement;
+	current_threshold = Number(threshold_selector.value);
+	threshold_selector.onchange = (event) => {
+		current_threshold = Number(threshold_selector.value);
+	};
+
+	let toggle_record_button = document.getElementById("ToggleRecordButton") as HTMLInputElement;
+	toggle_record_button.onclick = (event) => {
+		toggle_recording(toggle_record_button);
+	}
+	
+	navigator.mediaDevices.getUserMedia({audio: true}).then(spectrum).catch(console.log);
+});
+

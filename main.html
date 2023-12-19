@@ -9,5 +9,23 @@
 		<h1>Free 🏳️‍⚧️ Voice Analyzer</h1>
 		<canvas id="canvas"></canvas>
 		<p>Main Frequency: <strong id="freq-out"></strong></p>
+		<label for="VolumeThresholdSelector">Volume-Threshold:</label> <input id="VolumeThresholdSelector" type="range" min="0" max="255" step="1" value="32"/><br/>
+		<button id="ToggleRecordButton">Start Recording</button>
+
+		<ul id="RecordResultList"></ul>
+		<table>
+			<thead>
+				<tr>
+					<th>Recording</th>
+					<th>Feminine</th>
+					<th>Masculine</th>
+					<th>Above Feminine</th>
+					<th>Below Masculine</th>
+					<th>In Between</th>
+				</tr>
+			</thead>
+			<tbody id="RecordResultTableBody">
+			</tbody>
+		</table>
 	</body>
 </html>

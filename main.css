@@ -17,14 +17,18 @@ h1 {
 	color: green;
 }
 
-th {
-	min-width: 10%;
-}
 
+table {
+	width: 100%;
+	border: 2px solid white;
+	border-collapse: collapse;
+}
+th {
+	border: 2px solid white;
+	padding: 2px;
+}
 td {
 	text-align: right;
-}
-
-table, th, td {
-  border: 1px solid white;
+	border: 1px solid white;
+	padding: 2px;
 }

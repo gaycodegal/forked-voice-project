@@ -218,7 +218,9 @@ function toggle_recording(toggle_element: HTMLInputElement) {
 		toggle_element.style.color = "green";
 		toggle_element.innerText="Start Recording";
 
-		show_recording_results(analyze_recording(recording));
+		if (recording.length > 0) {
+			show_recording_results(analyze_recording(recording));
+		}
 	}
 }
 

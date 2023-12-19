@@ -115,7 +115,7 @@ function state_main_frequency(freq: number | null) {
 		freq_out.innerText = "-";
 		freq_out.style.color = "white";
 	} else {
-		freq_out.innerText = String(freq) + " Hz";
+		freq_out.innerText = (freq).toFixed(0) + " Hz";
 		freq_out.style.color = frequency_to_color(freq).to_str();
 	}
 }

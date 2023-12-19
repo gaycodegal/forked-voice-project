@@ -109,11 +109,15 @@ function max_index(data: any) : number {
 	return imax;
 }
 
-function state_main_frequency(freq: number) {
-	const freq_out = document.getElementById("freq-out");
-	if (freq_out == null) {throw "Missing freq-out-element in document";}
-	freq_out.innerText = freq == 0 ? "-" : String(freq) + " Hz";
-	freq_out.style.color = frequency_to_color(freq).to_str();
+function state_main_frequency(freq: number | null) {
+	const freq_out = document.getElementById("freq-out") as HTMLElement;
+	if (freq  == null) {
+		freq_out.innerText = "-";
+		freq_out.style.color = "white";
+	} else {
+		freq_out.innerText = String(freq) + " Hz";
+		freq_out.style.color = frequency_to_color(freq).to_str();
+	}
 }
 
 function mark_main_freq(img: Uint8Array, data: Uint8Array, hertz_per_bin: number) {
@@ -126,8 +130,10 @@ function mark_main_freq(img: Uint8Array, data: Uint8Array, hertz_per_bin: number
 		write_pixel(img, imax+1, white);
 		state_main_frequency(imax * hertz_per_bin);
 		if (current_recording != null) {
-			current_recording.push(max_amplitude);
+			current_recording.push(max_amplitude * hertz_per_bin);
 		}
+	} else {
+		state_main_frequency(null);
 	}
 }
 
@@ -177,6 +183,7 @@ function analyze_recording(freq_data: number[]): RecordStats {
 	};
 	for (const freq of freq_data) {
 		stats[frequency_to_gender(freq)] += 1;
+		console.log(freq);
 	}
 	return stats;
 }

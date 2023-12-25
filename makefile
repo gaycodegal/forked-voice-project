@@ -1,2 +1,2 @@
 main.js: main.ts
-	tsc --strict $<
+	tsc --strict --resolveJsonModule --esModuleInterop $<

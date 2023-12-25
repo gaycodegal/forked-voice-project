@@ -1,3 +1,10 @@
+const texts_table: {[language: string]: {[title: string]: string}} = {
+	"English" : {
+		"Universal Declaration of Human Rights" :
+			"The General Assembly, proclaims this Universal Declaration of Human Rights as a common standard of achievement for all peoples and all nations, to the end that every individual and every organ of society, keeping this Declaration constantly in mind, shall strive by teaching and education to promote respect for these rights and freedoms and by progressive measures, national and international, to secure their universal and effective recognition and observance, both among the peoples of Member States themselves and among the peoples of territories under their jurisdiction.",
+		"Hello": "Hello!"
+	}
+}
 
 let current_threshold = 0;
 let current_recording : number[] | null = null;
@@ -224,6 +231,37 @@ function toggle_recording(toggle_element: HTMLInputElement) {
 	}
 }
 
+function remove_options(element: HTMLSelectElement) {
+	//element.innerHTML = "";
+	var i, L = element.options.length - 1;
+	for(i = L; i > 0; i--) {
+		element.remove(i);
+	}
+}
+
+function get_selected_test() {
+	let language_selector = document.getElementById("LanguageSelector") as HTMLSelectElement;
+	let text_selector = document.getElementById("TextSelector") as HTMLSelectElement;
+	let text_display = document.getElementById("TextDisplay") as HTMLDivElement;
+	const lang = language_selector.value;
+	let text = text_selector.value;
+	if (lang in texts_table && text in texts_table[lang]){
+		text_display.innerText = texts_table[lang][text];
+	} else {
+		text_display.innerText = "";
+	}
+}
+
+function on_language_select() {
+	const language_selector = document.getElementById("LanguageSelector") as HTMLSelectElement;
+	const language = language_selector.value;
+	let text_selector = document.getElementById("TextSelector") as HTMLSelectElement;
+	remove_options(text_selector);
+	for(let key in texts_table[language]) {
+		text_selector.add(new Option(key));
+	}
+}
+
 window.onload =
 (() => {
 	let threshold_selector = document.getElementById("VolumeThresholdSelector") as HTMLInputElement;
@@ -236,7 +274,17 @@ window.onload =
 	toggle_record_button.onclick = (event) => {
 		toggle_recording(toggle_record_button);
 	}
-	
+
+	let language_selector = document.getElementById("LanguageSelector") as HTMLSelectElement;
+	language_selector.onchange = (event) => {
+		get_selected_test();
+		on_language_select();
+	}
+	let text_selector = document.getElementById("TextSelector") as HTMLSelectElement;
+	text_selector.onchange = (event) => {
+		get_selected_test();
+	}
+
 	navigator.mediaDevices.getUserMedia({audio: true}).then(spectrum).catch(console.log);
 });
 

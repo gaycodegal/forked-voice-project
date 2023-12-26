@@ -9,6 +9,9 @@ const texts_table: {[language: string]: {[title: string]: string}} = {
 let current_threshold = 0;
 let current_recording : number[] | null = null;
 let record_counter = 0;
+let mediaRecorder: MediaRecorder | null = null;
+let mediaRecording: Blob[] = [];
+let playRecordingOnStop = false;
 
 function shift_left(ctx: CanvasRenderingContext2D, n: Number) {
 	ctx.globalCompositeOperation = "copy";
@@ -177,7 +180,14 @@ function spectrum(stream: MediaStream) {
 		analyser.getByteFrequencyData(data);
 		ctx.putImageData(render_analysis(ctx, data, hertz_per_bin), canvas.width-1, 0);
 	}, 1);
+
+	return stream;
 };
+
+function setupRecorder(stream: MediaStream) {
+	mediaRecorder = new MediaRecorder(stream);
+	return stream;
+}
 
 type RecordStats = {[key in Gender]: number};
 
@@ -196,7 +206,7 @@ function analyze_recording(freq_data: number[]): RecordStats {
 	return stats;
 }
 
-function show_recording_results(stats: RecordStats) {
+function show_recording_results(stats: RecordStats, mediaChunks: Blob[]) {
 	let results_table = document.getElementById("RecordResultTableBody") as HTMLElement;
 	let total = stats[Gender.InfraFem] + stats[Gender.Fem] + stats[Gender.Enby] + stats[Gender.Masc] + stats[Gender.UltraMasc];
 	let tr = document.createElement("tr");
@@ -211,6 +221,29 @@ function show_recording_results(stats: RecordStats) {
 		tr.appendChild(td);
 	}
 
+
+	const blob = new Blob(mediaChunks, { type: "audio/ogg; codecs=opus" });
+	const audioURL = window.URL.createObjectURL(blob);
+	const tdPlayback = document.createElement("td");
+
+	const audio = document.createElement("audio");
+	audio.setAttribute("controls", "");
+	audio.src = audioURL;
+	tdPlayback.appendChild(audio);
+
+	const downloadLink = document.createElement("a");
+	downloadLink.innerText = "Save";
+	downloadLink.setAttribute("download", "voice_recording.ogg");
+	downloadLink.href = audioURL;
+	tdPlayback.appendChild(downloadLink);
+
+	tr.appendChild(tdPlayback);
+
+	if (playRecordingOnStop) {
+		audio.play();
+	}
+
+
 	results_table.appendChild(tr);
 }
 
@@ -219,14 +252,25 @@ function toggle_recording(toggle_element: HTMLInputElement) {
 		current_recording = [];
 		toggle_element.style.color = "red";
 		toggle_element.innerText="Stop Recording"
+
+		if (mediaRecorder) {
+			mediaRecording = [];
+			mediaRecorder.start();
+		}
 	} else {
 		let recording = current_recording;
 		current_recording = null;
 		toggle_element.style.color = "green";
 		toggle_element.innerText="Start Recording";
 
-		if (recording.length > 0) {
-			show_recording_results(analyze_recording(recording));
+		if (mediaRecorder) {
+			if (recording.length > 0) {
+				mediaRecorder.ondataavailable = (e) => {
+					mediaRecording.push(e.data);
+					show_recording_results(analyze_recording(recording), mediaRecording);
+				}
+			}
+			mediaRecorder.stop();
 		}
 	}
 }
@@ -285,6 +329,15 @@ window.onload =
 		get_selected_test();
 	}
 
-	navigator.mediaDevices.getUserMedia({audio: true}).then(spectrum).catch(console.log);
+	let auto_playback_checkbox = document.getElementById("AutoPlayback") as HTMLInputElement;
+	auto_playback_checkbox.onchange = (event) => {
+		playRecordingOnStop = auto_playback_checkbox.checked;
+	}
+
+	navigator.mediaDevices
+		.getUserMedia({audio: true})
+		.then(spectrum)
+		.then(setupRecorder)
+		.catch(console.log);
 });
 

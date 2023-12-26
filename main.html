@@ -10,6 +10,7 @@
 		<canvas id="canvas"></canvas><br/>
 		<label for="VolumeThresholdSelector">Volume-Threshold:</label> <input id="VolumeThresholdSelector" type="range" min="0" max="255" step="1" value="32"/>
 		<button id="ToggleRecordButton">Start Recording</button>
+		<label for="AutoPlayback">Automatically play recording</label><input id="AutoPlayback" type="checkbox"/>
 		Main Frequency: <strong id="freq-out"></strong><br/>
 		<select id="LanguageSelector">
 			<option value="English">English</option>
@@ -34,6 +35,7 @@
 					<th>&gt; Feminine</th>
 					<th>&lt; Masculine</th>
 					<th>In Between</th>
+					<th>Playback</th>
 				</tr>
 			</thead>
 			<tbody id="RecordResultTableBody">

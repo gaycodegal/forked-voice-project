@@ -1,10 +1,5 @@
-const texts_table: {[language: string]: {[title: string]: string}} = {
-	"English" : {
-		"Universal Declaration of Human Rights" :
-			"The General Assembly, proclaims this Universal Declaration of Human Rights as a common standard of achievement for all peoples and all nations, to the end that every individual and every organ of society, keeping this Declaration constantly in mind, shall strive by teaching and education to promote respect for these rights and freedoms and by progressive measures, national and international, to secure their universal and effective recognition and observance, both among the peoples of Member States themselves and among the peoples of territories under their jurisdiction.",
-		"Hello": "Hello!"
-	}
-}
+import texts_table_json = require('./texts.json');
+const texts_table = texts_table_json as {[language: string]: {[title: string]: string}};
 
 let current_threshold = 0;
 let current_recording : number[] | null = null;

@@ -1,5 +1,6 @@
-import texts_table_json = require('./texts.json');
-const texts_table = texts_table_json as {[language: string]: {[title: string]: string}};
+const texts_table : {[language: string]: {[title: string]: string}} =
+#include "texts.json"
+
 
 let current_threshold = 0;
 let current_recording : number[] | null = null;
@@ -81,7 +82,7 @@ function make_background(ctx: CanvasRenderingContext2D, hertz_per_bin: number) :
 	let imgData = ctx.createImageData(1,height);
 	let freq = 0;
 	for (let i = 0; i < imgData.data.length; ++i) {
-		write_pixel(imgData.data, i, frequency_to_color(freq));
+		write_pixel(imgData.data as unknown as Uint8Array, i, frequency_to_color(freq));
 		freq += hertz_per_bin;
 	}
 	return imgData;
@@ -143,8 +144,8 @@ function mark_main_freq(img: Uint8Array, data: Uint8Array, hertz_per_bin: number
 function render_analysis(ctx: CanvasRenderingContext2D, data: Uint8Array, hertz_per_bin: number): ImageData {
 	const height = ctx.canvas.height;
 	let imgData = make_background(ctx, hertz_per_bin);
-	draw_specturm(imgData.data, data, hertz_per_bin);
-	mark_main_freq(imgData.data, data, hertz_per_bin);
+	draw_specturm(imgData.data as unknown as Uint8Array, data, hertz_per_bin);
+	mark_main_freq(imgData.data as unknown as Uint8Array, data, hertz_per_bin);
 	return imgData;
 }
 
@@ -155,7 +156,7 @@ function spectrum(stream: MediaStream) {
 	analyser.smoothingTimeConstant = 0.0;
 	audioCtx.createMediaStreamSource(stream).connect(analyser);
 	const max_freq = audioCtx.sampleRate / 2;
-	const max_human_freq = 400;
+	const max_human_freq = 1600;
 	const hertz_per_bin = max_freq / analyser.frequencyBinCount;
 
 	const canvas = document.getElementById("canvas") as HTMLCanvasElement;
@@ -259,6 +260,7 @@ function on_language_select() {
 
 window.onload =
 (() => {
+	console.log(texts_table);
 	let threshold_selector = document.getElementById("VolumeThresholdSelector") as HTMLInputElement;
 	current_threshold = Number(threshold_selector.value);
 	threshold_selector.onchange = (event) => {

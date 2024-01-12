@@ -1,7 +1,12 @@
 const texts_table : {[language: string]: {[title: string]: string}} =
 #include "texts.json"
 
+const harmonic_detection_factor = 0.5;
+const max_display_freq = 1600;
 
+let min_human_freq_index = 0;
+let max_human_freq_index = 0;
+let hertz_per_bin = 0;
 let current_threshold = 0;
 let current_recording : number[] | null = null;
 let record_counter = 0;
@@ -40,18 +45,18 @@ class color {
 
 
 const enum Gender {
-	UltraMasc,
+	InfraMasc,
 	Masc,
 	Enby,
 	Fem,
-	InfraFem,
+	UltraFem,
 };
 
-const genders = [Gender.UltraMasc, Gender.Masc, Gender.Enby, Gender.Fem, Gender.InfraFem];
+const genders = [Gender.InfraMasc, Gender.Masc, Gender.Enby, Gender.Fem, Gender.UltraFem];
 
 function frequency_to_gender(freq: number): Gender {
 	if (freq < 85) {
-		return Gender.UltraMasc;
+		return Gender.InfraMasc;
 	} else if (freq <= 155) {
 		return Gender.Masc;
 	} else if (freq < 165) {
@@ -59,17 +64,17 @@ function frequency_to_gender(freq: number): Gender {
 	} else if (freq <=255) {
 		return Gender.Fem;
 	} else {
-		return Gender.InfraFem;
+		return Gender.UltraFem;
 	}
 }
 
 function gender_to_color(g: Gender): color {
 	switch(g) {
-		case Gender.UltraMasc: return new color(0,128,128);
+		case Gender.InfraMasc: return new color(0,128,128);
 		case Gender.Masc: return new color(64,64,255);
 		case Gender.Enby: return new color(64,255,64);
 		case Gender.Fem: return new color(255,64,64);
-		case Gender.InfraFem: return new color(128,128,0);
+		case Gender.UltraFem: return new color(128,128,0);
 	}
 }
 
@@ -77,7 +82,7 @@ function frequency_to_color(freq: number) : color {
 	return gender_to_color(frequency_to_gender(freq));
 }
 
-function make_background(ctx: CanvasRenderingContext2D, hertz_per_bin: number) : ImageData {
+function make_background(ctx: CanvasRenderingContext2D) : ImageData {
 	const height = ctx.canvas.height;
 	let imgData = ctx.createImageData(1,height);
 	let freq = 0;
@@ -88,7 +93,7 @@ function make_background(ctx: CanvasRenderingContext2D, hertz_per_bin: number) :
 	return imgData;
 }
 
-function draw_specturm(img: Uint8Array, data: Uint8Array, hertz_per_bin: number) {
+function draw_specturm(img: Uint8Array, data: Uint8Array) {
 	const height = img.length / 4;
 	for (let i = 0; i < data.length ; ++i) {
 		let d = data[i]
@@ -112,6 +117,35 @@ function max_index(data: any) : number {
 	return imax;
 }
 
+function is_harmonic(data: any, index: number) : boolean {
+	const n_low = Math.floor(index/min_human_freq_index);
+	const n_high = Math.ceil(index/max_human_freq_index);
+	let is_harmonic = false;
+	for (let harmonic = n_high+1; harmonic <= n_low; ++harmonic) {
+		if (data[Math.round(index/harmonic)] > data[index] * harmonic_detection_factor) {
+			return true;
+		}
+	}
+	return false;
+}
+
+function main_freq_index(data: any) : number {
+	if (data.length < 1) {
+		throw "max_index must only be called with non-empty arrays";
+	}
+	//return Math.round(hertz_per_bin/max_display_freq);
+	let imax = 0;
+	let vmax = data[0];
+	for (let i = 1; i < data.length ; ++i) {
+		let v = data[i]
+		if (v > vmax && !is_harmonic(data, i)) {
+			imax = i;
+			vmax = v;
+		}
+	}
+	return imax;
+}
+
 function state_main_frequency(freq: number | null) {
 	const freq_out = document.getElementById("freq-out") as HTMLElement;
 	if (freq  == null) {
@@ -123,12 +157,13 @@ function state_main_frequency(freq: number | null) {
 	}
 }
 
-function mark_main_freq(img: Uint8Array, data: Uint8Array, hertz_per_bin: number) {
-	const imax = max_index(data);
+function mark_main_freq(img: Uint8Array, data: Uint8Array) {
+	//const imax = max_index(data);
+	const white = new color(255,255,255);
+	const imax = main_freq_index(data);
 	const max_amplitude = data[imax];
 	if (max_amplitude > current_threshold) {
 		const max_freq = imax * hertz_per_bin;
-		const white = new color(255,255,255);
 		write_pixel(img, imax-1, white);
 		write_pixel(img, imax,   white);
 		write_pixel(img, imax+1, white);
@@ -141,28 +176,30 @@ function mark_main_freq(img: Uint8Array, data: Uint8Array, hertz_per_bin: number
 	}
 }
 
-function render_analysis(ctx: CanvasRenderingContext2D, data: Uint8Array, hertz_per_bin: number): ImageData {
+function render_analysis(ctx: CanvasRenderingContext2D, data: Uint8Array, ): ImageData {
 	const height = ctx.canvas.height;
-	let imgData = make_background(ctx, hertz_per_bin);
-	draw_specturm(imgData.data as unknown as Uint8Array, data, hertz_per_bin);
-	mark_main_freq(imgData.data as unknown as Uint8Array, data, hertz_per_bin);
+	let imgData = make_background(ctx);
+	draw_specturm(imgData.data as unknown as Uint8Array, data);
+	mark_main_freq(imgData.data as unknown as Uint8Array, data);
 	return imgData;
 }
 
 function spectrum(stream: MediaStream) {
 	const audioCtx = new AudioContext();
 	const analyser = audioCtx.createAnalyser();
+	const max_freq = audioCtx.sampleRate / 2;
 	analyser.fftSize=1024*32;
 	analyser.smoothingTimeConstant = 0.0;
 	audioCtx.createMediaStreamSource(stream).connect(analyser);
-	const max_freq = audioCtx.sampleRate / 2;
-	const max_human_freq = 1600;
-	const hertz_per_bin = max_freq / analyser.frequencyBinCount;
+	hertz_per_bin = max_freq / analyser.frequencyBinCount;
+
+	max_human_freq_index = Math.round(450 / hertz_per_bin);
+	min_human_freq_index = Math.round(85 / hertz_per_bin);
 
 	const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 	if (canvas == null) {throw "Missing canvas-element in document";}
 	canvas.width = window.innerWidth - 20;
-	canvas.height = max_human_freq / hertz_per_bin;
+	canvas.height = max_display_freq / hertz_per_bin;
 	const ctx = canvas.getContext("2d");
 	if (ctx == null) {throw "No 2d-context in canvas element";}
 	const data = new Uint8Array(canvas.height);
@@ -171,7 +208,7 @@ function spectrum(stream: MediaStream) {
 	setInterval(() => {
 		shift_left(ctx, 1);
 		analyser.getByteFrequencyData(data);
-		ctx.putImageData(render_analysis(ctx, data, hertz_per_bin), canvas.width-1, 0);
+		ctx.putImageData(render_analysis(ctx, data), canvas.width-1, 0);
 	}, 1);
 };
 
@@ -179,11 +216,11 @@ type RecordStats = {[key in Gender]: number};
 
 function analyze_recording(freq_data: number[]): RecordStats {
 	let stats : RecordStats = {
-		[Gender.InfraFem]: 0,
+		[Gender.UltraFem]: 0,
 		[Gender.Fem]: 0,
 		[Gender.Enby]: 0,
 		[Gender.Masc]: 0,
-		[Gender.UltraMasc]: 0
+		[Gender.InfraMasc]: 0
 	};
 	for (const freq of freq_data) {
 		stats[frequency_to_gender(freq)] += 1;
@@ -194,14 +231,14 @@ function analyze_recording(freq_data: number[]): RecordStats {
 
 function show_recording_results(stats: RecordStats) {
 	let results_table = document.getElementById("RecordResultTableBody") as HTMLElement;
-	let total = stats[Gender.InfraFem] + stats[Gender.Fem] + stats[Gender.Enby] + stats[Gender.Masc] + stats[Gender.UltraMasc];
+	let total = stats[Gender.UltraFem] + stats[Gender.Fem] + stats[Gender.Enby] + stats[Gender.Masc] + stats[Gender.InfraMasc];
 	let tr = document.createElement("tr");
 
 	let td0 = document.createElement("td");
 	td0.innerHTML = "#" + (++record_counter).toFixed(0);
 	tr.appendChild(td0);
 
-	for (const gender of [Gender.Fem, Gender.Masc, Gender.InfraFem, Gender.UltraMasc, Gender.Enby]) {
+	for (const gender of [Gender.Fem, Gender.Masc, Gender.UltraFem, Gender.InfraMasc, Gender.Enby]) {
 		let td = document.createElement("td");
 		td.innerHTML = (100 * stats[gender] / total).toFixed(0) + "%";
 		tr.appendChild(td);
@@ -230,12 +267,20 @@ function toggle_recording(toggle_element: HTMLInputElement) {
 function remove_options(element: HTMLSelectElement) {
 	//element.innerHTML = "";
 	var i, L = element.options.length - 1;
-	for(i = L; i > 0; i--) {
+	for(i = L; i >= 0; i--) {
 		element.remove(i);
 	}
 }
 
-function get_selected_test() {
+function setup_languages() {
+	let language_selector = document.getElementById("LanguageSelector") as HTMLSelectElement;
+	for(let lang in texts_table) {
+		language_selector.add(new Option(lang));
+	}
+	on_language_select();
+}
+
+function get_selected_text() {
 	let language_selector = document.getElementById("LanguageSelector") as HTMLSelectElement;
 	let text_selector = document.getElementById("TextSelector") as HTMLSelectElement;
 	let text_display = document.getElementById("TextDisplay") as HTMLDivElement;
@@ -272,14 +317,16 @@ window.onload =
 		toggle_recording(toggle_record_button);
 	}
 
+	setup_languages();
+	get_selected_text();
 	let language_selector = document.getElementById("LanguageSelector") as HTMLSelectElement;
 	language_selector.onchange = (event) => {
-		get_selected_test();
 		on_language_select();
+		get_selected_text();
 	}
 	let text_selector = document.getElementById("TextSelector") as HTMLSelectElement;
 	text_selector.onchange = (event) => {
-		get_selected_test();
+		get_selected_text();
 	}
 
 	navigator.mediaDevices.getUserMedia({audio: true}).then(spectrum).catch(console.log);

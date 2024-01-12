@@ -8,21 +8,20 @@
 	<body>
 		<h1>Free 🏳️‍⚧️ Voice Analyzer</h1>
 		<canvas id="canvas"></canvas><br/>
-		<label for="VolumeThresholdSelector">Volume-Threshold:</label> <input id="VolumeThresholdSelector" type="range" min="0" max="255" step="1" value="32"/>
-		<button id="ToggleRecordButton">Start Recording</button>
 		Main Frequency: <strong id="freq-out"></strong><br/>
+		<label for="VolumeThresholdSelector">Volume-Threshold:</label> <input id="VolumeThresholdSelector" type="range" min="0" max="255" step="1" value="32"/><br/>
+
 		<select id="LanguageSelector">
-			<option value="English">English</option>
-			<option value="German">German</option>
 		</select>
 		<select id="TextSelector">
-			<option value=""></option>
-			<option value"Universal Declaration of Human Rights">Universal Declaration of Human Rights</option>
 		</select>
+		<br/>
 
 		<div id="TextDisplay">
 		</div>
 
+		<br/>
+		<button id="ToggleRecordButton">Start Recording</button>
 		<ul id="RecordResultList"></ul>
 
 		<table>

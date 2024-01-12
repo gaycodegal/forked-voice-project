@@ -32,3 +32,13 @@ td {
 	border: 1px solid white;
 	padding: 2px;
 }
+
+#TextDisplay{
+	padding: 5px;
+	margin: 5px;
+	border: solid purple;
+	border-width: 2px;
+	border-radius: 3px;
+	background-color: #333;
+
+}

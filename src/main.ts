@@ -1,7 +1,7 @@
 #include "recording.ts"
 #include "spectrum.ts"
 #include "texts.ts"
-#include "sound_generation.ts"
+#include "target_frequency.ts"
 
 
 window.onload =

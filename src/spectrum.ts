@@ -2,6 +2,7 @@
 
 #include "frequencies.ts"
 #include "threshold.ts"
+#include "target_frequency.ts"
 
 const max_display_freq = 1600;
 
@@ -41,6 +42,8 @@ class color {
 	}
 };
 
+const white = new color(255,255,255);
+const cyan = new color(0,255,255);
 
 const enum Gender {
 	InfraMasc,
@@ -99,6 +102,12 @@ function draw_specturm(img: Uint8Array, data: Uint8Array) {
 	}
 }
 
+function mark_target_frequency(img: Uint8Array) {
+	const target_frequency = get_target_frequency();
+	const index = Math.round(target_frequency / hertz_per_bin);
+	write_pixel(img, index, cyan);
+}
+
 function state_main_frequency(freq: number | null) {
 	const freq_out = document.getElementById("freq-out") as HTMLElement;
 	if (freq  == null) {
@@ -111,7 +120,6 @@ function state_main_frequency(freq: number | null) {
 }
 
 function mark_main_freq(img: Uint8Array, data: Uint8Array) {
-	const white = new color(255,255,255);
 	const imax = main_freq_index(data, frequency_base_band);
 	const max_amplitude = data[imax];
 	if (max_amplitude > get_current_threshold()) {
@@ -131,8 +139,9 @@ function mark_main_freq(img: Uint8Array, data: Uint8Array) {
 function render_analysis(ctx: CanvasRenderingContext2D, data: Uint8Array, ): ImageData {
 	const height = ctx.canvas.height;
 	let imgData = make_background(ctx);
-	draw_specturm(imgData.data as unknown as Uint8Array, data);
-	mark_main_freq(imgData.data as unknown as Uint8Array, data);
+	draw_specturm(imgData.data, data);
+	mark_target_frequency(imgData.data);
+	mark_main_freq(imgData.data, data);
 	return imgData;
 }
 

@@ -1,6 +1,7 @@
 #include "recording.ts"
 #include "spectrum.ts"
 #include "texts.ts"
+#include "sound_generation.ts"
 
 
 window.onload =
@@ -11,5 +12,6 @@ window.onload =
 	setup_recording();
 	setup_texts();
 	setup_spectrum();
+	setup_sound_generation();
 });
 

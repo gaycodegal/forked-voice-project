@@ -62,7 +62,7 @@ function frequency_to_gender(freq: number): Gender {
 		return Gender.Masc;
 	} else if (freq < 165) {
 		return Gender.Enby;
-	} else if (freq <=255) {
+	} else if (freq <=320) {
 		return Gender.Fem;
 	} else {
 		return Gender.UltraFem;

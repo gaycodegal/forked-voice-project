@@ -42,3 +42,10 @@ td {
 	background-color: #333;
 
 }
+
+button {
+	min-width: 3cm;
+	min-height: 1.5cm;
+	font-size: 200%;
+	margin: 5px;
+}

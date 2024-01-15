@@ -3,7 +3,7 @@
 #include "frequencies.ts"
 #include "threshold.ts"
 #include "target_frequency.ts"
-
+#include "gender_pitch.ts"
 const max_display_freq = 1600;
 
 let hertz_per_bin = 0;
@@ -17,6 +17,7 @@ function shift_left(ctx: CanvasRenderingContext2D, n: Number) {
 	ctx.globalCompositeOperation = "source-over"
 }
 
+
 function write_pixel(out: Uint8Array, i: number, col: color) {
 	const j = out.length - 4*i;
 	out[j+0] = col.r;
@@ -24,65 +25,6 @@ function write_pixel(out: Uint8Array, i: number, col: color) {
 	out[j+2] = col.b;
 	out[j+3] = col.alpha;
 }
-
-class color {
-	constructor(r: number, g: number, b:number, alpha: number = 255) {
-		this.r =r;
-		this.g =g;
-		this.b =b;
-		this.alpha =alpha;
-	}
-	r: number;
-	g: number;
-	b: number;
-	alpha: number;
-
-	to_str(): string {
-		return "rgba(" + String(this.r) + ", " + String(this.g) + ", " + String(this.b) + ", " + String(this.alpha) + ")";
-	}
-};
-
-const white = new color(255,255,255);
-const cyan = new color(0,255,255);
-
-const enum Gender {
-	InfraMasc,
-	Masc,
-	Enby,
-	Fem,
-	UltraFem,
-};
-
-const genders = [Gender.InfraMasc, Gender.Masc, Gender.Enby, Gender.Fem, Gender.UltraFem];
-
-function frequency_to_gender(freq: number): Gender {
-	if (freq < 85) {
-		return Gender.InfraMasc;
-	} else if (freq <= 155) {
-		return Gender.Masc;
-	} else if (freq < 165) {
-		return Gender.Enby;
-	} else if (freq <=320) {
-		return Gender.Fem;
-	} else {
-		return Gender.UltraFem;
-	}
-}
-
-function gender_to_color(g: Gender): color {
-	switch(g) {
-		case Gender.InfraMasc: return new color(0,128,128);
-		case Gender.Masc: return new color(64,64,255);
-		case Gender.Enby: return new color(64,255,64);
-		case Gender.Fem: return new color(255,64,64);
-		case Gender.UltraFem: return new color(128,128,0);
-	}
-}
-
-function frequency_to_color(freq: number) : color {
-	return gender_to_color(frequency_to_gender(freq));
-}
-
 function make_background(ctx: CanvasRenderingContext2D) : ImageData {
 	const height = ctx.canvas.height;
 	let imgData = ctx.createImageData(1,height);

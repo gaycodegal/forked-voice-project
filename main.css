@@ -36,3 +36,19 @@ td {
 a {
 	color: cyan;
 }
+#TextDisplay{
+	padding: 5px;
+	margin: 5px;
+	border: solid purple;
+	border-width: 2px;
+	border-radius: 3px;
+	background-color: #333;
+
+}
+
+button {
+	min-width: 3cm;
+	min-height: 1.5cm;
+	font-size: 200%;
+	margin: 5px;
+}

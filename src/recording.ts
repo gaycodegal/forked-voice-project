@@ -62,9 +62,21 @@ function show_recording_results(stats: RecordStats, mediaChunks: Blob[]) {
 
 	for (const gender of [Gender.Fem, Gender.Masc, Gender.UltraFem, Gender.InfraMasc, Gender.Enby]) {
 		let td = document.createElement("td");
+		td.classList.add("NumericTableField");
 		td.innerHTML = (100 * stats[gender] / total).toFixed(0) + "%";
 		tr.appendChild(td);
 	}
+
+	let td_text = document.createElement("td");
+	td_text.innerHTML = (document.getElementById("LanguageSelector") as HTMLSelectElement).value + "/" + (document.getElementById("TextSelector") as HTMLSelectElement).value;
+	tr.appendChild(td_text);
+
+	let td_freq = document.createElement("td");
+	const freq = (document.getElementById("TargetFrequencySelector") as HTMLSelectElement).value;
+	td_freq.innerHTML = freq + " Hz";
+	td_freq.classList.add("NumericTableField");
+	td_freq.style.color = frequency_to_color(Number(freq)).to_str();
+	tr.appendChild(td_freq);
 
 
 	const blob = new Blob(mediaChunks, { type: "audio/ogg; codecs=opus" });
@@ -93,10 +105,8 @@ function show_recording_results(stats: RecordStats, mediaChunks: Blob[]) {
 }
 
 function setup_recording() {
-	console.log("setup_recording");
 	let toggle_record_button = document.getElementById("ToggleRecordButton") as HTMLInputElement;
 	toggle_record_button.onclick = (event) => {
-		console.log("clicked");
 		toggle_recording(toggle_record_button);
 	}
 

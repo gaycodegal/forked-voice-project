@@ -28,14 +28,18 @@ th {
 	padding: 2px;
 }
 td {
-	text-align: right;
 	border: 1px solid white;
-	padding: 2px;
+	padding: 5px;
+}
+
+.NumericTableField {
+	text-align: right;
 }
 
 a {
 	color: cyan;
 }
+
 #TextDisplay{
 	padding: 5px;
 	margin: 5px;

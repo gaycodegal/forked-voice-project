@@ -27,14 +27,13 @@ function start_playing() {
 	play_button.onmouseup = () => {osc.stop();}
 	play_button.onmouseout = () => {osc.stop();}
 	osc.start();
-	//osc.stop(context.currentTime + 2); // stop 2 seconds after the current currentTime
 }
 
-function create_note_button(note: string, octave: number) {
+function create_note_button(note: number, octave: number) {
 	let note_selector = document.getElementById("NoteSelector") as HTMLDivElement;
 	let button = document.createElement("button");
 	const frequency = note_to_frequency(note, octave);
-	button.innerText= note + octave_names[octave];
+	button.innerText= note_names[note] + octave_names[octave];
 	button.onclick = () => {
 		set_target_frequency(frequency);
 	};
@@ -45,8 +44,8 @@ function create_note_button(note: string, octave: number) {
 function setup_note_selectors() {
 	let note_selector = document.getElementById("NoteSelector") as HTMLDivElement;
 	for (let octave = 2; octave < 5; ++octave) {
-		for (let note in notes) {
-			create_note_button(note, octave);
+		for (let note = -9; note <= 2; ++note) {
+			create_note_button(Number(note), octave);
 		}
 		note_selector.appendChild(document.createElement("br"));
 	}

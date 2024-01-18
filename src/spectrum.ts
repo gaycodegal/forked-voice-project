@@ -56,7 +56,8 @@ function state_main_frequency(freq: number | null) {
 		freq_out.innerText = "-";
 		freq_out.style.color = "white";
 	} else {
-		freq_out.innerText = (freq).toFixed(0) + " Hz";
+		const note = frequency_to_note(freq);
+		freq_out.innerText = (freq).toFixed(0) + " Hz (" +note_to_string(note) + ")";
 		freq_out.style.color = frequency_to_color(freq).to_str();
 	}
 }

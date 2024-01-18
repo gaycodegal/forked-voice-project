@@ -72,10 +72,10 @@ function show_recording_results(stats: RecordStats, mediaChunks: Blob[]) {
 	tr.appendChild(td_text);
 
 	let td_freq = document.createElement("td");
-	const freq = (document.getElementById("TargetFrequencySelector") as HTMLSelectElement).value;
-	td_freq.innerHTML = freq + " Hz";
+	const freq = Number((document.getElementById("TargetFrequencySelector") as HTMLSelectElement).value);
+	td_freq.innerHTML = freq.toFixed(2) + " Hz (" + note_to_string(frequency_to_note(freq)) + ")" ;
 	td_freq.classList.add("NumericTableField");
-	td_freq.style.color = frequency_to_color(Number(freq)).to_str();
+	td_freq.style.color = frequency_to_color(freq).to_str();
 	tr.appendChild(td_freq);
 
 

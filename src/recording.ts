@@ -60,7 +60,7 @@ function show_recording_results(stats: RecordStats, mediaChunks: Blob[]) {
 	td0.innerHTML = "#" + (++record_counter).toFixed(0);
 	tr.appendChild(td0);
 
-	for (const gender of [Gender.Fem, Gender.Masc, Gender.UltraFem, Gender.InfraMasc, Gender.Enby]) {
+	for (const gender of [Gender.InfraMasc, Gender.Masc, Gender.Enby, Gender.Fem, Gender.UltraFem]) {
 		let td = document.createElement("td");
 		td.classList.add("NumericTableField");
 		td.innerHTML = (100 * stats[gender] / total).toFixed(0) + "%";

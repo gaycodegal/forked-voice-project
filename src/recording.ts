@@ -64,6 +64,8 @@ function show_recording_results(stats: RecordStats, mediaChunks: Blob[]) {
 		let td = document.createElement("td");
 		td.classList.add("NumericTableField");
 		td.innerHTML = (100 * stats[gender] / total).toFixed(0) + "%";
+		td.style.backgroundColor = gender_to_color(gender).scale(stats[gender]/total).to_str();
+		td.style.color = "white";
 		tr.appendChild(td);
 	}
 

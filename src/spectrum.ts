@@ -104,7 +104,7 @@ function spectrum(stream: MediaStream): MediaStream {
 
 	const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 	if (canvas == null) {throw "Missing canvas-element in document";}
-	canvas.width = window.innerWidth - 20;
+	canvas.width = document.getElementById("body")!.clientWidth - 36; // "100%";//window.innerWidth - 46;
 	canvas.height = max_display_freq / hertz_per_bin;
 	const ctx = canvas.getContext("2d");
 	if (ctx == null) {throw "No 2d-context in canvas element";}

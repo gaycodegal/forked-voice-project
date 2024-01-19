@@ -16,6 +16,13 @@ class color {
 	to_str(): string {
 		return "rgba(" + String(this.r) + ", " + String(this.g) + ", " + String(this.b) + ", " + String(this.alpha) + ")";
 	}
+
+	scale(factor: number): color {
+		const r = Math.min(Math.max(this.r * factor, 0), 255);
+		const g = Math.min(Math.max(this.g * factor, 0), 255);
+		const b = Math.min(Math.max(this.b * factor, 0), 255);
+		return new color(r,g,b, this.alpha);
+	}
 };
 
 const white = new color(255,255,255);
@@ -47,11 +54,11 @@ function frequency_to_gender(freq: number): Gender {
 
 function gender_to_color(g: Gender): color {
 	switch(g) {
-		case Gender.InfraMasc: return new color(0,128,128);
+		case Gender.InfraMasc: return new color(64,128,64);
 		case Gender.Masc: return new color(64,64,255);
-		case Gender.Enby: return new color(64,255,64);
+		case Gender.Enby: return new color(64,128,64);
 		case Gender.Fem: return new color(255,64,64);
-		case Gender.UltraFem: return new color(128,128,0);
+		case Gender.UltraFem: return new color(64,128,64);
 	}
 }
 

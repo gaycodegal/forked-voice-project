@@ -38,6 +38,7 @@ function create_note_button(note: number, octave: number) {
 		set_target_frequency(frequency);
 	};
 	button.style.backgroundColor = frequency_to_color(frequency).to_str();
+	button.style.color = "white";
 	note_selector.appendChild(button);
 }
 

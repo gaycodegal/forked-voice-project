@@ -4,8 +4,6 @@ const tuning_pitch = 440;
 
 const note_names : {[index: string]:  string} = {"-9": "C", "-8" : "C♯", "-7": "D", "-6": "D♯", "-5": "E", "-4": "F", "-3": "F♯" , "-2": "G", "-1": "G♯", "0": "A", "1": "A♯", "2": "B"};
 
-const octave_names : {[value:number]: string} = { 2 : "₂", 3 : "₃", 4 : "₄", 5 : "₅"};
-
 class Note {
 	index: number;
 	octave: number;
@@ -34,6 +32,5 @@ function frequency_to_note(freq: number) : Note{
 
 function note_to_string(note: Note) {
 	const name = note_names[note.index];
-	const octave = octave_names[note.octave];
-	return name + octave;
+	return name + "<sub>" + String(note.octave) + "</sub>";
 }

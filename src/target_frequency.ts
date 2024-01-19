@@ -33,7 +33,7 @@ function create_note_button(note: number, octave: number) {
 	let note_selector = document.getElementById("NoteSelector") as HTMLDivElement;
 	let button = document.createElement("button");
 	const frequency = note_to_frequency(note, octave);
-	button.innerText= note_names[note] + octave_names[octave];
+	button.innerHTML = note_to_string(new Note(note, octave));
 	button.onclick = () => {
 		set_target_frequency(frequency);
 	};

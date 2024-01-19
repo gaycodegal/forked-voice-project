@@ -1,7 +1,7 @@
 
 html {
-	color: white;
-	background-color: black;
+	color: #ff69b4;
+	background-color: #200d0b;
 }
 
 h1 {
@@ -9,7 +9,7 @@ h1 {
 }
 
 #canvas {
-	border: solid purple;
+	border: solid #ff69b4;
 	background-color: black;
 }
 
@@ -20,15 +20,15 @@ h1 {
 
 table {
 	width: 100%;
-	border: 2px solid white;
+	border: 2px solid #ff69b4;
 	border-collapse: collapse;
 }
 th {
-	border: 2px solid white;
+	border: 2px solid #ff69b4;
 	padding: 2px;
 }
 td {
-	border: 1px solid white;
+	border: 1px solid #ff69b4;
 	padding: 5px;
 }
 
@@ -43,11 +43,10 @@ a {
 #TextDisplay{
 	padding: 5px;
 	margin: 5px;
-	border: solid purple;
+	border: solid #ff69b4;
 	border-width: 2px;
 	border-radius: 3px;
-	background-color: #333;
-
+	font-size: 150%;
 }
 
 button {
@@ -55,9 +54,10 @@ button {
 	min-height: 1.5cm;
 	font-size: 200%;
 	margin: 5px;
-	border-color: purple;
+	border-color: #ff69b4;
 	border-width: 2px;
 	border-radius: 10px;
+	background-color: #55233c;
 }
 
 footer {

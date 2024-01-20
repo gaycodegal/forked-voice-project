@@ -77,3 +77,23 @@ footer > p > a {
 	color: gray;
 	text-decoration: underline;
 }
+
+select {
+	color: #ff69b4;
+	background-color: #31192d;
+	border-color: #ff69b4;
+	border-width: 3px;
+	border-radius: 10px;
+}
+
+select:hover, button:hover {
+	background-color: #42224c;
+}
+
+input {
+	color: #ff69b4;
+	background-color: #2a111e;
+	border-color: #ff69b4;
+	border-width: 3px;
+	border-radius: 10px;
+}

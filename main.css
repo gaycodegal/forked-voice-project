@@ -90,7 +90,7 @@ select:hover, button:hover {
 	background-color: #42224c;
 }
 
-input {
+input[type="number"] {
 	color: #ff69b4;
 	background-color: #2a111e;
 	border-color: #ff69b4;

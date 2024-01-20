@@ -134,8 +134,7 @@ function show_recording_results(stats: RecordStats, mediaChunks: Blob[]) {
 		audio.play();
 	}
 
-
-	results_table.appendChild(tr);
+	results_table.insertBefore(tr, results_table.children[0]);
 }
 
 function setup_recording() {

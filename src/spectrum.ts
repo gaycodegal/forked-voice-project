@@ -53,7 +53,7 @@ function mark_target_frequency(img: Uint8Array) {
 function state_main_frequency(freq: number | null) {
 	const freq_out = document.getElementById("freq-out") as HTMLElement;
 	if (freq  == null) {
-		freq_out.innerText = "-";
+		freq_out.innerHTML = "-<sub></sub>";
 		freq_out.style.color = "white";
 	} else {
 		const note = frequency_to_note(freq);

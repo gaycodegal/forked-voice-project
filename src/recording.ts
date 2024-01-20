@@ -109,9 +109,14 @@ function show_recording_results(stats: RecordStats, mediaChunks: Blob[]) {
 	td_target_freq.style.color = frequency_to_color(target_freq).to_str();
 	tr.appendChild(td_target_freq);
 
+	let td_lang = document.createElement("td");
+	td_lang.innerHTML = (document.getElementById("LanguageSelector") as HTMLSelectElement).value;
+	tr.appendChild(td_lang);
+
 	let td_text = document.createElement("td");
-	td_text.innerHTML = (document.getElementById("LanguageSelector") as HTMLSelectElement).value + "/" + (document.getElementById("TextSelector") as HTMLSelectElement).value;
+	td_text.innerHTML = (document.getElementById("TextSelector") as HTMLSelectElement).value;
 	tr.appendChild(td_text);
+
 
 	const blob = new Blob(mediaChunks, { type: "audio/ogg; codecs=opus" });
 	const audioURL = window.URL.createObjectURL(blob);

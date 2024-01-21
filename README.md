@@ -9,14 +9,14 @@ Features
 
 Currently the app implements the following features:
 
-* A spectromgram that uses color-coding to highlight the typical gendered vocal ranges.
-* A rudimentary marker in the spectromgram of which frequency has the highest amplitude (“is the loudest”).
-* An explicit listing of that frequency below the spectromgram.
+* A spectrogram that uses color-coding to highlight the typical gendered vocal ranges.
+* A rudimentary marker in the spectrogram of which frequency has the highest amplitude (“is the loudest”).
+* An explicit listing of that frequency below the spectrogram.
 
 Technical Features
 ------------------
 
-* Implemented as a Web-app, therefore fully cross-plattform.
+* Implemented as a Web-app, therefore fully cross-platform.
 * Free and Libre Open Source Software (FLOSS): This project is licensed under a very strong copyleft-license (AGPL) that should help keeping it free.
 * All main-functionality is fully implemented on the client-side and that will stay that way.
     * It should be noted though, that this is not an automatic hard pass on optional (!) server-side features if they are useful and can only be reasonably provided by a server-side (for example to track progress over a longer period of time).

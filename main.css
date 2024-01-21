@@ -11,6 +11,10 @@ h1 {
 	text-align: center;
 }
 
+h2 {
+	border-bottom: dotted 2px;
+}
+
 #canvas {
 	border: solid #ff69b4;
 	background-color: black;

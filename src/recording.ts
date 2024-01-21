@@ -120,20 +120,29 @@ function show_recording_results(stats: RecordStats, mediaChunks: Blob[]) {
 
 	const blob = new Blob(mediaChunks, { type: "audio/ogg; codecs=opus" });
 	const audioURL = window.URL.createObjectURL(blob);
-	const tdPlayback = document.createElement("td");
 
+	const tdPlayback = document.createElement("td");
 	const audio = document.createElement("audio");
 	audio.setAttribute("controls", "");
 	audio.src = audioURL;
 	tdPlayback.appendChild(audio);
+	tr.appendChild(tdPlayback);
 
+	const tdControls = document.createElement("td");
 	const downloadLink = document.createElement("a");
-	downloadLink.innerText = "Save";
+	downloadLink.innerText = "⬇️";
 	downloadLink.setAttribute("download", "voice_recording.ogg");
 	downloadLink.href = audioURL;
-	tdPlayback.appendChild(downloadLink);
+	tdControls.classList.add("ActionField");
+	tdControls.appendChild(downloadLink);
 
-	tr.appendChild(tdPlayback);
+	tr.appendChild(tdControls);
+
+	const tdNote = document.createElement("td");
+	let noteField = document.createElement("textarea");
+	noteField.style.width = "100%";
+	tdNote.appendChild(noteField);
+	tr.appendChild(tdNote);
 
 	if (playRecordingOnStop) {
 		audio.play();

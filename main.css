@@ -89,6 +89,11 @@ footer > p > a {
 	text-decoration: underline;
 }
 
+.ActionField > a {
+	font-size: 200%;
+	text-decoration: none;
+}
+
 select {
 	color: #ff69b4;
 	background-color: #31192d;

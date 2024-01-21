@@ -1,100 +1,106 @@
 <!DOCTYPE html>
 <html>
 	<header>
-		<title>About this Application</title>
-		<link rel="stylesheet" href="main.css"/>
 		<meta charset="UTF-8">
+		<title>About this Application</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+		<meta name="author" content="Fiona Weber"/>
+		<meta name="generator" content="Neovim"/>
 		<link rel="icon" type="image/svg+xml" href="favicon.svg" sizes="any">
+		<link rel="stylesheet" href="main.css"/>
 	</header>
-	<h1>About this Application</h1>
-	<h2>How to use this app</h2>
-	<p>
-		Talk into your microfon and look at the spectrogram to see the frequency with which this software thinks you are speeking.
-		But be aware that you cannot take the numbers too seriously, because detecting the main-frequency is in fact kinda hard;
-		Higher harmonics in particular can be quite confusing, see <a href="https://tech.lgbt/@Fiona/111783399178525244"> this post</a>.
-	</p>
-	<p>
-		Then try out all the other buttons, write a more detailed explanation and ask to have it added to this section, because the current version is mostly a placeholder. 😉︎
-	</p>
+	<body>
+		<h1>About this Application</h1>
 
-	<h2>Contributing</h2>
-	<p>
-	Contributions are always very welcome! Check out the <a href="https://gitlab.com/FJW/free-trans-voice-analyzer/">Project-Page on Gitlab</a>!
-	</p>
-	<p>
-		If you are a programmer and willing to put up with typescript you can either check out the existing <a href="https://gitlab.com/FJW/free-trans-voice-analyzer/-/issues">issues</a>,
-		submit new features you thought of for yourself (but maybe coordinate before you put in too much time),
-		or do what is the most honorable task of all and reduce technical debt.
-	</p>
-	<p>
-		If you don’t know how to program, despair not:
-		Programmers are notoriously lazy when it comes to wrting documentation, which in this case even includes advice for voice-training.
-		Help there would be very valuable.
-		You can also submit texts to read, especially texts in languages that are not yet covered (just make sure they are in the public domain to avoid licensing issues).
-	</p>
-	<h3>Contributors</h3>
-	<ul>
-		<li>This project is currently maintained by <a href="https://fiona.onl">Fiona</a> (<a href="https://tech.lgbt/@Fiona">🦣</a>), who also started it.</li>
-		<li><a href="https://leonora.app/">Leonora</a> (<a href="https://helvede.net/@Herover">🦣</a>) added the ability to record audio-files and save them.</li>
-	</ul>
-	<h2>Background</h2>
-	<p>
-		This project started when Fiona wanted to do her daily (in theory at least) voice-training with a certain “Trans Voice Training” app.
-		She was however greeted with a consent form for comprehensive user-tracking that, while pretending to be so, was in many ways non-compliant with the GDPR and even worse, didn’t take no for an answer:
-		After she unselected everything the app told her that her choice did not meet the minimum tracking-requirements to use the free version of the app.
-		Paying for the app on the other hand would have meant giving payment-information to google which was even more of a non-starter.
-	</p>
-	<p>
-		Considering that this had already been on her mind for a while at this point, this was all that was needed to start writing her own app and
-		<a href="https://tech.lgbt/@Fiona/111623723568475914">posted about a preliminary version on mastodon</a> that got very large amounts of interested feedback right from the start.
-	</p>
-	<p>
-		This background-story established several key-requirements for this app in order to prevent a repetition of this kind of story:
-	</p>
-	<ul>
-		<li>
-			This software is implemented as a web-app, ensuring that it is as cross-platform as possible;
-			to ensure that the later stays that way, it does not use any extensions beyond what web-standards guarantee (if you notice that it does, please file a bug-report).
-		</li>
-		<li>
-			This project would be free software, both free as in free speech and free as in free beer.
-			A strong (if not the strongest) copyleft license (AGPL V3 or later) ensures that things stay like that.
-		</li>
-		<li>
-			All functionality happens client side.
-			The only thing the webserver does is deliver files and it is possible to download them and open the files of the filesystem in the web-browser.
-		</li>
-		<li>
-			No external ressources of any kind in any form.
-			Your meta-data stay between you, the webserver (if any) and your internet-service-provider; your data stay with you alone, unless you explicitly ask the webserver to store something for you.
-			(At this time there is no functionality to store anything server-side, this provision is just here to cover any potential future features.)
-		</li>
-	</ul>
+		<h2>How to use this app</h2>
+		<p>
+			Talk into your microfon and look at the spectrogram to see the frequency with which this software thinks you are speeking.
+			But be aware that you cannot take the numbers too seriously, because detecting the main-frequency is in fact kinda hard;
+			Higher harmonics in particular can be quite confusing, see <a href="https://tech.lgbt/@Fiona/111783399178525244"> this post</a>.
+		</p>
+		<p>
+			Then try out all the other buttons, write a more detailed explanation and ask to have it added to this section, because the current version is mostly a placeholder. 😉︎
+		</p>
 
-	<h2>License</h2>
-	<p>
-		This program is free software:
-		you can redistribute it and/or modify it under the terms of the <a href="LICENSE">GNU Affero General Public License</a> as published by the Free Software Foundation,
-		either version 3 of the License, or (at your option) any later version.
-	</p>
-	<p>
-		This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-		without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-		See the GNU Affero General Public License for more details.
-	</p>
+		<h2>Contributing</h2>
+		<p>
+		Contributions are always very welcome! Check out the <a href="https://gitlab.com/FJW/free-trans-voice-analyzer/">Project-Page on Gitlab</a>!
+		</p>
+		<p>
+			If you are a programmer and willing to put up with typescript you can either check out the existing <a href="https://gitlab.com/FJW/free-trans-voice-analyzer/-/issues">issues</a>,
+			submit new features you thought of for yourself (but maybe coordinate before you put in too much time),
+			or do what is the most honorable task of all and reduce technical debt.
+		</p>
+		<p>
+			If you don’t know how to program, despair not:
+			Programmers are notoriously lazy when it comes to wrting documentation, which in this case even includes advice for voice-training.
+			Help there would be very valuable.
+			You can also submit texts to read, especially texts in languages that are not yet covered (just make sure they are in the public domain to avoid licensing issues).
+		</p>
 
-	<p>
-		You should have received a copy of the GNU Affero General Public License along with this program.
-		If not, see <a href=https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.
-	</p>
-	<h3>License Table for LibreJS-users</h3>
-	<table id="jslicense-labels1">
-		<tr>
-			<td><a href="main.js">main.js</a></td>
-			<td><a href="http://www.gnu.org/licenses/agpl-3.0.html">GNU Affero General Public License version 3</a></td>
-			<td><a href="https://gitlab.com/FJW/free-trans-voice-analyzer">gitlab.com/FJW/free-trans-voice-analyzer</a></td>
-	</tr>
-</table><body>
+		<h3>Contributors</h3>
+		<ul>
+			<li>This project is currently maintained by <a href="https://fiona.onl">Fiona</a> (<a href="https://tech.lgbt/@Fiona">🦣</a>), who also started it.</li>
+			<li><a href="https://leonora.app/">Leonora</a> (<a href="https://helvede.net/@Herover">🦣</a>) added the ability to record audio-files and save them.</li>
+		</ul>
+
+		<h2>Background</h2>
+		<p>
+			This project started when Fiona wanted to do her daily (in theory at least) voice-training with a certain “Trans Voice Training” app.
+			She was however greeted with a consent form for comprehensive user-tracking that, while pretending to be so, was in many ways non-compliant with the GDPR and even worse, didn’t take no for an answer:
+			After she unselected everything the app told her that her choice did not meet the minimum tracking-requirements to use the free version of the app.
+			Paying for the app on the other hand would have meant giving payment-information to google which was even more of a non-starter.
+		</p>
+		<p>
+			Considering that this had already been on her mind for a while at this point, this was all that was needed to start writing her own app and
+			<a href="https://tech.lgbt/@Fiona/111623723568475914">posted about a preliminary version on mastodon</a> that got very large amounts of interested feedback right from the start.
+		</p>
+		<p>
+			This background-story established several key-requirements for this app in order to prevent a repetition of this kind of story:
+		</p>
+		<ul>
+			<li>
+				This software is implemented as a web-app, ensuring that it is as cross-platform as possible;
+				to ensure that the later stays that way, it does not use any extensions beyond what web-standards guarantee (if you notice that it does, please file a bug-report).
+			</li>
+			<li>
+				This project would be free software, both free as in free speech and free as in free beer.
+				A strong (if not the strongest) copyleft license (AGPL V3 or later) ensures that things stay like that.
+			</li>
+			<li>
+				All functionality happens client side.
+				The only thing the webserver does is deliver files and it is possible to download them and open the files of the filesystem in the web-browser.
+			</li>
+			<li>
+				No external ressources of any kind in any form.
+				Your meta-data stay between you, the webserver (if any) and your internet-service-provider; your data stay with you alone, unless you explicitly ask the webserver to store something for you.
+				(At this time there is no functionality to store anything server-side, this provision is just here to cover any potential future features.)
+			</li>
+		</ul>
+
+		<h2>License</h2>
+		<p>
+			This program is free software:
+			you can redistribute it and/or modify it under the terms of the <a href="LICENSE">GNU Affero General Public License</a> as published by the Free Software Foundation,
+			either version 3 of the License, or (at your option) any later version.
+		</p>
+		<p>
+			This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+			without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+			See the GNU Affero General Public License for more details.
+		</p>
+		<p>
+			You should have received a copy of the GNU Affero General Public License along with this program.
+			If not, see <a href=https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.
+		</p>
+
+		<h3>License Table for LibreJS-users</h3>
+		<table id="jslicense-labels1">
+			<tr>
+				<td><a href="main.js">main.js</a></td>
+				<td><a href="http://www.gnu.org/licenses/agpl-3.0.html">GNU Affero General Public License version 3</a></td>
+				<td><a href="https://gitlab.com/FJW/free-trans-voice-analyzer">gitlab.com/FJW/free-trans-voice-analyzer</a></td>
+			</tr>
+		</table>
 	</body>
 </html>

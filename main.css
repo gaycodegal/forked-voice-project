@@ -47,6 +47,7 @@ th {
 td {
 	border: 1px solid #ff69b4;
 	padding: 5px;
+	text-align: center;
 }
 
 .NumericTableField {
@@ -92,6 +93,7 @@ footer > p > a {
 .ActionField > a {
 	font-size: 200%;
 	text-decoration: none;
+	padding:2px;
 }
 
 select {

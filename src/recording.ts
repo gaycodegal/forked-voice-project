@@ -129,12 +129,19 @@ function show_recording_results(stats: RecordStats, mediaChunks: Blob[]) {
 	tr.appendChild(tdPlayback);
 
 	const tdControls = document.createElement("td");
+	tdControls.classList.add("ActionField");
 	const downloadLink = document.createElement("a");
 	downloadLink.innerText = "⬇️";
 	downloadLink.setAttribute("download", "voice_recording.ogg");
 	downloadLink.href = audioURL;
-	tdControls.classList.add("ActionField");
 	tdControls.appendChild(downloadLink);
+
+	const removeLink = document.createElement("a");
+	removeLink.innerText = "❌";
+	removeLink.onclick = () => {
+		tr.remove();
+	};
+	tdControls.appendChild(removeLink);
 
 	tr.appendChild(tdControls);
 

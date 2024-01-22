@@ -1,5 +1,7 @@
 #pragma once
 
+#include "notes.ts"
+
 let current_recording : number[] | null = null;
 let record_counter = 0;
 
@@ -8,10 +10,12 @@ let mediaRecording: Blob[] = [];
 let playRecordingOnStop = false;
 
 type GenderShare = {[key in Gender]: number};
+type Quantiles = {[key in string]: number};
 
 interface RecordStats {
 	shares: GenderShare;
 	average: number;
+	quantiles: Quantiles;
 }
 
 
@@ -33,6 +37,31 @@ function stable_sum(data: number[], low: number = 0, high: number = -1, split: n
 
 }
 
+function to_index(pos: number, length: number): number {
+	return Math.min(length, (Math.max(0, Math.round(pos*length))));
+}
+
+function compute_quantiles(unsorted_data: number[]): Quantiles {
+	let data = unsorted_data.sort((a,b)=>{return a-b;});
+	return {
+		"5%": data[to_index(0.05, data.length)],
+		"10%": data[to_index(0.10, data.length)],
+		"20%": data[to_index(0.20, data.length)],
+		"50%": data[to_index(0.50, data.length)],
+		"80%": data[to_index(0.80, data.length)],
+		"90%": data[to_index(0.90, data.length)],
+		"95%": data[to_index(0.95, data.length)],
+	};
+}
+
+function add_quantiles_to_list(ul: HTMLUListElement,quantiles: Quantiles){
+	for (const key in quantiles) {
+		let li = document.createElement("li");
+		li.appendChild(frequency_to_html(quantiles[key], key + ": "));
+		ul.appendChild(li);
+	}
+}
+
 function analyze_recording(freq_data: number[]): RecordStats {
 	let stats : GenderShare = {
 		[Gender.UltraFem]: 0,
@@ -44,9 +73,11 @@ function analyze_recording(freq_data: number[]): RecordStats {
 	for (const freq of freq_data) {
 		stats[frequency_to_gender(freq)] += 1;
 	}
+	const average =  stable_sum(freq_data) / freq_data.length;
 	return {
 		"shares": stats,
-		"average": stable_sum(freq_data) / freq_data.length
+		"average": stable_sum(freq_data) / freq_data.length,
+		"quantiles": compute_quantiles(freq_data)
 	};
 }
 
@@ -96,10 +127,15 @@ function show_recording_results(stats: RecordStats, mediaChunks: Blob[]) {
 	}
 
 	let td_average_freq = document.createElement("td");
-	const average_freq = stats.average;
-	td_average_freq.innerHTML = average_freq.toFixed(2) + " Hz (" + note_to_string(frequency_to_note(average_freq)) + ")" ;
+	let ul_average_freq = document.createElement("ul");
+	ul_average_freq.classList.add("no-bullets");
+	add_quantiles_to_list(ul_average_freq, stats.quantiles);
+	let li_average_freq = document.createElement("li");
+	li_average_freq.appendChild(frequency_to_html(stats.average, "avg: "));//quantiles_to_html(stats.quantiles) + "avg: " + frequency_to_string(stats.average);
+	ul_average_freq.appendChild(li_average_freq);
+	td_average_freq.appendChild(ul_average_freq);
 	td_average_freq.classList.add("NumericTableField");
-	td_average_freq.style.color = frequency_to_color(average_freq).to_str();
+	//td_average_freq.style.color = frequency_to_color(average_freq).to_str();
 	tr.appendChild(td_average_freq);
 
 	let td_target_freq = document.createElement("td");

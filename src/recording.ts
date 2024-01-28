@@ -1,6 +1,7 @@
 #pragma once
 
 #include "notes.ts"
+#include "utils.ts"
 
 let current_recording : number[] | null = null;
 let record_counter = 0;
@@ -18,28 +19,6 @@ interface RecordStats {
 	quantiles: Quantiles;
 }
 
-
-/// sums the values in the provided array, but does so in a way that ensure numeric stability
-function stable_sum(data: number[], low: number = 0, high: number = -1, split: number = 10) : number{
-	if (high < 0) {
-		high = data.length;
-	}
-	if (high - low > split) {
-		const step = Math.ceil((high-low) / split);
-		let ret = 0;
-		for (let i = low; i < high; i += step) {
-			ret += stable_sum(data, i, Math.min(i + step, high), split);
-		}
-		return ret;
-	} else {
-		return data.slice(low, high).reduce((a,b) => a+b, 0);
-	}
-
-}
-
-function to_index(pos: number, length: number): number {
-	return Math.min(length, (Math.max(0, Math.round(pos*length))));
-}
 
 function compute_quantiles(unsorted_data: number[]): Quantiles {
 	let data = unsorted_data.sort((a,b)=>{return a-b;});
@@ -108,15 +87,8 @@ function toggle_recording(toggle_element: HTMLInputElement) {
 	}
 }
 
-function show_recording_results(stats: RecordStats, mediaChunks: Blob[]) {
-	let results_table = document.getElementById("RecordResultTableBody") as HTMLElement;
-	let total = stats.shares[Gender.UltraFem] + stats.shares[Gender.Fem] + stats.shares[Gender.Enby] + stats.shares[Gender.Masc] + stats.shares[Gender.InfraMasc];
-	let tr = document.createElement("tr");
-
-	let td0 = document.createElement("td");
-	td0.innerHTML = "#" + (++record_counter).toFixed(0);
-	tr.appendChild(td0);
-
+function render_shares(tr: HTMLTableRowElement, stats: RecordStats) {
+	const total = stats.shares[Gender.UltraFem] + stats.shares[Gender.Fem] + stats.shares[Gender.Enby] + stats.shares[Gender.Masc] + stats.shares[Gender.InfraMasc];
 	for (const gender of [Gender.InfraMasc, Gender.Masc, Gender.Enby, Gender.Fem, Gender.UltraFem]) {
 		let td = document.createElement("td");
 		td.classList.add("NumericTableField");
@@ -125,45 +97,50 @@ function show_recording_results(stats: RecordStats, mediaChunks: Blob[]) {
 		td.style.color = "white";
 		tr.appendChild(td);
 	}
+}
 
+
+function render_quantiles(stats: RecordStats) : HTMLTableCellElement {
 	let td_average_freq = document.createElement("td");
 	let ul_average_freq = document.createElement("ul");
 	ul_average_freq.classList.add("no-bullets");
 	add_quantiles_to_list(ul_average_freq, stats.quantiles);
 	let li_average_freq = document.createElement("li");
-	li_average_freq.appendChild(frequency_to_html(stats.average, "avg: "));//quantiles_to_html(stats.quantiles) + "avg: " + frequency_to_string(stats.average);
+	li_average_freq.appendChild(frequency_to_html(stats.average, "avg: "));
 	ul_average_freq.appendChild(li_average_freq);
 	td_average_freq.appendChild(ul_average_freq);
 	td_average_freq.classList.add("NumericTableField");
-	//td_average_freq.style.color = frequency_to_color(average_freq).to_str();
-	tr.appendChild(td_average_freq);
+	return td_average_freq;
+}
 
+function render_target(stats: RecordStats) : HTMLTableCellElement{
 	let td_target_freq = document.createElement("td");
-	const target_freq = Number((document.getElementById("TargetFrequencySelector") as HTMLSelectElement).value);
+	const target_freq = Number(get_selector_value("TargetFrequencySelector"));
 	td_target_freq.innerHTML = target_freq.toFixed(2) + " Hz (" + note_to_string(frequency_to_note(target_freq)) + ")" ;
 	td_target_freq.classList.add("NumericTableField");
 	td_target_freq.style.color = frequency_to_color(target_freq).to_str();
-	tr.appendChild(td_target_freq);
+	return td_target_freq;
+}
 
-	let td_lang = document.createElement("td");
-	td_lang.innerHTML = (document.getElementById("LanguageSelector") as HTMLSelectElement).value;
-	tr.appendChild(td_lang);
+function render_selector_value(name: string) : HTMLTableCellElement {
+	let td = document.createElement("td");
+	td.innerHTML = get_selector_value(name);
+	return td;
+}
 
-	let td_text = document.createElement("td");
-	td_text.innerHTML = (document.getElementById("TextSelector") as HTMLSelectElement).value;
-	tr.appendChild(td_text);
-
-
-	const blob = new Blob(mediaChunks, { type: "audio/ogg; codecs=opus" });
-	const audioURL = window.URL.createObjectURL(blob);
-
+function render_playback(audioURL: string): HTMLTableCellElement {
 	const tdPlayback = document.createElement("td");
 	const audio = document.createElement("audio");
 	audio.setAttribute("controls", "");
 	audio.src = audioURL;
 	tdPlayback.appendChild(audio);
-	tr.appendChild(tdPlayback);
+	if (playRecordingOnStop) {
+		audio.play();
+	}
+	return tdPlayback;
+}
 
+function render_controls(tr: HTMLTableRowElement, audioURL: string) : HTMLTableCellElement {
 	const tdControls = document.createElement("td");
 	tdControls.classList.add("ActionField");
 	const downloadLink = document.createElement("a");
@@ -171,27 +148,51 @@ function show_recording_results(stats: RecordStats, mediaChunks: Blob[]) {
 	downloadLink.setAttribute("download", "voice_recording.ogg");
 	downloadLink.href = audioURL;
 	tdControls.appendChild(downloadLink);
-
 	const removeLink = document.createElement("a");
 	removeLink.innerText = "❌";
 	removeLink.onclick = () => {
 		tr.remove();
 	};
 	tdControls.appendChild(removeLink);
+	return tdControls;
+}
 
-	tr.appendChild(tdControls);
-
+function render_notes() : HTMLTableCellElement {
 	const tdNote = document.createElement("td");
 	let noteField = document.createElement("textarea");
 	noteField.style.width = "100%";
 	tdNote.appendChild(noteField);
-	tr.appendChild(tdNote);
+	return tdNote;
+}
 
-	if (playRecordingOnStop) {
-		audio.play();
-	}
+function render_counter() : HTMLTableCellElement {
+	let td = document.createElement("td");
+	td.innerHTML = "#" + (++record_counter).toFixed(0);
+	return td;
+}
 
-	results_table.insertBefore(tr, results_table.children[0]);
+
+function render_recording(stats: RecordStats, recording: Blob[]) : HTMLTableRowElement {
+	const blob = new Blob(recording, { type: "audio/ogg; codecs=opus" });
+	const audioURL = window.URL.createObjectURL(blob);
+
+	let tr = document.createElement("tr");
+	tr.appendChild(render_counter());
+	render_shares(tr, stats);
+	tr.appendChild(render_quantiles(stats));
+	tr.appendChild(render_target(stats));
+	tr.appendChild(render_selector_value("LanguageSelector"));
+	tr.appendChild(render_selector_value("TextSelector"));
+	tr.appendChild(render_playback(audioURL));
+	tr.appendChild(render_controls(tr, audioURL));
+	tr.appendChild(render_notes());
+
+	return tr;
+}
+
+function show_recording_results(stats: RecordStats, recording: Blob[]) {
+	let results_table = document.getElementById("RecordResultTableBody") as HTMLElement;
+	results_table.insertBefore(render_recording(stats, recording), results_table.children[0]);
 }
 
 function setup_recording() {

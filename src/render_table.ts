@@ -43,7 +43,7 @@ function render_quantiles(stats: RecordStats) : HTMLTableCellElement {
 function render_target(stats: RecordStats) : HTMLTableCellElement{
 	let td_target_freq = document.createElement("td");
 	const target_freq = Number(get_selector_value("TargetFrequencySelector"));
-	td_target_freq.innerHTML = frequency_to_html(target_freq);
+	td_target_freq.appendChild(frequency_to_html(target_freq));
 	td_target_freq.classList.add("NumericTableField");
 	return td_target_freq;
 }

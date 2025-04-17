@@ -7,6 +7,9 @@
 		--accent-bg-col-2: #e685f5;
 		--canvas-bg-col: white;
 		--link-col: #68005d;
+
+		--target-freq-color: #004444;
+		--main-freq-color: #000000;
 	}
 }
 @media only screen and (prefers-color-scheme: dark){
@@ -18,6 +21,9 @@
 		--accent-bg-col-2: #42224c;
 		--canvas-bg-col: black;
 		--link-col: pink;
+
+		--target-freq-color: #00ffff;
+		--main-freq-color: #ffffff;
 	}
 }
 html {

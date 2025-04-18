@@ -1,8 +1,8 @@
 @media only screen and (prefers-color-scheme: light){
 	html {
 		--main-col: black;
-		--accent-col: purple;
 		--bg-col: #f9d3ff;
+		--accent-col: purple;
 		--accent-bg-col: #f2b0fc;
 		--accent-bg-col-2: #e685f5;
 		--canvas-bg-col: white;
@@ -15,8 +15,8 @@
 @media only screen and (prefers-color-scheme: dark){
 	html {
 		--main-col: white;
-		--accent-col: fuchsia;
 		--bg-col: #2a111e;
+		--accent-col: fuchsia;
 		--accent-bg-col: #27142d;
 		--accent-bg-col-2: #42224c;
 		--canvas-bg-col: black;

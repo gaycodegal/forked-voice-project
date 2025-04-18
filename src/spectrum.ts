@@ -47,7 +47,7 @@ function draw_specturm(img: Uint8Array, data: Uint8Array) {
 function mark_target_frequency(img: Uint8Array) {
 	const target_frequency = get_target_frequency();
 	const index = Math.round(target_frequency / hertz_per_bin);
-	write_pixel(img, index, cyan);
+	write_pixel(img, index, target_freq_color);
 }
 
 function state_main_frequency(freq: number | null) {
@@ -67,9 +67,9 @@ function mark_main_freq(img: Uint8Array, data: Uint8Array) {
 	const max_amplitude = data[imax];
 	if (max_amplitude > get_current_threshold()) {
 		const max_freq = imax * hertz_per_bin;
-		write_pixel(img, imax-1, white);
-		write_pixel(img, imax,   white);
-		write_pixel(img, imax+1, white);
+		write_pixel(img, imax-1, main_freq_color);
+		write_pixel(img, imax,   main_freq_color);
+		write_pixel(img, imax+1, main_freq_color);
 		state_main_frequency(max_freq);
 		if (current_recording != null) {
 			current_recording.push(max_freq);

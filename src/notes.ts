@@ -39,7 +39,7 @@ function frequency_to_string(freq: number) : string {
 	return freq.toFixed(2) + " Hz (" + note_to_string(frequency_to_note(freq)) + ")" ;
 }
 
-function frequency_to_html(freq: number, label: string) : HTMLSpanElement {
+function frequency_to_html(freq: number, label: string = "") : HTMLSpanElement {
 	let span = document.createElement("span");
 	span.innerHTML = label + frequency_to_string(freq);
 	span.style.color = frequency_to_color(freq).to_str();

@@ -25,8 +25,32 @@ class color {
 	}
 };
 
-const white = new color(255,255,255);
-const cyan = new color(0,255,255);
+function color_from_rgb_string(s: string): color {
+	if (s.length == 7 && s[0] == '#') {
+		let num = parseInt(s.slice(1), 16);
+		let b = num & 0xff;
+		num = num >> 8;
+		let g = num & 0xff;
+		let r = num >> 8;
+		return new color(r, g, b);
+	} else if (s.length == 4 && s[0] == '#') {
+		let num = parseInt(s.slice(1), 16);
+		let b = num & 0xf;
+		num = num >> 4;
+		let g = num & 0xf;
+		let r = num >> 4;
+		return new color(r << 4, g << 4, b << 4);
+	} else {
+		throw "Invalid Color: " + s;
+	}
+}
+
+//const main_freq_color = new color(255,255,255);
+//const target_freq_color = new color(0,255,255);
+
+const main_freq_color = color_from_rgb_string(getComputedStyle(document.documentElement).getPropertyValue("--main-freq-color"));
+const target_freq_color = color_from_rgb_string(getComputedStyle(document.documentElement).getPropertyValue("--target-freq-color"));
+
 
 const enum Gender {
 	InfraMasc,

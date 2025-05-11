@@ -3,7 +3,7 @@
 #include "notes.ts"
 #include "render_table.ts"
 
-type GenderShare = {[key in Gender]: number};
+type GenderShare = {[key in Genders]: number};
 type Quantiles = {[key in string]: number};
 
 interface RecordStats {
@@ -39,14 +39,14 @@ function add_quantiles_to_list(ul: HTMLUListElement,quantiles: Quantiles){
 
 function analyze_recording(freq_data: number[]): RecordStats {
 	let stats : GenderShare = {
-		[Gender.UltraFem]: 0,
-		[Gender.Fem]: 0,
-		[Gender.Enby]: 0,
-		[Gender.Masc]: 0,
-		[Gender.InfraMasc]: 0
+		[Genders.UltraFem]: 0,
+		[Genders.Fem]: 0,
+		[Genders.Enby]: 0,
+		[Genders.Masc]: 0,
+		[Genders.InfraMasc]: 0
 	};
 	for (const freq of freq_data) {
-		stats[frequency_to_gender(freq)] += 1;
+		stats[Gender.fromFrequency(freq).toEnum()] += 1;
 	}
 	const average =  stable_sum(freq_data) / freq_data.length;
 	return {

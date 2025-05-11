@@ -16,12 +16,12 @@ function render_counter() : HTMLTableCellElement {
 }
 
 function render_shares(tr: HTMLTableRowElement, stats: RecordStats) {
-	const total = stats.shares[Gender.UltraFem] + stats.shares[Gender.Fem] + stats.shares[Gender.Enby] + stats.shares[Gender.Masc] + stats.shares[Gender.InfraMasc];
-	for (const gender of [Gender.InfraMasc, Gender.Masc, Gender.Enby, Gender.Fem, Gender.UltraFem]) {
+	const total = stats.shares[Genders.UltraFem] + stats.shares[Genders.Fem] + stats.shares[Genders.Enby] + stats.shares[Genders.Masc] + stats.shares[Genders.InfraMasc];
+	for (const gender of Gender.genders){ 
 		let td = document.createElement("td");
 		td.classList.add("NumericTableField");
-		td.innerHTML = (100 * stats.shares[gender] / total).toFixed(0) + "%";
-		td.style.backgroundColor = gender_to_color(gender).scale(stats.shares[gender]/total).to_str();
+		td.innerHTML = (100 * stats.shares[gender.toEnum()] / total).toFixed(0) + "%";
+		td.style.backgroundColor = gender.toColor().scale(stats.shares[gender.toEnum()]/total).to_str();
 		td.style.color = "white";
 		tr.appendChild(td);
 	}

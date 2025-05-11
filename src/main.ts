@@ -11,7 +11,7 @@ window.addEventListener("load", (event) => {
 		alert("No element with root-id found");
 		return;
 	}
-	setupUi(root);
+	let ui = setupUi(root);
 	setup_volume_threshold_selector();
 	setup_languages();
 	get_selected_text();

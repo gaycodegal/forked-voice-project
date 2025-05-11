@@ -1,5 +1,5 @@
 
-class MainWidget {
+class UserInterface {
 	root: HTMLElement;
 	canvas: HTMLCanvasElement;
 	//controls: HTMLDivElement;
@@ -42,7 +42,7 @@ function createResultsTable(): HTMLTableElement {
 	return table;
 }
 
-function setupUi(root: HTMLElement): MainWidget{
+function setupUi(root: HTMLElement): UserInterface{
 
 	let canvas = document.createElement("canvas");
 	canvas.id = "canvas";
@@ -94,7 +94,7 @@ function setupUi(root: HTMLElement): MainWidget{
 	PlayFrequencyButton.type="button";
 	PlayFrequencyButton.innerHTML="▶️";
 	root.appendChild(PlayFrequencyButton);
-	let NoteSelector = document.createElement("form");
+	let NoteSelector = document.createElement("div");
 	NoteSelector.id="NoteSelector";
 	root.appendChild(NoteSelector);
 	root.appendChild(document.createElement("br"));
@@ -113,5 +113,5 @@ function setupUi(root: HTMLElement): MainWidget{
 
 	let resultsTable = createResultsTable();
 	root.appendChild(resultsTable);
-	return new MainWidget(root, canvas);
+	return new UserInterface(root, canvas);
 }

@@ -25,7 +25,7 @@ class color {
 	}
 };
 
-function color_from_rgb_string(s: string): color {
+function color_from_rgb_string(s: string, fallback?: color): color {
 	if (s.length == 7 && s[0] == '#') {
 		let num = parseInt(s.slice(1), 16);
 		let b = num & 0xff;
@@ -40,16 +40,15 @@ function color_from_rgb_string(s: string): color {
 		let g = num & 0xf;
 		let r = num >> 4;
 		return new color(r << 4, g << 4, b << 4);
+	} else if (fallback != null) {
+		return fallback;
 	} else {
 		throw "Invalid Color: " + s;
 	}
 }
 
-//const main_freq_color = new color(255,255,255);
-//const target_freq_color = new color(0,255,255);
-
-const main_freq_color = color_from_rgb_string(getComputedStyle(document.documentElement).getPropertyValue("--main-freq-color"));
-const target_freq_color = color_from_rgb_string(getComputedStyle(document.documentElement).getPropertyValue("--target-freq-color"));
+const main_freq_color = color_from_rgb_string(getComputedStyle(document.documentElement).getPropertyValue("--main-freq-color"), new color(255, 255, 255));
+const target_freq_color = color_from_rgb_string(getComputedStyle(document.documentElement).getPropertyValue("--target-freq-color"), new color(0,255, 255));
 
 
 const enum Gender {

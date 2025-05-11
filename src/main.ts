@@ -1,11 +1,17 @@
+#include "setup_ui.ts"
 #include "recording.ts"
 #include "spectrum.ts"
 #include "texts.ts"
 #include "target_frequency.ts"
 
 
-window.onload =
-(() => {
+window.addEventListener("load", (event) => {
+	let root = document.getElementById("ftvt-root")
+	if (root === null) {
+		alert("No element with root-id found");
+		return;
+	}
+	setupUi(root);
 	setup_volume_threshold_selector();
 	setup_languages();
 	get_selected_text();

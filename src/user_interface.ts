@@ -1,36 +1,5 @@
 #pragma once
 
-function createTh(width: string, content: string): HTMLElement {
-	let ret = document.createElement("th");
-	ret.width = width;
-	ret.innerHTML=content;
-	return ret;
-}
-
-function createResultsTable(): [HTMLTableElement, HTMLElement] {
-	let table = document.createElement("table");
-	let thead = document.createElement("thead");
-	table.appendChild(thead);
-	let tr = document.createElement("tr");
-	thead.appendChild(tr);
-	tr.appendChild(createTh("2%", ""));
-	tr.appendChild(createTh("3%", "⏬"));
-	tr.appendChild(createTh("3%", "♂️"));
-	tr.appendChild(createTh("3%", "⏺️"));
-	tr.appendChild(createTh("3%", "♀️"));
-	tr.appendChild(createTh("3%", "⏫"));
-	tr.appendChild(createTh("8%", "Quantiles"));
-	tr.appendChild(createTh("8%", "🎯"));
-	tr.appendChild(createTh("5%", "Language"));
-	tr.appendChild(createTh("15%", "Text"));
-	tr.appendChild(createTh("12%", "Playback"));
-	tr.appendChild(createTh("5%", "Actions"));
-	tr.appendChild(createTh("30%", "Notes"));
-	let tbody = document.createElement("tbody");
-	table.appendChild(tbody);
-	return [table, tbody];
-}
-
 
 class UserInterface {
 	root: HTMLElement;
@@ -111,9 +80,41 @@ class UserInterface {
 		this.autoPlaybackCheckbox.type="checkbox";
 		controlsDiv.appendChild(this.autoPlaybackCheckbox);
 
-		let [table, tableBody] = createResultsTable();
-		this.resultsTable = tableBody;
+		this.createResultsTable();
+	}
+
+	private createResultsTable() {
+
+		function createTh(width: string, content: string): HTMLElement {
+			let ret = document.createElement("th");
+			ret.width = width;
+			ret.innerHTML=content;
+			return ret;
+		}
+
+		let table = document.createElement("table");
+		let thead = document.createElement("thead");
+		table.appendChild(thead);
+		let tr = document.createElement("tr");
+		thead.appendChild(tr);
+		tr.appendChild(createTh("2%", ""));
+		tr.appendChild(createTh("3%", "⏬"));
+		tr.appendChild(createTh("3%", "♂️"));
+		tr.appendChild(createTh("3%", "⏺️"));
+		tr.appendChild(createTh("3%", "♀️"));
+		tr.appendChild(createTh("3%", "⏫"));
+		tr.appendChild(createTh("8%", "Quantiles"));
+		tr.appendChild(createTh("8%", "🎯"));
+		tr.appendChild(createTh("5%", "Language"));
+		tr.appendChild(createTh("15%", "Text"));
+		tr.appendChild(createTh("12%", "Playback"));
+		tr.appendChild(createTh("5%", "Actions"));
+		tr.appendChild(createTh("30%", "Notes"));
+		let tbody = document.createElement("tbody");
+		table.appendChild(tbody);
+		this.resultsTable = tbody;
 		this.root.appendChild(table);
 	}
+
 }
 

@@ -12,8 +12,8 @@ class UserInterface {
 	playButton: HTMLButtonElement;
 	noteSelector: HTMLDivElement;
 	toggleRecordButton: HTMLButtonElement;
-	//controls: HTMLDivElement;
-	//resultsTable: HtmlTableElement;
+	autoPlaybackCheckbox: HTMLInputElement;
+	resultsTable: HTMLElement;
 	constructor(root: HTMLElement,
 		    canvas: HTMLCanvasElement,
 		    volumeSelector: HTMLInputElement,
@@ -24,7 +24,9 @@ class UserInterface {
 		    targetFrequencySelector: HTMLInputElement,
 	            playButton: HTMLButtonElement,
 		    noteSelector: HTMLDivElement,
-		    toggleRecordButton: HTMLButtonElement
+		    toggleRecordButton: HTMLButtonElement,
+		    autoPlaybackCheckbox: HTMLInputElement,
+		    resultsTable: HTMLElement,
 	) {
 		this.root = root;
 		this.canvas = canvas;
@@ -37,6 +39,8 @@ class UserInterface {
 		this.playButton = playButton;
 		this.noteSelector = noteSelector;
 		this.toggleRecordButton  = toggleRecordButton;
+		this.autoPlaybackCheckbox = autoPlaybackCheckbox;
+		this.resultsTable = resultsTable
 	}
 }
 
@@ -47,7 +51,7 @@ function createTh(width: string, content: string): HTMLElement {
 	return ret;
 }
 
-function createResultsTable(): HTMLTableElement {
+function createResultsTable(): [HTMLTableElement, HTMLElement] {
 	let table = document.createElement("table");
 	let thead = document.createElement("thead");
 	table.appendChild(thead);
@@ -69,7 +73,7 @@ function createResultsTable(): HTMLTableElement {
 	let tbody = document.createElement("tbody");
 	tbody.id="RecordResultTableBody";
 	table.appendChild(tbody);
-	return table;
+	return [table, tbody];
 }
 
 function setupUi(root: HTMLElement): UserInterface{
@@ -141,7 +145,7 @@ function setupUi(root: HTMLElement): UserInterface{
 	AutoPlayback.type="checkbox";
 	root.appendChild(AutoPlayback);
 
-	let resultsTable = createResultsTable();
+	let [resultsTable, tableBody] = createResultsTable();
 	root.appendChild(resultsTable);
-	return new UserInterface(root, canvas, volumeSelector, LanguageSelector, TextSelector, TextDisplay, freqOut, TargetFrequencySelector, PlayFrequencyButton, NoteSelector, ToggleRecordButton);
+	return new UserInterface(root, canvas, volumeSelector, LanguageSelector, TextSelector, TextDisplay, freqOut, TargetFrequencySelector, PlayFrequencyButton, NoteSelector, ToggleRecordButton, AutoPlayback, tableBody);
 }

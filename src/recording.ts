@@ -17,9 +17,11 @@ class Recorder {
 	current_recording : number[] | null = null;
 	mediaRecorder: MediaRecorder | null = null;
 	mediaRecording: Blob[] = [];
+	tableManager: TableManager;
 
-	constructor(ui: UserInterface) {
+	constructor(ui: UserInterface, tableManager: TableManager) {
 		this.button = ui.toggleRecordButton;
+		this.tableManager = tableManager;
 		this.button.addEventListener("click", (event) => {
 			this.toggleRecording();
 		});
@@ -80,7 +82,7 @@ class Recorder {
 				if (recording.length > 0) {
 					this.mediaRecorder.ondataavailable = (e) => {
 						this.mediaRecording.push(e.data);
-						show_recording_results(this.analyze_recording(recording), this.mediaRecording);
+						this.tableManager.addRecording(this.analyze_recording(recording), this.mediaRecording);
 					}
 				}
 				this.mediaRecorder.stop();

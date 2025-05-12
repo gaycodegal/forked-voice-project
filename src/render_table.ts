@@ -27,6 +27,14 @@ function render_shares(tr: HTMLTableRowElement, stats: RecordStats) {
 	}
 }
 
+function add_quantiles_to_list(ul: HTMLUListElement,quantiles: Quantiles){
+	for (const key in quantiles) {
+		let li = document.createElement("li");
+		li.appendChild(frequency_to_html(quantiles[key], key + ": "));
+		ul.appendChild(li);
+	}
+}
+
 function render_quantiles(stats: RecordStats) : HTMLTableCellElement {
 	let td_average_freq = document.createElement("td");
 	let ul_average_freq = document.createElement("ul");

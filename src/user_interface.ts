@@ -4,12 +4,16 @@ class UserInterface {
 	root: HTMLElement;
 	canvas: HTMLCanvasElement;
 	volumeSelector: HTMLInputElement;
+	freqOut: HTMLOutputElement;
+	toggleRecordButton: HTMLButtonElement;
 	//controls: HTMLDivElement;
 	//resultsTable: HtmlTableElement;
-	constructor(root: HTMLElement, canvas: HTMLCanvasElement, volumeSelector: HTMLInputElement) {
+	constructor(root: HTMLElement, canvas: HTMLCanvasElement, volumeSelector: HTMLInputElement, freqOut: HTMLOutputElement, toggleRecordButton: HTMLButtonElement) {
 		this.root = root;
 		this.canvas = canvas;
 		this.volumeSelector = volumeSelector;
+		this.freqOut = freqOut;
+		this.toggleRecordButton  = toggleRecordButton;
 	}
 }
 
@@ -116,5 +120,5 @@ function setupUi(root: HTMLElement): UserInterface{
 
 	let resultsTable = createResultsTable();
 	root.appendChild(resultsTable);
-	return new UserInterface(root, canvas, volumeSelector);
+	return new UserInterface(root, canvas, volumeSelector, freqOut, ToggleRecordButton);
 }

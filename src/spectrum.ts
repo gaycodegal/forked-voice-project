@@ -5,6 +5,7 @@
 #include "target_frequency.ts"
 #include "gender_pitch.ts"
 #include "user_interface.ts"
+#include "recording.ts"
 
 class Spectrum {
 	max_display_freq : number = 1600;
@@ -13,18 +14,22 @@ class Spectrum {
 	canvas: HTMLCanvasElement;
 	ctx: CanvasRenderingContext2D;
 	threshold: Threshold;
+	freqOut: HTMLOutputElement;
+	recorder: Recorder;
 
-	constructor(ui: UserInterface, threshold: Threshold) {
+	constructor(ui: UserInterface, threshold: Threshold, recorder: Recorder) {
 		this.frequency_base_band = new BaseFrequencyIndices(0,0);
 		this.canvas = ui.canvas;
 		const ctx = this.canvas.getContext("2d");
 		if (ctx == null) {throw "No 2d-context in canvas element";}
 		this.ctx = ctx;
 		this.threshold = threshold;
+		this.freqOut = ui.freqOut
+		this.recorder = recorder;
 		navigator.mediaDevices
 			.getUserMedia({audio: true})
 			.then(this.spectrum.bind(this))
-			.then(this.setupRecorder.bind(this))
+			.then(recorder.setupRecorder.bind(recorder))
 			.catch(console.log);
 	}
 
@@ -70,14 +75,13 @@ class Spectrum {
 	}
 
 	state_main_frequency(freq: number | null) {
-		const freq_out = document.getElementById("freq-out") as HTMLElement;
 		if (freq  == null) {
-			freq_out.innerHTML = "-<sub></sub>";
-			freq_out.style.color = "white";
+			this.freqOut.innerHTML = "-<sub></sub>";
+			this.freqOut.style.color = "white";
 		} else {
 			const note = frequency_to_note(freq);
-			freq_out.innerHTML= (freq).toFixed(0) + " Hz (" +note_to_string(note) + ")";
-			freq_out.style.color = frequency_to_color(freq).to_str();
+			this.freqOut.innerHTML= (freq).toFixed(0) + " Hz (" +note_to_string(note) + ")";
+			this.freqOut.style.color = frequency_to_color(freq).to_str();
 		}
 	}
 
@@ -90,15 +94,13 @@ class Spectrum {
 			this.writePixel(img, imax,   Color.main_freq_color);
 			this.writePixel(img, imax+1, Color.main_freq_color);
 			this.state_main_frequency(max_freq);
-			if (current_recording != null) {
-				current_recording.push(max_freq);
-			}
+			this.recorder.pushIfRecording(max_freq);
 		} else {
 			this.state_main_frequency(null);
 		}
 	}
 
-	render_analysis(data: Uint8Array, ): ImageData {
+	render_analysis(data: Uint8Array): ImageData {
 		const height = this.ctx.canvas.height;
 		let imgData = this.make_background();
 		this.draw_specturm(imgData.data, data);
@@ -136,8 +138,4 @@ class Spectrum {
 		return stream;
 	};
 
-	setupRecorder(stream: MediaStream) {
-		mediaRecorder = new MediaRecorder(stream);
-		return stream;
-	}
 }

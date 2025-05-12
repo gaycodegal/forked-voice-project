@@ -12,81 +12,84 @@ interface RecordStats {
 	quantiles: Quantiles;
 }
 
-let current_recording : number[] | null = null;
-let mediaRecorder: MediaRecorder | null = null;
-let mediaRecording: Blob[] = [];
+class Recorder {
+	button : HTMLButtonElement;
+	current_recording : number[] | null = null;
+	mediaRecorder: MediaRecorder | null = null;
+	mediaRecording: Blob[] = [];
 
-function compute_quantiles(unsorted_data: number[]): Quantiles {
-	let data = unsorted_data.sort((a,b)=>{return a-b;});
-	return {
-		"5%": data[to_index(0.05, data.length)],
-		"10%": data[to_index(0.10, data.length)],
-		"20%": data[to_index(0.20, data.length)],
-		"50%": data[to_index(0.50, data.length)],
-		"80%": data[to_index(0.80, data.length)],
-		"90%": data[to_index(0.90, data.length)],
-		"95%": data[to_index(0.95, data.length)],
-	};
-}
-
-function add_quantiles_to_list(ul: HTMLUListElement,quantiles: Quantiles){
-	for (const key in quantiles) {
-		let li = document.createElement("li");
-		li.appendChild(frequency_to_html(quantiles[key], key + ": "));
-		ul.appendChild(li);
+	constructor(ui: UserInterface) {
+		this.button = ui.toggleRecordButton;
+		this.button.addEventListener("click", (event) => {
+			this.toggleRecording();
+		});
 	}
-}
 
-function analyze_recording(freq_data: number[]): RecordStats {
-	let stats : GenderShare = {
-		[Genders.UltraFem]: 0,
-		[Genders.Fem]: 0,
-		[Genders.Enby]: 0,
-		[Genders.Masc]: 0,
-		[Genders.InfraMasc]: 0
-	};
-	for (const freq of freq_data) {
-		stats[Gender.fromFrequency(freq).toEnum()] += 1;
+	computeQuantiles(unsorted_data: number[]): Quantiles {
+		let data = unsorted_data.sort((a,b)=>{return a-b;});
+		return {
+			 "5%": data[to_index(0.05, data.length)],
+			"10%": data[to_index(0.10, data.length)],
+			"20%": data[to_index(0.20, data.length)],
+			"50%": data[to_index(0.50, data.length)],
+			"80%": data[to_index(0.80, data.length)],
+			"90%": data[to_index(0.90, data.length)],
+			"95%": data[to_index(0.95, data.length)],
+		};
 	}
-	const average =  stable_sum(freq_data) / freq_data.length;
-	return {
-		"shares": stats,
-		"average": stable_sum(freq_data) / freq_data.length,
-		"quantiles": compute_quantiles(freq_data)
-	};
-}
 
-function toggle_recording(toggle_element: HTMLInputElement) {
-	if (current_recording === null) {
-		current_recording = [];
-		toggle_element.style.color = "red";
-		toggle_element.innerText="Stop Recording"
-		if (mediaRecorder) {
-			mediaRecording = [];
-			mediaRecorder.start();
+	pushIfRecording(maxFreq: number) {
+		this.current_recording?.push(maxFreq);
+	}
+
+	analyze_recording(freq_data: number[]): RecordStats {
+		let stats : GenderShare = {
+			[Genders.UltraFem]: 0,
+			[Genders.Fem]: 0,
+			[Genders.Enby]: 0,
+			[Genders.Masc]: 0,
+			[Genders.InfraMasc]: 0
+		};
+		for (const freq of freq_data) {
+			stats[Gender.fromFrequency(freq).toEnum()] += 1;
 		}
-	} else {
-		let recording = current_recording;
-		current_recording = null;
-		toggle_element.style.color = "green";
-		toggle_element.innerText="Start Recording";
+		const average =  stable_sum(freq_data) / freq_data.length;
+		return {
+			"shares": stats,
+			"average": stable_sum(freq_data) / freq_data.length,
+			"quantiles": this.computeQuantiles(freq_data)
+		};
+	}
 
-		if (mediaRecorder) {
-			if (recording.length > 0) {
-				mediaRecorder.ondataavailable = (e) => {
-					mediaRecording.push(e.data);
-					show_recording_results(analyze_recording(recording), mediaRecording);
-				}
+	toggleRecording() {
+		if (this.current_recording === null) {
+			this.current_recording = [];
+			this.button.style.color = "red";
+			this.button.innerText="Stop Recording"
+			if (this.mediaRecorder) {
+				this.mediaRecording = [];
+				this.mediaRecorder.start();
 			}
-			mediaRecorder.stop();
+		} else {
+			let recording = this.current_recording;
+			this.current_recording = null;
+			this.button.style.color = "green";
+			this.button.innerText="Start Recording";
+
+			if (this.mediaRecorder) {
+				if (recording.length > 0) {
+					this.mediaRecorder.ondataavailable = (e) => {
+						this.mediaRecording.push(e.data);
+						show_recording_results(this.analyze_recording(recording), this.mediaRecording);
+					}
+				}
+				this.mediaRecorder.stop();
+			}
 		}
 	}
-}
 
-
-function setup_recording() {
-	let toggle_record_button = document.getElementById("ToggleRecordButton") as HTMLInputElement;
-	toggle_record_button.onclick = (event) => {
-		toggle_recording(toggle_record_button);
+	setupRecorder(stream: MediaStream): MediaStream {
+		this.mediaRecorder = new MediaRecorder(stream);
+		return stream;
 	}
 }

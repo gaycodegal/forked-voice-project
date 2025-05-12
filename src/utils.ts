@@ -23,6 +23,3 @@ function to_index(pos: number, length: number): number {
 }
 
 
-function get_selector_value(name: string): string {
-	return (document.getElementById(name) as HTMLSelectElement).value;
-}

@@ -16,8 +16,9 @@ class Spectrum {
 	threshold: Threshold;
 	freqOut: HTMLOutputElement;
 	recorder: Recorder;
+	targetFrequencyManager: TargetFrequencyManager;
 
-	constructor(ui: UserInterface, threshold: Threshold, recorder: Recorder) {
+	constructor(ui: UserInterface, threshold: Threshold, recorder: Recorder, targetFrequencyManager: TargetFrequencyManager) {
 		this.frequency_base_band = new BaseFrequencyIndices(0,0);
 		this.canvas = ui.canvas;
 		const ctx = this.canvas.getContext("2d");
@@ -26,6 +27,7 @@ class Spectrum {
 		this.threshold = threshold;
 		this.freqOut = ui.freqOut
 		this.recorder = recorder;
+		this.targetFrequencyManager= targetFrequencyManager;
 		navigator.mediaDevices
 			.getUserMedia({audio: true})
 			.then(this.spectrum.bind(this))
@@ -69,7 +71,7 @@ class Spectrum {
 	}
 
 	mark_target_frequency(img: Uint8Array) {
-		const target_frequency = get_target_frequency();
+		const target_frequency = this.targetFrequencyManager.target();
 		const index = Math.round(target_frequency / this.hertz_per_bin);
 		this.writePixel(img, index, Color.target_freq_color);
 	}

@@ -2,6 +2,10 @@
 
 #include "utils.ts"
 
+function get_selector_value(name: string): string {
+	return (document.getElementById(name) as HTMLSelectElement).value;
+}
+
 let record_counter = 0;
 
 function play_recording_on_stop() : boolean {

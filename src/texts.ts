@@ -1,56 +1,58 @@
 #pragma once
 
-const texts_table : {[language: string]: {[title: string]: string}} =
+#include "user_interface.ts"
+
+const TEXTS_TABLE : {[language: string]: {[title: string]: string}} =
 #include "texts.json"
 
 
-function remove_options(element: HTMLSelectElement) {
-	var i, L = element.options.length - 1;
-	for(i = L; i >= 0; i--) {
-		element.remove(i);
-	}
-}
+class TextManager {
+	languageSelector: HTMLSelectElement;
+	textSelector: HTMLSelectElement;
+	textDisplay: HTMLQuoteElement;
 
-function setup_languages() {
-	let language_selector = document.getElementById("LanguageSelector") as HTMLSelectElement;
-	for(let lang in texts_table) {
-		language_selector.add(new Option(lang));
+	constructor(ui: UserInterface) {
+		this.languageSelector = ui.languageSelector;
+		this.textSelector = ui.textSelector;
+		this.textDisplay = ui.textDisplay;
+		for(let lang in TEXTS_TABLE) {
+			this.languageSelector.add(new Option(lang));
+		}
+		this.on_languageSelect();
+		this.languageSelector.addEventListener("change", (event) => {
+			this.on_languageSelect();
+			this.get_selected_text();
+		});
+		this.textSelector.addEventListener("change", (event) => {
+			this.get_selected_text();
+		});
+		this.get_selected_text();
 	}
-	on_language_select();
-}
 
-function get_selected_text() {
-	let language_selector = document.getElementById("LanguageSelector") as HTMLSelectElement;
-	let text_selector = document.getElementById("TextSelector") as HTMLSelectElement;
-	let text_display = document.getElementById("TextDisplay") as HTMLDivElement;
-	const lang = language_selector.value;
-	let text = text_selector.value;
-	if (lang in texts_table && text in texts_table[lang]){
-		text_display.innerText = texts_table[lang][text];
-	} else {
-		text_display.innerText = "";
+	public static remove_options(element: HTMLSelectElement) {
+		var i, L = element.options.length - 1;
+		for(i = L; i >= 0; i--) {
+			element.remove(i);
+		}
 	}
-}
-
-function on_language_select() {
-	const language_selector = document.getElementById("LanguageSelector") as HTMLSelectElement;
-	const language = language_selector.value;
-	let text_selector = document.getElementById("TextSelector") as HTMLSelectElement;
-	remove_options(text_selector);
-	for(let key in texts_table[language]) {
-		text_selector.add(new Option(key));
-	}
-}
 
 
-function setup_texts() {
-	let language_selector = document.getElementById("LanguageSelector") as HTMLSelectElement;
-	language_selector.onchange = (event) => {
-		on_language_select();
-		get_selected_text();
+	get_selected_text() {
+		const lang = this.languageSelector.value;
+		let text = this.textSelector.value;
+		if (lang in TEXTS_TABLE && text in TEXTS_TABLE[lang]){
+			this.textDisplay.innerText = TEXTS_TABLE[lang][text];
+		} else {
+			this.textDisplay.innerText = "";
+		}
 	}
-	let text_selector = document.getElementById("TextSelector") as HTMLSelectElement;
-	text_selector.onchange = (event) => {
-		get_selected_text();
+
+	on_languageSelect() {
+		const language = this.languageSelector.value;
+		TextManager.remove_options(this.textSelector);
+		for(let key in TEXTS_TABLE[language]) {
+			this.textSelector.add(new Option(key));
+		}
 	}
+
 }

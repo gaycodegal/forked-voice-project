@@ -4,15 +4,38 @@ class UserInterface {
 	root: HTMLElement;
 	canvas: HTMLCanvasElement;
 	volumeSelector: HTMLInputElement;
+	languageSelector: HTMLSelectElement;
+	textSelector: HTMLSelectElement;
+	textDisplay: HTMLQuoteElement;
 	freqOut: HTMLOutputElement;
+	targetFrequencySelector: HTMLInputElement;
+	playButton: HTMLButtonElement;
+	noteSelector: HTMLDivElement;
 	toggleRecordButton: HTMLButtonElement;
 	//controls: HTMLDivElement;
 	//resultsTable: HtmlTableElement;
-	constructor(root: HTMLElement, canvas: HTMLCanvasElement, volumeSelector: HTMLInputElement, freqOut: HTMLOutputElement, toggleRecordButton: HTMLButtonElement) {
+	constructor(root: HTMLElement,
+		    canvas: HTMLCanvasElement,
+		    volumeSelector: HTMLInputElement,
+		    languageSelector: HTMLSelectElement,
+		    textSelector: HTMLSelectElement,
+		    textDisplay: HTMLQuoteElement,
+		    freqOut: HTMLOutputElement,
+		    targetFrequencySelector: HTMLInputElement,
+	            playButton: HTMLButtonElement,
+		    noteSelector: HTMLDivElement,
+		    toggleRecordButton: HTMLButtonElement
+	) {
 		this.root = root;
 		this.canvas = canvas;
 		this.volumeSelector = volumeSelector;
+		this.languageSelector = languageSelector;
+		this.textSelector = textSelector;
+		this.textDisplay = textDisplay;
 		this.freqOut = freqOut;
+		this.targetFrequencySelector = targetFrequencySelector;
+		this.playButton = playButton;
+		this.noteSelector = noteSelector;
 		this.toggleRecordButton  = toggleRecordButton;
 	}
 }
@@ -120,5 +143,5 @@ function setupUi(root: HTMLElement): UserInterface{
 
 	let resultsTable = createResultsTable();
 	root.appendChild(resultsTable);
-	return new UserInterface(root, canvas, volumeSelector, freqOut, ToggleRecordButton);
+	return new UserInterface(root, canvas, volumeSelector, LanguageSelector, TextSelector, TextDisplay, freqOut, TargetFrequencySelector, PlayFrequencyButton, NoteSelector, ToggleRecordButton);
 }

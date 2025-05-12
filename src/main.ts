@@ -13,12 +13,9 @@ window.addEventListener("load", (event) => {
 	}
 	let ui = setupUi(root);
 	let threshold = new Threshold(ui);
-	setup_languages();
-	get_selected_text();
-	//setup_recording();
+	let textManager = new TextManager(ui);
 	let recorder = new Recorder(ui);
-	setup_texts();
-	let spectrum = new Spectrum(ui, threshold, recorder);
-	setup_sound_generation();
+	let targetFrequencyManager = new TargetFrequencyManager(ui);
+	let spectrum = new Spectrum(ui, threshold, recorder, targetFrequencyManager);
 });
 

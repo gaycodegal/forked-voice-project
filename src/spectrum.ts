@@ -4,131 +4,140 @@
 #include "threshold.ts"
 #include "target_frequency.ts"
 #include "gender_pitch.ts"
-const max_display_freq = 1600;
+#include "user_interface.ts"
 
-let hertz_per_bin = 0;
-let frequency_base_band = new BaseFrequencyIndices(0,0);
+class Spectrum {
+	max_display_freq : number = 1600;
+	hertz_per_bin    : number = 0;
+	frequency_base_band : BaseFrequencyIndices;
+	canvas: HTMLCanvasElement;
+	ctx: CanvasRenderingContext2D;
+	threshold: Threshold;
 
-
-function shift_left(ctx: CanvasRenderingContext2D, n: Number) {
-	ctx.globalCompositeOperation = "copy";
-	ctx.drawImage(ctx.canvas,-n, 0);
-	// reset back to normal for subsequent operations.
-	ctx.globalCompositeOperation = "source-over"
-}
-
-
-function write_pixel(out: Uint8Array, i: number, col: Color) {
-	const j = out.length - 4*i;
-	out[j+0] = col.r;
-	out[j+1] = col.g;
-	out[j+2] = col.b;
-	out[j+3] = col.alpha;
-}
-function make_background(ctx: CanvasRenderingContext2D) : ImageData {
-	const height = ctx.canvas.height;
-	let imgData = ctx.createImageData(1,height);
-	let freq = 0;
-	for (let i = 0; i < imgData.data.length; ++i) {
-		write_pixel(imgData.data as unknown as Uint8Array, i, frequency_to_color(freq));
-		freq += hertz_per_bin;
+	constructor(ui: UserInterface, threshold: Threshold) {
+		this.frequency_base_band = new BaseFrequencyIndices(0,0);
+		this.canvas = ui.canvas;
+		const ctx = this.canvas.getContext("2d");
+		if (ctx == null) {throw "No 2d-context in canvas element";}
+		this.ctx = ctx;
+		this.threshold = threshold;
+		navigator.mediaDevices
+			.getUserMedia({audio: true})
+			.then(this.spectrum.bind(this))
+			.then(this.setupRecorder.bind(this))
+			.catch(console.log);
 	}
-	return imgData;
-}
 
-function draw_specturm(img: Uint8Array, data: Uint8Array) {
-	const height = img.length / 4;
-	for (let i = 0; i < data.length ; ++i) {
-		let d = data[i]
-		img[4*(height-i)-1] = Math.max(get_current_threshold(),d);
+	shift_left(n: Number) {
+		this.ctx.globalCompositeOperation = "copy";
+		this.ctx.drawImage(this.ctx.canvas,-n, 0);
+		// reset back to normal for subsequent operations.
+		this.ctx.globalCompositeOperation = "source-over"
 	}
-}
 
-function mark_target_frequency(img: Uint8Array) {
-	const target_frequency = get_target_frequency();
-	const index = Math.round(target_frequency / hertz_per_bin);
-	write_pixel(img, index, Color.target_freq_color);
-}
 
-function state_main_frequency(freq: number | null) {
-	const freq_out = document.getElementById("freq-out") as HTMLElement;
-	if (freq  == null) {
-		freq_out.innerHTML = "-<sub></sub>";
-		freq_out.style.color = "white";
-	} else {
-		const note = frequency_to_note(freq);
-		freq_out.innerHTML= (freq).toFixed(0) + " Hz (" +note_to_string(note) + ")";
-		freq_out.style.color = frequency_to_color(freq).to_str();
+	writePixel(out: Uint8Array, i: number, col: Color) {
+		const j = out.length - 4*i;
+		out[j+0] = col.r;
+		out[j+1] = col.g;
+		out[j+2] = col.b;
+		out[j+3] = col.alpha;
 	}
-}
 
-function mark_main_freq(img: Uint8Array, data: Uint8Array) {
-	const imax = main_freq_index(data, frequency_base_band);
-	const max_amplitude = data[imax];
-	if (max_amplitude > get_current_threshold()) {
-		const max_freq = imax * hertz_per_bin;
-		write_pixel(img, imax-1, Color.main_freq_color);
-		write_pixel(img, imax,   Color.main_freq_color);
-		write_pixel(img, imax+1, Color.main_freq_color);
-		state_main_frequency(max_freq);
-		if (current_recording != null) {
-			current_recording.push(max_freq);
+	make_background() : ImageData {
+		const height = this.ctx.canvas.height;
+		let imgData = this.ctx.createImageData(1,height);
+		let freq = 0;
+		for (let i = 0; i < imgData.data.length; ++i) {
+			this.writePixel(imgData.data as unknown as Uint8Array, i, frequency_to_color(freq));
+			freq += this.hertz_per_bin;
 		}
-	} else {
-		state_main_frequency(null);
+		return imgData;
 	}
-}
 
-function render_analysis(ctx: CanvasRenderingContext2D, data: Uint8Array, ): ImageData {
-	const height = ctx.canvas.height;
-	let imgData = make_background(ctx);
-	draw_specturm(imgData.data, data);
-	mark_target_frequency(imgData.data);
-	mark_main_freq(imgData.data, data);
-	return imgData;
-}
+	draw_specturm(img: Uint8Array, data: Uint8Array) {
+		const height = img.length / 4;
+		for (let i = 0; i < data.length ; ++i) {
+			let d = data[i]
+			img[4*(height-i)-1] = Math.max(this.threshold.get(),d);
+		}
+	}
 
-function spectrum(stream: MediaStream): MediaStream {
-	const audioCtx = new AudioContext();
-	const analyser = audioCtx.createAnalyser();
-	const max_freq = audioCtx.sampleRate / 2;
-	analyser.fftSize=1024*32;
-	analyser.smoothingTimeConstant = 0.0;
-	audioCtx.createMediaStreamSource(stream).connect(analyser);
-	hertz_per_bin = max_freq / analyser.frequencyBinCount;
+	mark_target_frequency(img: Uint8Array) {
+		const target_frequency = get_target_frequency();
+		const index = Math.round(target_frequency / this.hertz_per_bin);
+		this.writePixel(img, index, Color.target_freq_color);
+	}
 
-	const max_human_freq_index = Math.round(450 / hertz_per_bin);
-	const min_human_freq_index = Math.round(85 / hertz_per_bin);
-	frequency_base_band = new BaseFrequencyIndices(min_human_freq_index, max_human_freq_index);
+	state_main_frequency(freq: number | null) {
+		const freq_out = document.getElementById("freq-out") as HTMLElement;
+		if (freq  == null) {
+			freq_out.innerHTML = "-<sub></sub>";
+			freq_out.style.color = "white";
+		} else {
+			const note = frequency_to_note(freq);
+			freq_out.innerHTML= (freq).toFixed(0) + " Hz (" +note_to_string(note) + ")";
+			freq_out.style.color = frequency_to_color(freq).to_str();
+		}
+	}
+
+	mark_main_freq(img: Uint8Array, data: Uint8Array) {
+		const imax = main_freq_index(data, this.frequency_base_band);
+		const max_amplitude = data[imax];
+		if (max_amplitude > this.threshold.get()) {
+			const max_freq = imax * this.hertz_per_bin;
+			this.writePixel(img, imax-1, Color.main_freq_color);
+			this.writePixel(img, imax,   Color.main_freq_color);
+			this.writePixel(img, imax+1, Color.main_freq_color);
+			this.state_main_frequency(max_freq);
+			if (current_recording != null) {
+				current_recording.push(max_freq);
+			}
+		} else {
+			this.state_main_frequency(null);
+		}
+	}
+
+	render_analysis(data: Uint8Array, ): ImageData {
+		const height = this.ctx.canvas.height;
+		let imgData = this.make_background();
+		this.draw_specturm(imgData.data, data);
+		this.mark_target_frequency(imgData.data);
+		this.mark_main_freq(imgData.data, data);
+		return imgData;
+	}
+
+	spectrum(stream: MediaStream): MediaStream {
+		const audioCtx = new AudioContext();
+		const analyser = audioCtx.createAnalyser();
+		const max_freq = audioCtx.sampleRate / 2;
+		analyser.fftSize=1024*32;
+		analyser.smoothingTimeConstant = 0.0;
+		audioCtx.createMediaStreamSource(stream).connect(analyser);
+		this.hertz_per_bin = max_freq / analyser.frequencyBinCount;
+
+		const max_human_freq_index = Math.round(450 / this.hertz_per_bin);
+		const min_human_freq_index = Math.round(85 / this.hertz_per_bin);
+		this.frequency_base_band = new BaseFrequencyIndices(min_human_freq_index, max_human_freq_index);
 
 
-	const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-	if (canvas == null) {throw "Missing canvas-element in document";}
-	canvas.width = document.body.clientWidth - 36;
-	canvas.height = max_display_freq / hertz_per_bin;
-	const ctx = canvas.getContext("2d");
-	if (ctx == null) {throw "No 2d-context in canvas element";}
-	const data = new Uint8Array(canvas.height);
+		// TODO: move to UI
+		this.canvas.width = document.body.clientWidth - 36;
+		this.canvas.height = this.max_display_freq / this.hertz_per_bin;
+		const data = new Uint8Array(this.canvas.height);
 
 
-	setInterval(() => {
-		shift_left(ctx, 1);
-		analyser.getByteFrequencyData(data);
-		ctx.putImageData(render_analysis(ctx, data), canvas.width-1, 0);
-	}, 1);
+		setInterval(() => {
+			this.shift_left(1);
+			analyser.getByteFrequencyData(data);
+			this.ctx.putImageData(this.render_analysis(data), this.canvas.width-1, 0);
+		}, 1);
 
-	return stream;
-};
+		return stream;
+	};
 
-function setupRecorder(stream: MediaStream) {
-	mediaRecorder = new MediaRecorder(stream);
-	return stream;
-}
-
-function setup_spectrum() {
-	navigator.mediaDevices
-		.getUserMedia({audio: true})
-		.then(spectrum)
-		.then(setupRecorder)
-		.catch(console.log);
+	setupRecorder(stream: MediaStream) {
+		mediaRecorder = new MediaRecorder(stream);
+		return stream;
+	}
 }

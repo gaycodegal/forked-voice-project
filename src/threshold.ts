@@ -1,15 +1,19 @@
 #pragma once
 
-let current_threshold = 0;
+#include "user_interface.ts"
 
-function get_current_threshold(): number {
-	return current_threshold;
-}
+class Threshold {
+	current_threshold : number = 0;
 
-function setup_volume_threshold_selector() {
-	let threshold_selector = document.getElementById("VolumeThresholdSelector") as HTMLInputElement;
-	current_threshold = Number(threshold_selector.value);
-	threshold_selector.onchange = (event) => {
-		current_threshold = Number(threshold_selector.value);
-	};
+	constructor(ui: UserInterface) {
+		this.current_threshold = Number(ui.volumeSelector.value);
+		ui.volumeSelector.addEventListener("change", (event) => {
+			this.current_threshold = Number(ui.volumeSelector.value);
+		});
+	}
+
+	get(): number {
+		return this.current_threshold;
+	}
+
 }

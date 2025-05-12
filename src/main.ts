@@ -1,4 +1,4 @@
-#include "setup_ui.ts"
+#include "user_interface.ts"
 #include "recording.ts"
 #include "spectrum.ts"
 #include "texts.ts"
@@ -12,12 +12,12 @@ window.addEventListener("load", (event) => {
 		return;
 	}
 	let ui = setupUi(root);
-	setup_volume_threshold_selector();
+	let threshold = new Threshold(ui);
 	setup_languages();
 	get_selected_text();
 	setup_recording();
 	setup_texts();
-	setup_spectrum();
+	let spectrum = new Spectrum(ui, threshold);
 	setup_sound_generation();
 });
 

@@ -1,12 +1,15 @@
+#pragma once
 
 class UserInterface {
 	root: HTMLElement;
 	canvas: HTMLCanvasElement;
+	volumeSelector: HTMLInputElement;
 	//controls: HTMLDivElement;
 	//resultsTable: HtmlTableElement;
-	constructor(root: HTMLElement, canvas: HTMLCanvasElement) {
+	constructor(root: HTMLElement, canvas: HTMLCanvasElement, volumeSelector: HTMLInputElement) {
 		this.root = root;
 		this.canvas = canvas;
+		this.volumeSelector = volumeSelector;
 	}
 }
 
@@ -113,5 +116,5 @@ function setupUi(root: HTMLElement): UserInterface{
 
 	let resultsTable = createResultsTable();
 	root.appendChild(resultsTable);
-	return new UserInterface(root, canvas);
+	return new UserInterface(root, canvas, volumeSelector);
 }

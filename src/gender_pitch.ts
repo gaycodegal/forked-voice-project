@@ -2,9 +2,9 @@
 
 #include "color.ts"
 
-const enby_freq_color = Color.load("enby-freq-color", new Color(64,128,64));
-const masc_freq_color = Color.load("masc-freq-color", new Color(64,64,255));
-const fem_freq_color =  Color.load("fem-freq-color", new Color(255,64,64));
+const ENBY_FREQUENCY_COLOR = Color.load("enby-freq-color", new Color(64,128,64));
+const MASC_FREQUENCY_COLOR = Color.load("masc-freq-color", new Color(64,64,255));
+const FEM_FREQUENCY_COLOR =  Color.load("fem-freq-color", new Color(255,64,64));
 
 enum Genders {
 	InfraMasc,
@@ -45,9 +45,9 @@ class Gender {
 
 	public toColor(): Color {
 		switch(this.value) {
-			case Genders.Masc: return masc_freq_color;
-			case Genders.Fem: return fem_freq_color;
-			default: return enby_freq_color;
+			case Genders.Masc: return MASC_FREQUENCY_COLOR;
+			case Genders.Fem: return FEM_FREQUENCY_COLOR;
+			default: return ENBY_FREQUENCY_COLOR;
 		}
 	}
 
@@ -56,6 +56,6 @@ class Gender {
 	}
 }
 
-function frequency_to_color(freq: number) : Color {
+function frequencyToColor(freq: number) : Color {
 	return Gender.fromFrequency(freq).toColor();
 }

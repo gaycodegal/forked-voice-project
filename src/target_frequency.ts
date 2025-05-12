@@ -39,14 +39,14 @@ class TargetFrequencyManager {
 		osc.start();
 	}
 
-	createNoteButton(note: number, octave: number) {
+	createNoteButton(note: Note) {
 		let button = document.createElement("button");
-		const frequency = note_to_frequency(note, octave);
-		button.innerHTML = note_to_string(new Note(note, octave));
+		const frequency = note.toFrequency();
+		button.innerHTML = note.toString();
 		button.onclick = () => {
 			this.setTarget(frequency);
 		};
-		button.style.backgroundColor = frequency_to_color(frequency).to_str();
+		button.style.backgroundColor = frequencyToColor(frequency).toString();
 		button.style.color = "white";
 		this.noteSelector.appendChild(button);
 	}
@@ -54,7 +54,7 @@ class TargetFrequencyManager {
 	setupNoteSelectors() {
 		for (let octave = 2; octave < 5; ++octave) {
 			for (let note = -9; note <= 2; ++note) {
-				this.createNoteButton(Number(note), octave);
+				this.createNoteButton(new Note(note, octave));
 			}
 			this.noteSelector.appendChild(document.createElement("br"));
 		}

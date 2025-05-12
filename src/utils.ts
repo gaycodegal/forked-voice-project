@@ -1,7 +1,7 @@
 #pragma once
 
 /// sums the values in the provided array, but does so in a way that ensure numeric stability
-function stable_sum(data: number[], low: number = 0, high: number = -1, split: number = 10) : number{
+function stableSum(data: number[], low: number = 0, high: number = -1, split: number = 10) : number{
 	if (high < 0) {
 		high = data.length;
 	}
@@ -9,7 +9,7 @@ function stable_sum(data: number[], low: number = 0, high: number = -1, split: n
 		const step = Math.ceil((high-low) / split);
 		let ret = 0;
 		for (let i = low; i < high; i += step) {
-			ret += stable_sum(data, i, Math.min(i + step, high), split);
+			ret += stableSum(data, i, Math.min(i + step, high), split);
 		}
 		return ret;
 	} else {
@@ -18,7 +18,7 @@ function stable_sum(data: number[], low: number = 0, high: number = -1, split: n
 
 }
 
-function to_index(pos: number, length: number): number {
+function toIndex(pos: number, length: number): number {
 	return Math.min(length, (Math.max(0, Math.round(pos*length))));
 }
 

@@ -13,7 +13,7 @@ class Color {
 	b: number;
 	alpha: number;
 
-	to_str(): string {
+	toString(): string {
 		return "rgba(" + String(this.r) + ", " + String(this.g) + ", " + String(this.b) + ", " + String(this.alpha) + ")";
 	}
 
@@ -24,7 +24,7 @@ class Color {
 		return new Color(r,g,b, this.alpha);
 	}
 
-	public static from_rgb(s: string, fallback?: Color): Color {
+	public static fromRGB(s: string, fallback?: Color): Color {
 		if (s.length == 7 && s[0] == '#') {
 			let num = parseInt(s.slice(1), 16);
 			let b = num & 0xff;
@@ -47,9 +47,9 @@ class Color {
 	}
 
 	public static load(name: string, fallback: Color) {
-		return Color.from_rgb(getComputedStyle(document.documentElement).getPropertyValue("--" + name), fallback);
+		return Color.fromRGB(getComputedStyle(document.documentElement).getPropertyValue("--" + name), fallback);
 	}
-	public static main_freq_color   = Color.load("main-freq-color", new Color(255, 255, 255));
-	public static target_freq_color = Color.load("target-freq-color", new Color(0,255, 255));
+	public static MAIN_FREQUENCY_COLOR = Color.load("main-freq-color", new Color(255, 255, 255));
+	public static TARGET_FREQUENCY_COLOR = Color.load("target-freq-color", new Color(0,255, 255));
 
 }

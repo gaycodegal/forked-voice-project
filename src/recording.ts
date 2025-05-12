@@ -14,7 +14,7 @@ interface RecordStats {
 
 class Recorder {
 	button : HTMLButtonElement;
-	current_recording : number[] | null = null;
+	currentRecording : number[] | null = null;
 	mediaRecorder: MediaRecorder | null = null;
 	mediaRecording: Blob[] = [];
 	tableManager: TableManager;
@@ -27,24 +27,24 @@ class Recorder {
 		});
 	}
 
-	computeQuantiles(unsorted_data: number[]): Quantiles {
-		let data = unsorted_data.sort((a,b)=>{return a-b;});
+	computeQuantiles(unsortedData: number[]): Quantiles {
+		let data = unsortedData.sort((a,b)=>{return a-b;});
 		return {
-			 "5%": data[to_index(0.05, data.length)],
-			"10%": data[to_index(0.10, data.length)],
-			"20%": data[to_index(0.20, data.length)],
-			"50%": data[to_index(0.50, data.length)],
-			"80%": data[to_index(0.80, data.length)],
-			"90%": data[to_index(0.90, data.length)],
-			"95%": data[to_index(0.95, data.length)],
+			 "5%": data[toIndex(0.05, data.length)],
+			"10%": data[toIndex(0.10, data.length)],
+			"20%": data[toIndex(0.20, data.length)],
+			"50%": data[toIndex(0.50, data.length)],
+			"80%": data[toIndex(0.80, data.length)],
+			"90%": data[toIndex(0.90, data.length)],
+			"95%": data[toIndex(0.95, data.length)],
 		};
 	}
 
 	pushIfRecording(maxFreq: number) {
-		this.current_recording?.push(maxFreq);
+		this.currentRecording?.push(maxFreq);
 	}
 
-	analyze_recording(freq_data: number[]): RecordStats {
+	analyzeRecording(frequencyData: number[]): RecordStats {
 		let stats : GenderShare = {
 			[Genders.UltraFem]: 0,
 			[Genders.Fem]: 0,
@@ -52,20 +52,20 @@ class Recorder {
 			[Genders.Masc]: 0,
 			[Genders.InfraMasc]: 0
 		};
-		for (const freq of freq_data) {
+		for (const freq of frequencyData) {
 			stats[Gender.fromFrequency(freq).toEnum()] += 1;
 		}
-		const average =  stable_sum(freq_data) / freq_data.length;
+		const average =  stableSum(frequencyData) / frequencyData.length;
 		return {
 			"shares": stats,
-			"average": stable_sum(freq_data) / freq_data.length,
-			"quantiles": this.computeQuantiles(freq_data)
+			"average": stableSum(frequencyData) / frequencyData.length,
+			"quantiles": this.computeQuantiles(frequencyData)
 		};
 	}
 
 	toggleRecording() {
-		if (this.current_recording === null) {
-			this.current_recording = [];
+		if (this.currentRecording === null) {
+			this.currentRecording = [];
 			this.button.style.color = "red";
 			this.button.innerText="Stop Recording"
 			if (this.mediaRecorder) {
@@ -73,8 +73,8 @@ class Recorder {
 				this.mediaRecorder.start();
 			}
 		} else {
-			let recording = this.current_recording;
-			this.current_recording = null;
+			let recording = this.currentRecording;
+			this.currentRecording = null;
 			this.button.style.color = "green";
 			this.button.innerText="Start Recording";
 
@@ -82,7 +82,7 @@ class Recorder {
 				if (recording.length > 0) {
 					this.mediaRecorder.ondataavailable = (e) => {
 						this.mediaRecording.push(e.data);
-						this.tableManager.addRecording(this.analyze_recording(recording), this.mediaRecording);
+						this.tableManager.addRecording(this.analyzeRecording(recording), this.mediaRecording);
 					}
 				}
 				this.mediaRecorder.stop();

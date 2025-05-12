@@ -18,18 +18,18 @@ class TextManager {
 		for(let lang in TEXTS_TABLE) {
 			this.languageSelector.add(new Option(lang));
 		}
-		this.on_languageSelect();
+		this.onLanguageSelect();
 		this.languageSelector.addEventListener("change", (event) => {
-			this.on_languageSelect();
-			this.get_selected_text();
+			this.onLanguageSelect();
+			this.getSelectedText();
 		});
 		this.textSelector.addEventListener("change", (event) => {
-			this.get_selected_text();
+			this.getSelectedText();
 		});
-		this.get_selected_text();
+		this.getSelectedText();
 	}
 
-	public static remove_options(element: HTMLSelectElement) {
+	public static clearSelector(element: HTMLSelectElement) {
 		var i, L = element.options.length - 1;
 		for(i = L; i >= 0; i--) {
 			element.remove(i);
@@ -37,7 +37,7 @@ class TextManager {
 	}
 
 
-	get_selected_text() {
+	getSelectedText() {
 		const lang = this.languageSelector.value;
 		let text = this.textSelector.value;
 		if (lang in TEXTS_TABLE && text in TEXTS_TABLE[lang]){
@@ -47,9 +47,9 @@ class TextManager {
 		}
 	}
 
-	on_languageSelect() {
+	onLanguageSelect() {
 		const language = this.languageSelector.value;
-		TextManager.remove_options(this.textSelector);
+		TextManager.clearSelector(this.textSelector);
 		for(let key in TEXTS_TABLE[language]) {
 			this.textSelector.add(new Option(key));
 		}

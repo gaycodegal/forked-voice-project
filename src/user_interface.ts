@@ -99,47 +99,47 @@ function setupUi(root: HTMLElement): UserInterface{
 	controlsDiv.appendChild(freqOut);
 	controlsDiv.appendChild(document.createElement("br"));
 
-	let LanguageSelector = document.createElement("select");
-	controlsDiv.appendChild(LanguageSelector);
-	let TextSelector = document.createElement("select");
-	controlsDiv.appendChild(TextSelector);
+	let languageSelector = document.createElement("select");
+	controlsDiv.appendChild(languageSelector);
+	let textSelector = document.createElement("select");
+	controlsDiv.appendChild(textSelector);
 
-	let TextDisplay = document.createElement("blockquote");
-	TextDisplay.id="FTVT-textDisplay";
-	controlsDiv.appendChild(TextDisplay);
+	let textDisplay = document.createElement("blockquote");
+	textDisplay.id="FTVT-textDisplay";
+	controlsDiv.appendChild(textDisplay);
 	controlsDiv.appendChild(document.createElement("br"));
 
-	let TargetFrequencySelectorLabel = document.createElement("label");
-	TargetFrequencySelectorLabel.htmlFor="TargetFrequencySelector";
-	TargetFrequencySelectorLabel.innerHTML="Target Frequency in Hertz: ";
-	controlsDiv.appendChild(TargetFrequencySelectorLabel)
-	let TargetFrequencySelector = document.createElement("input");
-	TargetFrequencySelector.type="number";
-	TargetFrequencySelector.min="0";
-	TargetFrequencySelector.value="250";
-	controlsDiv.appendChild(TargetFrequencySelector);
+	let targetFrequencySelectorLabel = document.createElement("label");
+	targetFrequencySelectorLabel.htmlFor="TargetFrequencySelector";
+	targetFrequencySelectorLabel.innerHTML="Target Frequency in Hertz: ";
+	controlsDiv.appendChild(targetFrequencySelectorLabel)
+	let targetFrequencySelector = document.createElement("input");
+	targetFrequencySelector.type="number";
+	targetFrequencySelector.min="0";
+	targetFrequencySelector.value="250";
+	controlsDiv.appendChild(targetFrequencySelector);
 	controlsDiv.appendChild(document.createElement("br"));
 
-	let PlayFrequencyButton=document.createElement("button");
-	PlayFrequencyButton.type="button";
-	PlayFrequencyButton.innerHTML="▶️";
-	controlsDiv.appendChild(PlayFrequencyButton);
-	let NoteSelector = document.createElement("div");
-	controlsDiv.appendChild(NoteSelector);
+	let playFrequencyButton=document.createElement("button");
+	playFrequencyButton.type="button";
+	playFrequencyButton.innerHTML="▶️";
+	controlsDiv.appendChild(playFrequencyButton);
+	let noteSelector = document.createElement("div");
+	controlsDiv.appendChild(noteSelector);
 	controlsDiv.appendChild(document.createElement("br"));
-	let ToggleRecordButton = document.createElement("button");
-	ToggleRecordButton.innerHTML="Start Recording";
-	ToggleRecordButton.style.color="green";
-	controlsDiv.appendChild(ToggleRecordButton);
-	let AutoPlaybackLabel = document.createElement("label");
-	AutoPlaybackLabel.htmlFor="AutoPlayback";
-	AutoPlaybackLabel.innerHTML="Automatically play recording"
-	controlsDiv.appendChild(AutoPlaybackLabel);
-	let AutoPlayback = document.createElement("input");
-	AutoPlayback.type="checkbox";
-	controlsDiv.appendChild(AutoPlayback);
+	let toggleRecordButton = document.createElement("button");
+	toggleRecordButton.innerHTML="Start Recording";
+	toggleRecordButton.style.color="green";
+	controlsDiv.appendChild(toggleRecordButton);
+	let autoPlaybackLabel = document.createElement("label");
+	autoPlaybackLabel.htmlFor="AutoPlayback";
+	autoPlaybackLabel.innerHTML="Automatically play recording"
+	controlsDiv.appendChild(autoPlaybackLabel);
+	let autoPlayback = document.createElement("input");
+	autoPlayback.type="checkbox";
+	controlsDiv.appendChild(autoPlayback);
 
 	let [resultsTable, tableBody] = createResultsTable();
 	root.appendChild(resultsTable);
-	return new UserInterface(root, canvas, volumeSelector, LanguageSelector, TextSelector, TextDisplay, freqOut, TargetFrequencySelector, PlayFrequencyButton, NoteSelector, ToggleRecordButton, AutoPlayback, tableBody);
+	return new UserInterface(root, canvas, volumeSelector, languageSelector, textSelector, textDisplay, freqOut, targetFrequencySelector, playFrequencyButton, noteSelector, toggleRecordButton, autoPlayback, tableBody);
 }

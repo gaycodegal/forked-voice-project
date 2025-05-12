@@ -51,17 +51,6 @@ h2 {
 	border-bottom: dotted 2px;
 }
 
-#canvas {
-	border: solid var(--accent-col);
-	background-color: var(--canvas-bg-col);
-	margin: 5px;
-	border-radius: 10px;
-	border-width: 3px;
-}
-
-#ToggleRecordButton{
-	color: green;
-}
 
 
 table {
@@ -87,16 +76,6 @@ a {
 	color: var(--link-col);
 }
 
-#TextDisplay{
-	padding: 5px;
-	margin: 5px;
-	border: solid var(--accent-col);
-	border-width: 3px;
-	font-size: 150%;
-	color: var(--main-col);
-	background-color: var(--accent-bg-col);
-	border-radius: 10px;
-}
 
 button {
 	min-width: 3cm;
@@ -149,4 +128,27 @@ ul.no-bullets {
   list-style-type: none;
   padding: 0;
   margin: 0;
+}
+
+#FTVT-canvas {
+	border: solid var(--accent-col);
+	background-color: var(--canvas-bg-col);
+	margin: 5px;
+	border-radius: 10px;
+	border-width: 3px;
+}
+#FTVT-textDisplay{
+	padding: 5px;
+	margin: 5px;
+	border: solid var(--accent-col);
+	border-width: 3px;
+	font-size: 150%;
+	color: var(--main-col);
+	background-color: var(--accent-bg-col);
+	border-radius: 10px;
+}
+#FTVT-controls {
+	max-width: 50em;
+	margin-left: auto;
+	margin-right: auto;
 }

@@ -7,7 +7,7 @@
 
 
 window.addEventListener("load", (event) => {
-	let root = document.getElementById("ftvt-root")
+	let root = document.getElementById("FTVT-root")
 	if (root === null) {
 		alert("No element with root-id found");
 		return;

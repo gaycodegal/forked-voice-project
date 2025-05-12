@@ -78,60 +78,66 @@ function createResultsTable(): [HTMLTableElement, HTMLElement] {
 function setupUi(root: HTMLElement): UserInterface{
 
 	let canvas = document.createElement("canvas");
+	canvas.id="FTVT-canvas"
 	root.appendChild(canvas)
+	let controlsDiv = document.createElement("div");
+	root.appendChild(controlsDiv);
+	controlsDiv.id="FTVT-controls";
 	let volumeLabel = <HTMLLabelElement> document.createElement("label");
 	volumeLabel.innerHTML = "Volume-Threshold:";
-	root.appendChild(document.createElement("br"));
-	root.appendChild(volumeLabel)
+	controlsDiv.appendChild(document.createElement("br"));
+	controlsDiv.appendChild(volumeLabel)
 	let volumeSelector = <HTMLInputElement> document.createElement("input");
 	volumeSelector.type = "range";
 	volumeSelector.min = "0";
 	volumeSelector.max = "255";
 	volumeSelector.step="1";
 	volumeSelector.value="32";
-	root.appendChild(volumeSelector);
-	root.appendChild(document.createTextNode("Main Frequency: "));
+	controlsDiv.appendChild(volumeSelector);
+	controlsDiv.appendChild(document.createTextNode("Main Frequency: "));
 	let freqOut = document.createElement("output");
-	root.appendChild(freqOut);
-	root.appendChild(document.createElement("br"));
+	controlsDiv.appendChild(freqOut);
+	controlsDiv.appendChild(document.createElement("br"));
 
 	let LanguageSelector = document.createElement("select");
-	root.appendChild(LanguageSelector);
+	controlsDiv.appendChild(LanguageSelector);
 	let TextSelector = document.createElement("select");
-	root.appendChild(TextSelector);
+	controlsDiv.appendChild(TextSelector);
 
 	let TextDisplay = document.createElement("blockquote");
-	root.appendChild(TextDisplay);
-	root.appendChild(document.createElement("br"));
+	TextDisplay.id="FTVT-textDisplay";
+	controlsDiv.appendChild(TextDisplay);
+	controlsDiv.appendChild(document.createElement("br"));
 
 	let TargetFrequencySelectorLabel = document.createElement("label");
 	TargetFrequencySelectorLabel.htmlFor="TargetFrequencySelector";
 	TargetFrequencySelectorLabel.innerHTML="Target Frequency in Hertz: ";
-	root.appendChild(TargetFrequencySelectorLabel)
+	controlsDiv.appendChild(TargetFrequencySelectorLabel)
 	let TargetFrequencySelector = document.createElement("input");
 	TargetFrequencySelector.type="number";
 	TargetFrequencySelector.min="0";
 	TargetFrequencySelector.value="250";
-	root.appendChild(TargetFrequencySelector);
-	root.appendChild(document.createElement("br"));
+	controlsDiv.appendChild(TargetFrequencySelector);
+	controlsDiv.appendChild(document.createElement("br"));
 
 	let PlayFrequencyButton=document.createElement("button");
 	PlayFrequencyButton.type="button";
 	PlayFrequencyButton.innerHTML="▶️";
-	root.appendChild(PlayFrequencyButton);
+	controlsDiv.appendChild(PlayFrequencyButton);
 	let NoteSelector = document.createElement("div");
-	root.appendChild(NoteSelector);
-	root.appendChild(document.createElement("br"));
+	controlsDiv.appendChild(NoteSelector);
+	controlsDiv.appendChild(document.createElement("br"));
 	let ToggleRecordButton = document.createElement("button");
 	ToggleRecordButton.innerHTML="Start Recording";
-	root.appendChild(ToggleRecordButton);
+	ToggleRecordButton.style.color="green";
+	controlsDiv.appendChild(ToggleRecordButton);
 	let AutoPlaybackLabel = document.createElement("label");
 	AutoPlaybackLabel.htmlFor="AutoPlayback";
 	AutoPlaybackLabel.innerHTML="Automatically play recording"
-	root.appendChild(AutoPlaybackLabel);
+	controlsDiv.appendChild(AutoPlaybackLabel);
 	let AutoPlayback = document.createElement("input");
 	AutoPlayback.type="checkbox";
-	root.appendChild(AutoPlayback);
+	controlsDiv.appendChild(AutoPlayback);
 
 	let [resultsTable, tableBody] = createResultsTable();
 	root.appendChild(resultsTable);

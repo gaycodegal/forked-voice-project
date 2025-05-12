@@ -1,49 +1,5 @@
 #pragma once
 
-class UserInterface {
-	root: HTMLElement;
-	canvas: HTMLCanvasElement;
-	volumeSelector: HTMLInputElement;
-	languageSelector: HTMLSelectElement;
-	textSelector: HTMLSelectElement;
-	textDisplay: HTMLQuoteElement;
-	freqOut: HTMLOutputElement;
-	targetFrequencySelector: HTMLInputElement;
-	playButton: HTMLButtonElement;
-	noteSelector: HTMLDivElement;
-	toggleRecordButton: HTMLButtonElement;
-	autoPlaybackCheckbox: HTMLInputElement;
-	resultsTable: HTMLElement;
-	constructor(root: HTMLElement,
-		    canvas: HTMLCanvasElement,
-		    volumeSelector: HTMLInputElement,
-		    languageSelector: HTMLSelectElement,
-		    textSelector: HTMLSelectElement,
-		    textDisplay: HTMLQuoteElement,
-		    freqOut: HTMLOutputElement,
-		    targetFrequencySelector: HTMLInputElement,
-	            playButton: HTMLButtonElement,
-		    noteSelector: HTMLDivElement,
-		    toggleRecordButton: HTMLButtonElement,
-		    autoPlaybackCheckbox: HTMLInputElement,
-		    resultsTable: HTMLElement,
-	) {
-		this.root = root;
-		this.canvas = canvas;
-		this.volumeSelector = volumeSelector;
-		this.languageSelector = languageSelector;
-		this.textSelector = textSelector;
-		this.textDisplay = textDisplay;
-		this.freqOut = freqOut;
-		this.targetFrequencySelector = targetFrequencySelector;
-		this.playButton = playButton;
-		this.noteSelector = noteSelector;
-		this.toggleRecordButton  = toggleRecordButton;
-		this.autoPlaybackCheckbox = autoPlaybackCheckbox;
-		this.resultsTable = resultsTable
-	}
-}
-
 function createTh(width: string, content: string): HTMLElement {
 	let ret = document.createElement("th");
 	ret.width = width;
@@ -75,71 +31,89 @@ function createResultsTable(): [HTMLTableElement, HTMLElement] {
 	return [table, tbody];
 }
 
-function setupUi(root: HTMLElement): UserInterface{
 
-	let canvas = document.createElement("canvas");
-	canvas.id="FTVT-canvas"
-	root.appendChild(canvas)
-	let controlsDiv = document.createElement("div");
-	root.appendChild(controlsDiv);
-	controlsDiv.id="FTVT-controls";
-	let volumeLabel = <HTMLLabelElement> document.createElement("label");
-	volumeLabel.innerHTML = "Volume-Threshold:";
-	controlsDiv.appendChild(document.createElement("br"));
-	controlsDiv.appendChild(volumeLabel)
-	let volumeSelector = <HTMLInputElement> document.createElement("input");
-	volumeSelector.type = "range";
-	volumeSelector.min = "0";
-	volumeSelector.max = "255";
-	volumeSelector.step="1";
-	volumeSelector.value="32";
-	controlsDiv.appendChild(volumeSelector);
-	controlsDiv.appendChild(document.createTextNode("Main Frequency: "));
-	let freqOut = document.createElement("output");
-	controlsDiv.appendChild(freqOut);
-	controlsDiv.appendChild(document.createElement("br"));
+class UserInterface {
+	root: HTMLElement;
+	canvas: HTMLCanvasElement;
+	volumeSelector: HTMLInputElement;
+	languageSelector: HTMLSelectElement;
+	textSelector: HTMLSelectElement;
+	textDisplay: HTMLQuoteElement;
+	freqOut: HTMLOutputElement;
+	targetFrequencySelector: HTMLInputElement;
+	playButton: HTMLButtonElement;
+	noteSelector: HTMLDivElement;
+	toggleRecordButton: HTMLButtonElement;
+	autoPlaybackCheckbox: HTMLInputElement;
+	resultsTable: HTMLElement;
 
-	let languageSelector = document.createElement("select");
-	controlsDiv.appendChild(languageSelector);
-	let textSelector = document.createElement("select");
-	controlsDiv.appendChild(textSelector);
+	constructor(root: HTMLElement) {
+		this.root = root
+		this.canvas = document.createElement("canvas");
+		this.canvas.id="FTVT-canvas"
+		this.root.appendChild(this.canvas)
+		let controlsDiv = document.createElement("div");
+		this.root.appendChild(controlsDiv);
+		controlsDiv.id="FTVT-controls";
+		let volumeLabel = document.createElement("label");
+		volumeLabel.innerHTML = "Volume-Threshold:";
+		controlsDiv.appendChild(document.createElement("br"));
+		controlsDiv.appendChild(volumeLabel)
+		this.volumeSelector = document.createElement("input");
+		this.volumeSelector.type = "range";
+		this.volumeSelector.min = "0";
+		this.volumeSelector.max = "255";
+		this.volumeSelector.step="1";
+		this.volumeSelector.value="32";
+		controlsDiv.appendChild(this.volumeSelector);
+		controlsDiv.appendChild(document.createTextNode("Main Frequency: "));
+		this.freqOut = document.createElement("output");
+		controlsDiv.appendChild(this.freqOut);
+		controlsDiv.appendChild(document.createElement("br"));
 
-	let textDisplay = document.createElement("blockquote");
-	textDisplay.id="FTVT-textDisplay";
-	controlsDiv.appendChild(textDisplay);
-	controlsDiv.appendChild(document.createElement("br"));
+		this.languageSelector = document.createElement("select");
+		controlsDiv.appendChild(this.languageSelector);
+		this.textSelector = document.createElement("select");
+		controlsDiv.appendChild(this.textSelector);
 
-	let targetFrequencySelectorLabel = document.createElement("label");
-	targetFrequencySelectorLabel.htmlFor="TargetFrequencySelector";
-	targetFrequencySelectorLabel.innerHTML="Target Frequency in Hertz: ";
-	controlsDiv.appendChild(targetFrequencySelectorLabel)
-	let targetFrequencySelector = document.createElement("input");
-	targetFrequencySelector.type="number";
-	targetFrequencySelector.min="0";
-	targetFrequencySelector.value="250";
-	controlsDiv.appendChild(targetFrequencySelector);
-	controlsDiv.appendChild(document.createElement("br"));
+		this.textDisplay = document.createElement("blockquote");
+		this.textDisplay.id="FTVT-textDisplay";
+		controlsDiv.appendChild(this.textDisplay);
+		controlsDiv.appendChild(document.createElement("br"));
 
-	let playFrequencyButton=document.createElement("button");
-	playFrequencyButton.type="button";
-	playFrequencyButton.innerHTML="▶️";
-	controlsDiv.appendChild(playFrequencyButton);
-	let noteSelector = document.createElement("div");
-	controlsDiv.appendChild(noteSelector);
-	controlsDiv.appendChild(document.createElement("br"));
-	let toggleRecordButton = document.createElement("button");
-	toggleRecordButton.innerHTML="Start Recording";
-	toggleRecordButton.style.color="green";
-	controlsDiv.appendChild(toggleRecordButton);
-	let autoPlaybackLabel = document.createElement("label");
-	autoPlaybackLabel.htmlFor="AutoPlayback";
-	autoPlaybackLabel.innerHTML="Automatically play recording"
-	controlsDiv.appendChild(autoPlaybackLabel);
-	let autoPlayback = document.createElement("input");
-	autoPlayback.type="checkbox";
-	controlsDiv.appendChild(autoPlayback);
+		let targetFrequencySelectorLabel = document.createElement("label");
+		targetFrequencySelectorLabel.htmlFor="TargetFrequencySelector";
+		targetFrequencySelectorLabel.innerHTML="Target Frequency in Hertz: ";
+		controlsDiv.appendChild(targetFrequencySelectorLabel)
+		this.targetFrequencySelector = document.createElement("input");
+		this.targetFrequencySelector.type="number";
+		this.targetFrequencySelector.min="0";
+		this.targetFrequencySelector.value="250";
+		controlsDiv.appendChild(this.targetFrequencySelector);
+		controlsDiv.appendChild(document.createElement("br"));
 
-	let [resultsTable, tableBody] = createResultsTable();
-	root.appendChild(resultsTable);
-	return new UserInterface(root, canvas, volumeSelector, languageSelector, textSelector, textDisplay, freqOut, targetFrequencySelector, playFrequencyButton, noteSelector, toggleRecordButton, autoPlayback, tableBody);
+		this.playButton=document.createElement("button");
+		this.playButton.type="button";
+		this.playButton.innerHTML="▶️";
+		controlsDiv.appendChild(this.playButton);
+		this.noteSelector = document.createElement("div");
+		controlsDiv.appendChild(this.noteSelector);
+		controlsDiv.appendChild(document.createElement("br"));
+		this.toggleRecordButton = document.createElement("button");
+		this.toggleRecordButton.innerHTML="Start Recording";
+		this.toggleRecordButton.style.color="green";
+		controlsDiv.appendChild(this.toggleRecordButton);
+		let autoPlaybackLabel = document.createElement("label");
+		autoPlaybackLabel.htmlFor="AutoPlayback";
+		autoPlaybackLabel.innerHTML="Automatically play recording"
+		controlsDiv.appendChild(autoPlaybackLabel);
+		this.autoPlaybackCheckbox = document.createElement("input");
+		this.autoPlaybackCheckbox.type="checkbox";
+		controlsDiv.appendChild(this.autoPlaybackCheckbox);
+
+		let [table, tableBody] = createResultsTable();
+		this.resultsTable = tableBody;
+		this.root.appendChild(table);
+	}
 }
+

@@ -12,7 +12,7 @@ window.addEventListener("load", (event) => {
 		alert("No element with root-id found");
 		return;
 	}
-	let ui = setupUi(root);
+	let ui = new UserInterface(root);
 	let threshold = new Threshold(ui);
 	let textManager = new TextManager(ui);
 	let tableManager = new TableManager(ui);

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "documentation.ts"
 
 class UserInterface {
 	root: HTMLElement;
@@ -18,6 +19,7 @@ class UserInterface {
 
 	constructor(root: HTMLElement) {
 		this.root = root
+		root.appendChild(this.createDocumentation());
 		this.canvas = document.createElement("canvas");
 		this.canvas.id="FTVT-canvas"
 		this.root.appendChild(this.canvas)
@@ -35,19 +37,10 @@ class UserInterface {
 		this.volumeSelector.step="1";
 		this.volumeSelector.value="32";
 		controlsDiv.appendChild(this.volumeSelector);
+		controlsDiv.appendChild(document.createElement("br"));
 		controlsDiv.appendChild(document.createTextNode("Main Frequency: "));
 		this.freqOut = document.createElement("output");
 		controlsDiv.appendChild(this.freqOut);
-		controlsDiv.appendChild(document.createElement("br"));
-
-		this.languageSelector = document.createElement("select");
-		controlsDiv.appendChild(this.languageSelector);
-		this.textSelector = document.createElement("select");
-		controlsDiv.appendChild(this.textSelector);
-
-		this.textDisplay = document.createElement("blockquote");
-		this.textDisplay.id="FTVT-textDisplay";
-		controlsDiv.appendChild(this.textDisplay);
 		controlsDiv.appendChild(document.createElement("br"));
 
 		let targetFrequencySelectorLabel = document.createElement("label");
@@ -61,6 +54,25 @@ class UserInterface {
 		controlsDiv.appendChild(this.targetFrequencySelector);
 		controlsDiv.appendChild(document.createElement("br"));
 
+
+		this.languageSelector = document.createElement("select");
+		controlsDiv.appendChild(this.languageSelector);
+		this.textSelector = document.createElement("select");
+		controlsDiv.appendChild(this.textSelector);
+
+		this.textDisplay = document.createElement("blockquote");
+		this.textDisplay.id="FTVT-textDisplay";
+		controlsDiv.appendChild(this.textDisplay);
+		controlsDiv.appendChild(document.createElement("br"));
+
+		let showAboutButton = document.createElement("button");
+		controlsDiv.appendChild(showAboutButton);
+		showAboutButton.outerHTML="<button popovertarget='FTVT-about'>Show Help</button>";
+		let showLicenseButton = document.createElement("button");
+		controlsDiv.appendChild(showLicenseButton);
+		showLicenseButton.outerHTML="<button popovertarget='FTVT-license'>Show License</button>";
+		controlsDiv.appendChild(document.createElement("br"));
+
 		this.playButton=document.createElement("button");
 		this.playButton.type="button";
 		this.playButton.innerHTML="▶️";
@@ -68,6 +80,7 @@ class UserInterface {
 		this.noteSelector = document.createElement("div");
 		controlsDiv.appendChild(this.noteSelector);
 		controlsDiv.appendChild(document.createElement("br"));
+
 		this.toggleRecordButton = document.createElement("button");
 		this.toggleRecordButton.innerHTML="Start Recording";
 		this.toggleRecordButton.style.color="green";
@@ -80,10 +93,21 @@ class UserInterface {
 		this.autoPlaybackCheckbox.type="checkbox";
 		controlsDiv.appendChild(this.autoPlaybackCheckbox);
 
-		this.createResultsTable();
+		this.resultsTable = this.createResultsTable();
 	}
 
-	private createResultsTable() {
+	private createDocumentation(): HTMLDivElement {
+		let ret = document.createElement("div");
+		let about_div = document.createElement("div");
+		ret.appendChild(about_div);
+		about_div.outerHTML=DOCUMENTATION["about"];
+		let license_div = document.createElement("div");
+		ret.appendChild(license_div);
+		license_div.outerHTML=DOCUMENTATION["license"];
+		return ret;
+	}
+
+	private createResultsTable(): HTMLElement {
 
 		function createTh(width: string, content: string): HTMLElement {
 			let ret = document.createElement("th");
@@ -112,9 +136,8 @@ class UserInterface {
 		tr.appendChild(createTh("30%", "Notes"));
 		let tbody = document.createElement("tbody");
 		table.appendChild(tbody);
-		this.resultsTable = tbody;
 		this.root.appendChild(table);
+		return tbody;
 	}
-
 }
 

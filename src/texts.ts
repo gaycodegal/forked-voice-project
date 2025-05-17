@@ -36,7 +36,6 @@ class TextManager {
 		}
 	}
 
-
 	getSelectedText() {
 		const lang = this.languageSelector.value;
 		let text = this.textSelector.value;
@@ -54,5 +53,4 @@ class TextManager {
 			this.textSelector.add(new Option(key));
 		}
 	}
-
 }

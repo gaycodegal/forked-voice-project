@@ -42,7 +42,6 @@ class Spectrum {
 		this.ctx.globalCompositeOperation = "source-over"
 	}
 
-
 	writePixel(out: Uint8Array, i: number, col: Color) {
 		const j = out.length - 4*i;
 		out[j+0] = col.r;
@@ -139,5 +138,4 @@ class Spectrum {
 
 		return stream;
 	};
-
 }

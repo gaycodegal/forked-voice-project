@@ -152,3 +152,11 @@ ul.no-bullets {
 	margin-left: auto;
 	margin-right: auto;
 }
+.FTVT-popover {
+	max-width: 50em;
+	max-height: 90vh;
+	overflow-y: scroll;
+	background-color: var(--bg-col);
+	border: solid 5px var(--accent-col);
+	border-radius: 10px;
+}

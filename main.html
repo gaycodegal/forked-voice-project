@@ -3,9 +3,189 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Free 🏳️‍⚧️ Voice Analyzer</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-		<link rel="icon" type="image/svg+xml" href="favicon.svg" sizes="any">
-		<link rel="stylesheet" href="main.css"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/> 
+		<!--<link rel="icon" type="image/svg+xml" href="favicon.svg" sizes="any"/>-->
+		<link rel="icon" href="data:image/svg+xml;base64,
+			PD94bWwgdmVyc2lvbj0nMS4wJyBlbmNvZGluZz0nVVRGLTgnPz4KPHN2ZyB4bWxucz0naHR0cDov
+			L3d3dy53My5vcmcvMjAwMC9zdmcnIHhtbG5zOnhsaW5rPSdodHRwOi8vd3d3LnczLm9yZy8xOTk5
+			L3hsaW5rJyB2ZXJzaW9uPScxLjEnIGJhc2VQcm9maWxlPSdmdWxsJyB3aWR0aD0nMTI4cHgnIGhl
+			aWdodD0nMTI4cHgnPgoJPCEtLVdoYXQgdGhpcyBpcyBzdXBwb3NlZCB0byBiZT8gQSBtaWNyb3Bo
+			b25lIHN1cnJvdW5kZWQgYnkgYSB0cmFucyBmbGFnIG9mIGNvdXJzZSEtLT4KCTxjaXJjbGUgY3g9
+			JzY0JyBjeT0nNjQnIHI9JzY0JyBmaWxsPScjNUJDRUZBJyAvPgoJPGNpcmNsZSBjeD0nNjQnIGN5
+			PSc2NCcgcj0nNTQnIGZpbGw9JyNGNUE5QjgnIC8+Cgk8Y2lyY2xlIGN4PSc2NCcgY3k9JzY0JyBy
+			PSc0NCcgZmlsbD0nI0ZGRkZGRicgLz4KCTxjaXJjbGUgY3g9JzY0JyBjeT0nNjQnIHI9JzM0JyBm
+			aWxsPScjRjVBOUI4JyAvPgoJPGNpcmNsZSBjeD0nNjQnIGN5PSc2NCcgcj0nMjQnIGZpbGw9JyM1
+			QkNFRkEnIC8+Cgk8cG9seWdvbiBmaWxsPScjNDQ0NDQ0JyBwb2ludHM9JzUyLDY0IDc2LDY0IDY4
+			LDEyMCA2MCwxMjAnIHRyYW5zZm9ybT0ncm90YXRlKC0zNSw2NCw2NCknIC8+Cgk8cGF0aCBzdHJv
+			a2U9JyM0NDQ0NDQnIGZpbGw9J3RyYW5zcGFyZW50JyB0cmFuc2Zvcm09J3JvdGF0ZSgtMzUsNjQs
+			NjQpJyBzdHJva2Utd2lkdGg9JzInIGQ9J00gNjQgMTIwIFEgNjQgMTMwIDgwIDEzMCBUIDkwIDE0
+			MCBUIDkwIDE1MCcgLz4KCTxjaXJjbGUgY3g9JzY0JyBjeT0nNjQnIHI9JzE0JyBmaWxsPScjMjIy
+			MjIyJyAvPgo8L3N2Zz4K"/>
+
+		<style type="text/css">
+			@media only screen and (prefers-color-scheme: light){
+				html {
+					--main-col: black;
+					--bg-col: #f9d3ff;
+					--accent-col: purple;
+					--accent-bg-col: #f2b0fc;
+					--accent-bg-col-2: #e685f5;
+					--canvas-bg-col: white;
+					--link-col: #68005d;
+
+					--target-freq-color: #004444;
+					--main-freq-color: #000000;
+				}
+			}
+			@media only screen and (prefers-color-scheme: dark){
+				html {
+					--main-col: white;
+					--bg-col: #2a111e;
+					--accent-col: fuchsia;
+					--accent-bg-col: #27142d;
+					--accent-bg-col-2: #42224c;
+					--canvas-bg-col: black;
+					--link-col: pink;
+
+					--target-freq-color: #00ffff;
+					--main-freq-color: #ffffff;
+				}
+			}
+			html {
+				color: var(--main-col);
+				background-color: var(--bg-col);
+			}
+
+			body {
+				padding: 10px;
+			}
+
+			body.documentation {
+				max-width: 20cm;
+				margin-left: auto;
+				margin-right: auto;
+			}
+
+			h1 {
+				color: var(--accent-col);
+				text-align: center;
+			}
+
+			h2 {
+				color: var(--accent-col);
+				border-bottom: dotted 2px;
+			}
+
+
+
+			table {
+				width: 100%;
+				border: 2px solid var(--accent-col);
+				border-collapse: collapse;
+			}
+			th {
+				border: 2px solid var(--accent-col);
+				padding: 2px;
+			}
+			td {
+				border: 1px solid var(--accent-col);
+				padding: 5px;
+				text-align: center;
+			}
+
+			.NumericTableField {
+				text-align: right;
+			}
+
+			a {
+				color: var(--link-col);
+			}
+
+
+			button {
+				min-width: 3cm;
+				min-height: 1.5cm;
+				font-size: 200%;
+				margin: 5px;
+				border-color: var(--accent-col);
+				border-width: 2px;
+				border-radius: 10px;
+				background-color: var(--accent-bg-col);
+			}
+
+			footer {
+				text-align: center;
+				color: gray;
+			}
+
+			footer > p > a {
+				color: gray;
+				text-decoration: underline;
+			}
+
+			.ActionField > a {
+				font-size: 200%;
+				text-decoration: none;
+				padding:2px;
+			}
+
+			select {
+				color: var(--accent-col);
+				background-color: var(--accent-bg-col);
+				border-color: var(--accent-col);
+				border-width: 3px;
+				border-radius: 10px;
+			}
+
+			select:hover, button:hover {
+				background-color: var(--accent-bg-col-2);
+			}
+
+			input[type="number"] {
+				color: var(--accent-col);
+				background-color: var(--accent-bg-col);
+				border-color: var(--accent-col);
+				border-width: 3px;
+				border-radius: 10px;
+			}
+
+			ul.no-bullets {
+			  list-style-type: none;
+			  padding: 0;
+			  margin: 0;
+			}
+
+			#FTVT-canvas {
+				border: solid var(--accent-col);
+				background-color: var(--canvas-bg-col);
+				margin: 5px;
+				border-radius: 10px;
+				border-width: 3px;
+			}
+			#FTVT-textDisplay{
+				padding: 5px;
+				margin: 5px;
+				border: solid var(--accent-col);
+				border-width: 3px;
+				font-size: 150%;
+				color: var(--main-col);
+				background-color: var(--accent-bg-col);
+				border-radius: 10px;
+			}
+			#FTVT-controls {
+				max-width: 50em;
+				margin-left: auto;
+				margin-right: auto;
+			}
+			.FTVT-popover {
+				max-width: 50em;
+				max-height: 90vh;
+				overflow-y: scroll;
+				background-color: var(--bg-col);
+				border: solid 3px var(--accent-col);
+				border-radius: 10px;
+			}
+		</style>
 		<script src="main.js"></script>
 	</head>
 	<body id="body">

@@ -16,10 +16,10 @@ enum Genders {
 
 class Gender {
 	value: Genders;
+
 	constructor(gender: Genders) {
 		this.value = gender;
 	}
-
 
 	public static InfraMasc = new Gender(Genders.InfraMasc);
 	public static Masc      = new Gender(Genders.Masc);

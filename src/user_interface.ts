@@ -26,15 +26,17 @@ class UserInterface {
 		this.root.appendChild(controlsDiv);
 		controlsDiv.id="FTVT-controls";
 
-		controlsDiv.appendChild(document.createTextNode("Main Frequency: "));
+		let freqOutLabel = document.createElement("label");
+		freqOutLabel.innerHTML = "Main Frequency:";
 		this.freqOut = document.createElement("output");
-		controlsDiv.appendChild(this.freqOut);
-		controlsDiv.appendChild(document.createElement("br"));
+		freqOutLabel.appendChild(this.freqOut);
+		controlsDiv.appendChild(freqOutLabel);
 
-		let thresholdDiv = document.createElement("div");
+		let thresholdDiv = document.createElement("label");
 		thresholdDiv.id = "FTVT-threshold";
-		let volumeLabel = document.createElement("label");
+		let volumeLabel = document.createElement("span");
 		volumeLabel.innerHTML = "Volume-Threshold:";
+		volumeLabel.style.flexShrink = "0";
 		thresholdDiv.appendChild(volumeLabel)
 		this.volumeSelector = document.createElement("input");
 		this.volumeSelector.type = "range";
@@ -42,6 +44,7 @@ class UserInterface {
 		this.volumeSelector.max = "255";
 		this.volumeSelector.step="1";
 		this.volumeSelector.value="32";
+		this.volumeSelector.style.flexGrow = "1";
 		thresholdDiv.appendChild(this.volumeSelector);
 		controlsDiv.appendChild(thresholdDiv);
 
@@ -77,10 +80,10 @@ class UserInterface {
 		controlsDiv.appendChild(showLicenseButton);
 		showLicenseButton.outerHTML="<button popovertarget='FTVT-license' title='show License'>⚖️</button>";
 
-		let targetFrequencyBlock = document.createElement("div");
+		let targetFrequencyBlock = document.createElement("label");
 		targetFrequencyBlock.classList.add("FTVT-frequencyBlock");
-		let targetFrequencySelectorLabel = document.createElement("label");
-		targetFrequencySelectorLabel.htmlFor="TargetFrequencySelector";
+		let targetFrequencySelectorLabel = document.createElement("abbr");
+		targetFrequencySelectorLabel.title="target frequency";
 		targetFrequencySelectorLabel.innerHTML="🎯";
 		targetFrequencyBlock.appendChild(targetFrequencySelectorLabel)
 		this.targetFrequencySelector = document.createElement("input");

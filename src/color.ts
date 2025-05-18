@@ -53,3 +53,8 @@ class Color {
 	public static TARGET_FREQUENCY_COLOR = Color.load("target-freq-color", new Color(0,255, 255));
 
 }
+
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event) => {
+	Color.MAIN_FREQUENCY_COLOR = Color.load("main-freq-color", new Color(255, 255, 255));
+	Color.TARGET_FREQUENCY_COLOR = Color.load("target-freq-color", new Color(0,255, 255));
+});

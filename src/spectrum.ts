@@ -136,7 +136,7 @@ class Spectrum {
 			this.shiftLeft(1);
 			analyser.getByteFrequencyData(data);
 			this.ctx.putImageData(this.renderAnalysis(data), this.canvas.width-1, 0);
-		}, 1);
+		}, 20);
 
 		return stream;
 	};

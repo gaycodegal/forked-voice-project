@@ -60,25 +60,22 @@ class UserInterface {
 		this.textDisplay.id="FTVT-textDisplay";
 		controlsDiv.appendChild(this.textDisplay);
 
+		let mainControlsDiv = document.createElement("div");
+		mainControlsDiv.classList.add("FTVT-mainControls");
 
 		this.toggleRecordButton = document.createElement("button");
-		this.toggleRecordButton.innerHTML="🎤";
+		this.toggleRecordButton.innerHTML="⏺️";
 		this.toggleRecordButton.title="Toggle Recording";
 		this.toggleRecordButton.style.backgroundColor="green";
 		this.toggleRecordButton.style.color="white";
 		this.toggleRecordButton.id = "FTVT-toggleRecordButton";
-		controlsDiv.appendChild(this.toggleRecordButton);
+		mainControlsDiv.appendChild(this.toggleRecordButton);
+		
 		this.playButton=document.createElement("button");
 		this.playButton.type="button";
 		this.playButton.innerHTML="🔊";
 		this.playButton.title="Play Target Sound";
-		controlsDiv.appendChild(this.playButton);
-		let showAboutButton = document.createElement("button");
-		controlsDiv.appendChild(showAboutButton);
-		showAboutButton.outerHTML="<button popovertarget='FTVT-about'>ℹ️</button>";
-		let showLicenseButton = document.createElement("button");
-		controlsDiv.appendChild(showLicenseButton);
-		showLicenseButton.outerHTML="<button popovertarget='FTVT-license' title='show License'>⚖️</button>";
+		mainControlsDiv.appendChild(this.playButton);
 
 		let targetFrequencyBlock = document.createElement("label");
 		targetFrequencyBlock.classList.add("FTVT-frequencyBlock");
@@ -97,7 +94,21 @@ class UserInterface {
 		targetFrequencyUnitLabel.innerHTML="Hz";
 		targetFrequencyUnitLabel.classList.add("FTVT-unit");
 		targetFrequencyBlock.appendChild(targetFrequencyUnitLabel);
-		controlsDiv.appendChild(targetFrequencyBlock);
+		mainControlsDiv.appendChild(targetFrequencyBlock);
+
+		let mainControlsSpacer = document.createElement("span");
+		mainControlsSpacer.classList.add("FTVT-flexSpacer");
+		mainControlsDiv.appendChild(mainControlsSpacer);
+
+		let showAboutButton = document.createElement("button");
+		mainControlsDiv.appendChild(showAboutButton);
+		showAboutButton.outerHTML="<button popovertarget='FTVT-about'>ℹ️</button>";
+		
+		let showLicenseButton = document.createElement("button");
+		mainControlsDiv.appendChild(showLicenseButton);
+		showLicenseButton.outerHTML="<button popovertarget='FTVT-license' title='show License'>⚖️</button>";
+
+		controlsDiv.appendChild(mainControlsDiv);
 
 		this.noteSelector = document.createElement("div");
 		this.noteSelector.id = 'FTVT-noteSelector';

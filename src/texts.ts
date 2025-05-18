@@ -15,8 +15,11 @@ class TextManager {
 		this.languageSelector = ui.languageSelector;
 		this.textSelector = ui.textSelector;
 		this.textDisplay = ui.textDisplay;
-		for(let lang in TEXTS_TABLE) {
-			this.languageSelector.add(new Option(lang));
+		for(let language in TEXTS_TABLE) {
+			const option = new Option(language);
+			const languageCode = TEXTS_TABLE[language]['languageCode'];
+			option.lang = languageCode;
+			this.languageSelector.add(option);
 		}
 		this.onLanguageSelect();
 		this.languageSelector.addEventListener("change", (event) => {
@@ -48,9 +51,14 @@ class TextManager {
 
 	onLanguageSelect() {
 		const language = this.languageSelector.value;
+		const languageCode = TEXTS_TABLE[language]['languageCode'];
 		TextManager.clearSelector(this.textSelector);
 		for(let key in TEXTS_TABLE[language]) {
-			this.textSelector.add(new Option(key));
+			if (key != "languageCode") {
+				this.textSelector.add(new Option(key));
+			}
 		}
+		this.textSelector.lang = languageCode;
+		this.textDisplay.lang = languageCode;
 	}
 }

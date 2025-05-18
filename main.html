@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
 		<meta charset="UTF-8">
 		<title>Free 🏳️‍⚧️ Voice Analyzer</title>
@@ -255,7 +255,7 @@
 				border-width: 3px;
 			}
 			#FTVT-textDisplay{
-				padding: 5px;
+				padding: 0.5em;
 				margin: 0;
 				border: solid var(--accent-col);
 				border-width: 3px;
@@ -263,9 +263,8 @@
 				background-color: var(--accent-bg-col);
 				border-radius: var(--border-radius);
 				border-top-left-radius: 0;
-				/* TODO: implement setting the language, then this can be enabled: */
-				/*text-align: justify;
-				hyphens: auto;*/
+				text-align: justify;
+				hyphens: auto;
 			}
 			#FTVT-controls {
 				font-size: 2rem;
@@ -284,10 +283,7 @@
 			.FTVT-language {
 				font-style: italic;
 			}
-			#FTVT-toggleRecordButton {
-				margin-left: 0;
-			}
-			.FTVT-octaveDiv{
+			.FTVT-octaveDiv, .FTVT-mainControls {
 				display: flex;
 				flex-wrap: wrap;
 				:first-child {
@@ -296,6 +292,10 @@
 				:last-child {
 					margin-right: 0;
 				}
+			}
+			.FTVT-flexSpacer{
+				flex-grow: 1;
+				flex-shrink: 1;
 			}
 		</style>
 		<script src="main.js"></script>

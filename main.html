@@ -23,8 +23,13 @@
 			MjIyJyAvPgo8L3N2Zz4K"/>
 
 		<style type="text/css">
+			:root {
+				--border-radius: 10px;
+				--max-width: 100rem;
+			}
 			@media only screen and (prefers-color-scheme: light){
-				html {
+				:root {
+					color-scheme: light;
 					--main-col: black;
 					--bg-col: #f9d3ff;
 					--accent-col: purple;
@@ -38,7 +43,8 @@
 				}
 			}
 			@media only screen and (prefers-color-scheme: dark){
-				html {
+				:root {
+					color-scheme: dark;
 					--main-col: white;
 					--bg-col: #2a111e;
 					--accent-col: fuchsia;
@@ -51,13 +57,16 @@
 					--main-freq-color: #ffffff;
 				}
 			}
+			* {
+				box-sizing: border-box;
+			}
 			html {
 				color: var(--main-col);
 				background-color: var(--bg-col);
 			}
 
 			body {
-				padding: 10px;
+				padding: var(--border-radius);
 			}
 
 			body.documentation {
@@ -69,6 +78,7 @@
 			h1 {
 				color: var(--accent-col);
 				text-align: center;
+				font-size: 3rem;
 			}
 
 			h2 {
@@ -79,7 +89,9 @@
 
 
 			table {
-				width: 100%;
+				width: var(--max-width);
+				margin-left: auto;
+				margin-right: auto;
 				border: 2px solid var(--accent-col);
 				border-collapse: collapse;
 			}
@@ -101,16 +113,42 @@
 				color: var(--link-col);
 			}
 
+			td audio {
+				width: 100%;
+			}
+			textarea {
+				width: 100%;
+				height: 100%;
+				resize: none;
+			}
+			tbody tr {
+				height: 12em;
+			}
+			tbody td {
+				height: 100%;
+			}
 
-			button {
+			button, .downloadLink {
 				min-width: 3cm;
 				min-height: 1.5cm;
-				font-size: 200%;
 				margin: 5px;
+				font-size: 2rem;
 				border-color: var(--accent-col);
 				border-width: 2px;
-				border-radius: 10px;
+				border-style: solid;
+				border-radius: var(--border-radius);
 				background-color: var(--accent-bg-col);
+				display: inline-block;
+				vertical-align: bottom;
+				padding: 0;
+			}
+			.downloadLink {
+				line-height: calc(1.5cm - 4px);
+				text-decoration: none;
+				padding: 0;
+			}
+			#FTVT-controls input, #FTVT-controls select {
+				font-size: 2rem;
 			}
 
 			footer {
@@ -123,30 +161,58 @@
 				text-decoration: underline;
 			}
 
-			.ActionField > a {
-				font-size: 200%;
-				text-decoration: none;
-				padding:2px;
-			}
-
 			select {
 				color: var(--accent-col);
 				background-color: var(--accent-bg-col);
 				border-color: var(--accent-col);
 				border-width: 3px;
-				border-radius: 10px;
+				border-radius: var(--border-radius);
 			}
 
-			select:hover, button:hover {
+			select:hover, button:hover, .downloadLink:hover {
 				background-color: var(--accent-bg-col-2);
 			}
 
 			input[type="number"] {
 				color: var(--accent-col);
 				background-color: var(--accent-bg-col);
-				border-color: var(--accent-col);
 				border-width: 3px;
-				border-radius: 10px;
+				border-radius: var(--border-radius);
+				appearance: textfield;
+				text-align: right;
+				font-family: monospace;
+			}
+			input:valid {
+				border-color: var(--accent-col);
+			}
+			input:invalid {
+				border-color: orange;
+				background-color: yellow;
+			}
+			#FTVT-threshold {
+				display: flex;
+			}
+			#FTVT-threshold input {
+				flex-grow: 1;
+				flex-shrink: 1;
+			}
+			#FTVT-threshold label {
+				flex-grow: 0;
+				flex-shrink: 0;
+			}
+			input[type="range"] {
+				width: 100%;
+			}
+			#FTVT-languageSelector {
+				border-radius: 0;
+				border-top-left-radius: var(--border-radius);
+				border-bottom: none;
+				border-right: none;
+			}
+			#FTVT-textSelector {
+				border-radius: 0;
+				border-top-right-radius: var(--border-radius);
+				border-bottom: none;
 			}
 
 			ul.no-bullets {
@@ -159,40 +225,49 @@
 				border: solid var(--accent-col);
 				background-color: var(--canvas-bg-col);
 				margin: 5px;
-				border-radius: 10px;
+				border-radius: var(--border-radius);
 				border-width: 3px;
 			}
 			#FTVT-textDisplay{
 				padding: 5px;
-				margin: 5px;
+				margin: 0;
 				border: solid var(--accent-col);
 				border-width: 3px;
-				font-size: 150%;
 				color: var(--main-col);
 				background-color: var(--accent-bg-col);
-				border-radius: 10px;
+				border-radius: var(--border-radius);
+				border-top-left-radius: 0;
+				/* TODO: implement setting the language, then this can be enabled: */
+				/*text-align: justify;
+				hyphens: auto;*/
 			}
 			#FTVT-controls {
-				max-width: 50em;
+				font-size: 2rem;
+				max-width: var(--max-width);
 				margin-left: auto;
 				margin-right: auto;
 			}
 			.FTVT-popover {
-				max-width: 50em;
+				max-width: var(--max-width);
 				max-height: 90vh;
 				overflow-y: scroll;
 				background-color: var(--bg-col);
 				border: solid 3px var(--accent-col);
-				border-radius: 10px;
+				border-radius: var(--border-radius);
+			}
+			.FTVT-language {
+				font-style: italic;
+			}
+			#FTVT-noteSelector {
+				display: flex;
+				flex-wrap: wrap;
+				justify-content: space-between;
 			}
 		</style>
 		<script src="main.js"></script>
 	</head>
 	<body id="body">
-		<h1>Free 🏳️‍⚧️ Voice Analyzer</h1>
+		<!--<h1>Free 🏳️‍⚧️ Voice Analyzer</h1>-->
 		<div id="FTVT-root"></div>
-		<footer>
-			<p>This web-application is free software (GNU AGPL v3 or later). For more information see the <a href="about.html">about-page</a>.</p>
-		</footer>
 	</body>
 </html>

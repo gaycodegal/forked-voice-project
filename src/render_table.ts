@@ -6,14 +6,12 @@
 class TableManager {
 
 	numRecordings : number = 0;
-	autoPlaybackCheckbox: HTMLInputElement;
 	resultsTable: HTMLElement;
 	targetFrequencySelector: HTMLInputElement;
 	languageSelector: HTMLSelectElement;
 	textSelector: HTMLSelectElement;
 
 	constructor(ui: UserInterface) {
-		this.autoPlaybackCheckbox = ui.autoPlaybackCheckbox;
 		this.resultsTable = ui.resultsTable;
 		this.targetFrequencySelector = ui.targetFrequencySelector;
 		this.languageSelector = ui.languageSelector;
@@ -59,47 +57,53 @@ class TableManager {
 		return tdAverageFrequency;
 	}
 
-	renderTaget(stats: RecordStats) : HTMLTableCellElement{
-		let tdTargetFrequency = document.createElement("td");
-		const targetFrequency = Number(this.targetFrequencySelector.value);
-		tdTargetFrequency.appendChild(frequencyToHTML(targetFrequency));
-		tdTargetFrequency.classList.add("NumericTableField");
-		return tdTargetFrequency;
-	}
-
-	renderSelectorValue(value: string) : HTMLTableCellElement {
+	renderMetaCell() : HTMLTableCellElement {
 		let td = document.createElement("td");
-		td.innerHTML = value;
+		let textNameSpan = document.createElement("span");
+		textNameSpan.innerHTML = this.textSelector.value;
+		td.appendChild(textNameSpan);
+		td.appendChild(document.createElement("br"));
+		let languageSpan = document.createElement("span");
+		languageSpan.innerHTML = this.languageSelector.value;
+		languageSpan.classList.add("FTVT-language");
+		td.appendChild(languageSpan);
+		td.appendChild(document.createElement("br"));
+		let targetFrequencySpan = document.createElement("span");
+		targetFrequencySpan.appendChild(document.createTextNode("🎯: "));
+		targetFrequencySpan.appendChild(frequencyToHTML(Number(this.targetFrequencySelector.value)));
+		td.appendChild(targetFrequencySpan)
+
 		return td;
 	}
 
-	renderPlayback(audioURL: string): HTMLTableCellElement {
-		const tdPlayback = document.createElement("td");
+	renderPlayback(recording: Blob[], tr: HTMLTableRowElement): HTMLTableCellElement {
+		const blob = new Blob(recording, { type: "audio/ogg; codecs=opus" });
+		const audioURL = window.URL.createObjectURL(blob);
+
+		const td = document.createElement("td");
+		// TODO: remove once links are turned to buttons:
+		td.classList.add("ActionField");
+
 		const audio = document.createElement("audio");
 		audio.setAttribute("controls", "");
 		audio.src = audioURL;
-		tdPlayback.appendChild(audio);
-		if (this.autoPlaybackCheckbox.checked) {
-			audio.play();
-		}
-		return tdPlayback;
-	}
+		td.appendChild(audio);
+		
+		td.appendChild(document.createElement("br"));
 
-	renderControls(tr: HTMLTableRowElement, audioURL: string) : HTMLTableCellElement {
-		const tdControls = document.createElement("td");
-		tdControls.classList.add("ActionField");
 		const downloadLink = document.createElement("a");
 		downloadLink.innerText = "⬇️";
 		downloadLink.setAttribute("download", "voice_recording.ogg");
+		downloadLink.classList.add("downloadLink");
 		downloadLink.href = audioURL;
-		tdControls.appendChild(downloadLink);
-		const removeLink = document.createElement("a");
-		removeLink.innerText = "❌";
-		removeLink.onclick = () => {
+		td.appendChild(downloadLink);
+		const removeButton = document.createElement("button");
+		removeButton.innerHTML = "❌";
+		removeButton.onclick = () => {
 			tr.remove();
 		};
-		tdControls.appendChild(removeLink);
-		return tdControls;
+		td.appendChild(removeButton);
+		return td;
 	}
 
 	renderNotes() : HTMLTableCellElement {
@@ -112,18 +116,12 @@ class TableManager {
 
 
 	renderRecording(stats: RecordStats, recording: Blob[]) : HTMLTableRowElement {
-		const blob = new Blob(recording, { type: "audio/ogg; codecs=opus" });
-		const audioURL = window.URL.createObjectURL(blob);
-
 		let tr = document.createElement("tr");
 		tr.appendChild(this.renderCounter());
 		this.renderShares(tr, stats);
 		tr.appendChild(this.renderQuantiles(stats));
-		tr.appendChild(this.renderTaget(stats));
-		tr.appendChild(this.renderSelectorValue(this.languageSelector.value));
-		tr.appendChild(this.renderSelectorValue(this.textSelector.value));
-		tr.appendChild(this.renderPlayback(audioURL));
-		tr.appendChild(this.renderControls(tr, audioURL));
+		tr.appendChild(this.renderMetaCell());
+		tr.appendChild(this.renderPlayback(recording, tr));
 		tr.appendChild(this.renderNotes());
 
 		return tr;

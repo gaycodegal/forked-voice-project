@@ -66,8 +66,7 @@ class Recorder {
 	toggleRecording() {
 		if (this.currentRecording === null) {
 			this.currentRecording = [];
-			this.button.style.color = "red";
-			this.button.innerText="Stop Recording"
+			this.button.style.backgroundColor = "red";
 			if (this.mediaRecorder) {
 				this.mediaRecording = [];
 				this.mediaRecorder.start();
@@ -75,8 +74,7 @@ class Recorder {
 		} else {
 			let recording = this.currentRecording;
 			this.currentRecording = null;
-			this.button.style.color = "green";
-			this.button.innerText="Start Recording";
+			this.button.style.backgroundColor = "green";
 
 			if (this.mediaRecorder) {
 				if (recording.length > 0) {

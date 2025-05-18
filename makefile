@@ -3,7 +3,7 @@ DATA=$(wildcard src/*.json)
 
 .PHONY: all
 
-all: main.js icons/ftvt_512.png icons/ftvt_512.png
+all: main.js icons/ftvt_512.png icons/ftvt_192.png
 
 main.js: $(SOURCES) $(DATA)
 	gcc -E -P -x c src/main.ts -o _temp.ts

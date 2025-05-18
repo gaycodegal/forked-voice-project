@@ -124,8 +124,10 @@ class Spectrum {
 		this.baseBand = new BaseFrequencyIndices(indexMinHumanFrequency, indexMaxHumanFrequency);
 
 
-		// TODO: move to UI
-		this.canvas.width = document.body.clientWidth - 6;
+		this.canvas.width = document.body.clientWidth;
+		document.body.addEventListener("resize", (event) => {
+			this.canvas.width = document.body.clientWidth;
+		});
 		this.canvas.height = this.maxDisplayFrequency / this.hertzPerBin;
 		const data = new Uint8Array(this.canvas.height);
 

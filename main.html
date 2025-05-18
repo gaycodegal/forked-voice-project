@@ -251,7 +251,6 @@
 
 			#FTVT-canvas {
 				border-bottom: solid var(--accent-col);
-				border-top: solid var(--accent-col);
 				background-color: var(--canvas-bg-col);
 				margin: 0;
 				width: 100%;
@@ -300,12 +299,15 @@
 				flex-grow: 1;
 				flex-shrink: 1;
 			}
-			@media all and (display-mode: standalone) {
+			header, footer {
+				display: none;
+			}
+			@media not (display-mode: standalone) {
 				header, footer {
-					display: none;
+					display: block;
 				}
 				#FTVT-canvas {
-					border-top: none;
+					border-top: solid var(--accent-col);
 				}
 			}
 			label {

@@ -129,14 +129,15 @@ class Spectrum {
 			this.canvas.width = document.body.clientWidth;
 		});
 		this.canvas.height = this.maxDisplayFrequency / this.hertzPerBin;
-		const data = new Uint8Array(this.canvas.height);
 
-
-		setInterval(() => {
-			this.shiftLeft(1);
+		function renderNext (spectrum: Spectrum, timestamp: number) {
+			spectrum.shiftLeft(1);
+			let data = new Uint8Array(spectrum.canvas.height);
 			analyser.getByteFrequencyData(data);
-			this.ctx.putImageData(this.renderAnalysis(data), this.canvas.width-1, 0);
-		}, 20);
+			spectrum.ctx.putImageData(spectrum.renderAnalysis(data), spectrum.canvas.width-1, 0);
+			window.requestAnimationFrame((arg) => {renderNext(spectrum, arg);});
+		}
+		window.requestAnimationFrame((arg) => {renderNext(this, arg);});
 
 		return stream;
 	};

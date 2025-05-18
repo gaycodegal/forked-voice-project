@@ -1,0 +1,13 @@
+{
+  "short_name": "FTVT",
+  "name": "Free 🏳️‍⚧️ Voice Training",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "all",
+      "type": "image/svg+xml"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone"
+}

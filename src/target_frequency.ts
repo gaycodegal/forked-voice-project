@@ -10,14 +10,21 @@ class TargetFrequencyManager {
 	targetFrequencySelector: HTMLInputElement;
 	playButton: HTMLButtonElement;
 	noteSelector: HTMLDivElement;
+	oscillator: OscillatorNode|null;
 
 	constructor(ui: UserInterface) {
 		this.context = new window.AudioContext();
+		this.oscillator = null;
 		this.targetFrequencySelector = ui.targetFrequencySelector;
 		this.playButton = ui.playButton;
 		this.noteSelector = ui.noteSelector;
 		this.setupNoteSelectors();
 		this.playButton.addEventListener("mousedown", (event) =>{this.startPlaying();});
+		this.playButton.addEventListener("touchstart", (event) =>{this.startPlaying();});
+		this.playButton.addEventListener("mouseup", () => {this.stopPlaying();});
+		this.playButton.addEventListener("mouseout", () => {this.stopPlaying();});
+		this.playButton.addEventListener("touchend", () => {this.stopPlaying();});
+		this.playButton.addEventListener("touchcancel", () => {this.stopPlaying();});
 	}
 
 	target() : number {
@@ -30,13 +37,17 @@ class TargetFrequencyManager {
 
 
 	startPlaying() {
-		let osc = this.context.createOscillator();
-		osc.frequency.value = this.target(); // Hz
-		osc.connect(this.context.destination);
-		// TODO: touch-support!
-		this.playButton.onmouseup = () => {osc.stop();}
-		this.playButton.onmouseout = () => {osc.stop();}
-		osc.start();
+		this.stopPlaying();
+		this.oscillator = this.context.createOscillator();
+		this.oscillator.frequency.value = this.target();
+		this.oscillator.connect(this.context.destination);
+		this.oscillator.start();
+	}
+	stopPlaying() {
+		if (this.oscillator != null) {
+			this.oscillator.stop();
+			this.oscillator = null;
+		}
 	}
 
 	createNoteButton(note: Note): HTMLButtonElement {

@@ -1,6 +1,13 @@
+:root {
+	--border-radius: 10px;
+	--max-width: 100rem;
+	--button-width: calc((var(--max-width) - 1em - 11*10px)/12);
+}
 @media only screen and (prefers-color-scheme: light){
-	html {
+	:root {
+		color-scheme: light;
 		--main-col: black;
+		--inv-col: white;
 		--bg-col: #f9d3ff;
 		--accent-col: purple;
 		--accent-bg-col: #f2b0fc;
@@ -13,8 +20,10 @@
 	}
 }
 @media only screen and (prefers-color-scheme: dark){
-	html {
+	:root {
+		color-scheme: dark;
 		--main-col: white;
+		--inv-col: black;
 		--bg-col: #2a111e;
 		--accent-col: fuchsia;
 		--accent-bg-col: #27142d;
@@ -26,15 +35,18 @@
 		--main-freq-color: #ffffff;
 	}
 }
+* {
+	box-sizing: border-box;
+	scrollbar-width: none;
+}
 html {
 	color: var(--main-col);
 	background-color: var(--bg-col);
 }
 
 body {
-	padding: 10px;
+	margin: 0;
 }
-
 body.documentation {
 	max-width: 20cm;
 	margin-left: auto;
@@ -44,6 +56,7 @@ body.documentation {
 h1 {
 	color: var(--accent-col);
 	text-align: center;
+	font-size: 3rem;
 }
 
 h2 {
@@ -52,9 +65,14 @@ h2 {
 }
 
 
+div:has(> table), div:has(#FTVT-canvas) {
+	overflow-x: auto;
+}
 
 table {
-	width: 100%;
+	width: calc(var(--max-width) - 2em);
+	margin-left: auto;
+	margin-right: auto;
 	border: 2px solid var(--accent-col);
 	border-collapse: collapse;
 }
@@ -76,16 +94,78 @@ a {
 	color: var(--link-col);
 }
 
+td audio {
+	width: 100%;
+}
+textarea {
+	width: 100%;
+	height: 100%;
+	resize: none;
+}
+tbody tr {
+	height: 12em;
+}
+tbody td {
+	height: 100%;
+}
 
-button {
-	min-width: 3cm;
+button, .downloadLink, .FTVT-frequencyBlock {
+	min-width: var(--button-width);
 	min-height: 1.5cm;
-	font-size: 200%;
 	margin: 5px;
+	font-size: 2rem;
 	border-color: var(--accent-col);
 	border-width: 2px;
-	border-radius: 10px;
+	border-style: solid;
+	border-radius: var(--border-radius);
 	background-color: var(--accent-bg-col);
+	display: inline-block;
+	vertical-align: bottom;
+	padding: 0;
+}
+.downloadLink {
+	line-height: calc(1.5cm - 4px);
+	text-decoration: none;
+	padding: 0;
+}
+#FTVT-controls input, #FTVT-controls select {
+	font-size: 2rem;
+}
+.FTVT-frequencyBlock {
+	display: flex;
+	width: calc(var(--button-width) * 2 + 10px);
+	input {
+		min-height: calc(1.5cm - 4px);
+		border-radius: 0;
+		border: none;
+		margin-left: 0.2em;
+		margin-right: 0.2em;
+		min-width: 2em;
+		flex-grow: 1;
+		flex-shrink: 1;
+	}
+	abbr {
+		text-decoration: none;
+	}
+	padding-left: 0.2em;
+	padding-right: 0.2em;
+}
+.FTVT-frequencyBlock:has(:focus) {
+	border-color: cyan;
+	background-color: var(--inv-col);
+	input {
+		background-color: var(--inv-col);
+		outline: none;
+	}
+}
+.FTVT-frequencyBlock:has(:invalid) {
+	border-color: orange;
+	background-color: yellow;
+	color: black;
+	input {
+		color: red;
+		background-color: yellow;
+	}
 }
 
 footer {
@@ -98,30 +178,51 @@ footer > p > a {
 	text-decoration: underline;
 }
 
-.ActionField > a {
-	font-size: 200%;
-	text-decoration: none;
-	padding:2px;
-}
-
 select {
 	color: var(--accent-col);
 	background-color: var(--accent-bg-col);
 	border-color: var(--accent-col);
 	border-width: 3px;
-	border-radius: 10px;
+	border-radius: var(--border-radius);
 }
 
-select:hover, button:hover {
+select:hover, button:hover, .downloadLink:hover {
 	background-color: var(--accent-bg-col-2);
 }
 
 input[type="number"] {
 	color: var(--accent-col);
 	background-color: var(--accent-bg-col);
-	border-color: var(--accent-col);
 	border-width: 3px;
-	border-radius: 10px;
+	border-radius: var(--border-radius);
+	appearance: textfield;
+	text-align: right;
+	font-family: monospace;
+}
+#FTVT-threshold {
+	display: flex;
+}
+label input, label output {
+	flex-grow: 1;
+	flex-shrink: 1;
+	margin-left: 0.5em;
+}
+label {
+	display: flex;
+}
+input[type="range"] {
+	width: 100%;
+}
+#FTVT-languageSelector {
+	border-radius: 0;
+	border-top-left-radius: var(--border-radius);
+	border-bottom: none;
+	border-right: none;
+}
+#FTVT-textSelector {
+	border-radius: 0;
+	border-top-right-radius: var(--border-radius);
+	border-bottom: none;
 }
 
 ul.no-bullets {
@@ -131,33 +232,80 @@ ul.no-bullets {
 }
 
 #FTVT-canvas {
-	width: 100%;
-	border: solid var(--accent-col);
+	border-bottom: solid var(--accent-col);
 	background-color: var(--canvas-bg-col);
-	margin: 0px;
-	border-radius: 10px;
+	margin: 0;
+	width: 100%;
 	border-width: 3px;
 }
 #FTVT-textDisplay{
-	padding: 5px;
-	margin: 5px;
+	padding: 0.5em;
+	margin: 0;
 	border: solid var(--accent-col);
 	border-width: 3px;
-	font-size: 150%;
 	color: var(--main-col);
 	background-color: var(--accent-bg-col);
-	border-radius: 10px;
+	border-radius: var(--border-radius);
+	border-top-left-radius: 0;
+	hyphens: auto;
 }
-#FTVT-controls {
-	max-width: 50em;
+header, #FTVT-controls {
+	font-size: 2rem;
+	max-width: var(--max-width);
 	margin-left: auto;
 	margin-right: auto;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
 }
 .FTVT-popover {
-	max-width: 50em;
+	max-width: var(--max-width);
 	max-height: 90vh;
 	overflow-y: scroll;
 	background-color: var(--bg-col);
-	border: solid 5px var(--accent-col);
-	border-radius: 10px;
+	border: solid 3px var(--accent-col);
+	border-radius: var(--border-radius);
+}
+.FTVT-language {
+	font-style: italic;
+}
+.FTVT-octaveDiv, .FTVT-mainControls {
+	display: flex;
+	flex-wrap: wrap;
+	button, label {margin: 0};
+	gap: 10px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+.FTVT-flexSpacer{
+	flex-grow: 1;
+	flex-shrink: 1;
+}
+header, footer {
+	display: none;
+}
+@media not (display-mode: standalone) {
+	header, footer {
+		display: block;
+	}
+	#FTVT-canvas {
+		border-top: solid var(--accent-col);
+	}
+}
+label {
+	background-color: var(--accent-bg-col);
+	border-radius: var(--border-radius);
+	border: var(--accent-col) solid;
+	line-height: 2em;
+	padding-left:0.5em;
+	padding-right: 0.5em;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	input, output {
+		min-height: calc(1.5cm - 4px);
+		height: calc(1.5cm-4px);
+		line-height: 2em;
+	}
+	sub {
+		line-height: 0;
+	}
 }

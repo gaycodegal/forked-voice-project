@@ -89,7 +89,11 @@ class UserInterface {
 		this.targetFrequencySelector.value="250";
 		this.targetFrequencySelector.step="any";
 		targetFrequencyBlock.appendChild(this.targetFrequencySelector);
-		targetFrequencyBlock.appendChild(document.createTextNode(" Hz"));
+		let targetFrequencyUnitLabel = document.createElement("abbr");
+		targetFrequencyUnitLabel.title="Hertz";
+		targetFrequencyUnitLabel.innerHTML="Hz";
+		targetFrequencyUnitLabel.classList.add("FTVT-unit");
+		targetFrequencyBlock.appendChild(targetFrequencyUnitLabel);
 		controlsDiv.appendChild(targetFrequencyBlock);
 
 		this.noteSelector = document.createElement("div");

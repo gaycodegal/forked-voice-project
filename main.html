@@ -25,6 +25,7 @@
 			:root {
 				--border-radius: 10px;
 				--max-width: 100rem;
+				--button-width: calc((var(--max-width) - 1em - 11*10px)/12);
 			}
 			@media only screen and (prefers-color-scheme: light){
 				:root {
@@ -133,7 +134,7 @@
 			}
 
 			button, .downloadLink, .FTVT-frequencyBlock {
-				min-width: calc((var(--max-width) - 1em - 11*10px)/12);
+				min-width: var(--button-width);
 				min-height: 1.5cm;
 				margin: 5px;
 				font-size: 2rem;
@@ -155,12 +156,17 @@
 				font-size: 2rem;
 			}
 			.FTVT-frequencyBlock {
+				display: flex;
+				width: calc(var(--button-width) * 2 + 10px);
 				input {
 					min-height: calc(1.5cm - 4px);
 					border-radius: 0;
 					border: none;
 					margin-left: 0.2em;
 					margin-right: 0.2em;
+					min-width: 2em;
+					flex-grow: 1;
+					flex-shrink: 1;
 				}
 				abbr {
 					text-decoration: none;

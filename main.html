@@ -67,10 +67,6 @@
 				background-color: var(--bg-col);
 			}
 
-			body {
-				padding: var(--border-radius);
-			}
-
 			body.documentation {
 				max-width: 20cm;
 				margin-left: auto;
@@ -89,8 +85,8 @@
 			}
 
 
-			div:has(> table) {
-				overflow-x: scroll;
+			div:has(> table), div:has(#FTVT-canvas) {
+				overflow-x: auto;
 			}
 
 			table {

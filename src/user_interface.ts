@@ -19,9 +19,13 @@ class UserInterface {
 	constructor(root: HTMLElement) {
 		this.root = root
 		root.appendChild(this.createDocumentation());
+
+		let canvasDiv = document.createElement("div");
 		this.canvas = document.createElement("canvas");
 		this.canvas.id="FTVT-canvas"
-		this.root.appendChild(this.canvas)
+		canvasDiv.appendChild(this.canvas)
+		this.root.appendChild(canvasDiv)
+
 		let controlsDiv = document.createElement("div");
 		this.root.appendChild(controlsDiv);
 		controlsDiv.id="FTVT-controls";

@@ -125,7 +125,7 @@ class Spectrum {
 
 
 		// TODO: move to UI
-		this.canvas.width = document.body.clientWidth - 36;
+		this.canvas.width = document.body.clientWidth - 6;
 		this.canvas.height = this.maxDisplayFrequency / this.hertzPerBin;
 		const data = new Uint8Array(this.canvas.height);
 

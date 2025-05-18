@@ -251,6 +251,7 @@
 
 			#FTVT-canvas {
 				border-bottom: solid var(--accent-col);
+				border-top: solid var(--accent-col);
 				background-color: var(--canvas-bg-col);
 				margin: 0;
 				width: 100%;
@@ -302,6 +303,9 @@
 			@media all and (display-mode: standalone) {
 				header, footer {
 					display: none;
+				}
+				#FTVT-canvas {
+					border-top: none;
 				}
 			}
 		</style>

@@ -137,6 +137,7 @@ class UserInterface {
 			return ret;
 		}
 
+		let tableDiv =document.createElement("div");
 		let table = document.createElement("table");
 		let thead = document.createElement("thead");
 		table.appendChild(thead);
@@ -154,7 +155,8 @@ class UserInterface {
 		tr.appendChild(createTh("25%", "Notes"));
 		let tbody = document.createElement("tbody");
 		table.appendChild(tbody);
-		this.root.appendChild(table);
+		tableDiv.appendChild(table);
+		this.root.appendChild(tableDiv);
 		return tbody;
 	}
 }

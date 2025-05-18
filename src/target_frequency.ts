@@ -39,7 +39,7 @@ class TargetFrequencyManager {
 		osc.start();
 	}
 
-	createNoteButton(note: Note) {
+	createNoteButton(note: Note): HTMLButtonElement {
 		let button = document.createElement("button");
 		const frequency = note.toFrequency();
 		button.innerHTML = note.toString();
@@ -48,15 +48,19 @@ class TargetFrequencyManager {
 		};
 		button.style.backgroundColor = frequencyToColor(frequency).toString();
 		button.style.color = "white";
-		this.noteSelector.appendChild(button);
+		return button;
 	}
 
 	setupNoteSelectors() {
 		for (let octave = 2; octave < 5; ++octave) {
+			let octaveDiv = document.createElement("div");
+			octaveDiv.classList.add("FTVT-octaveDiv");
+
 			for (let note = -9; note <= 2; ++note) {
-				this.createNoteButton(new Note(note, octave));
+				const button = this.createNoteButton(new Note(note, octave));
+				octaveDiv.appendChild(button);
 			}
-			this.noteSelector.appendChild(document.createElement("br"));
+			this.noteSelector.appendChild(octaveDiv);
 		}
 	}
 }

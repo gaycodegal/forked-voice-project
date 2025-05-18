@@ -63,6 +63,7 @@ class UserInterface {
 		this.toggleRecordButton.title="Toggle Recording";
 		this.toggleRecordButton.style.backgroundColor="green";
 		this.toggleRecordButton.style.color="white";
+		this.toggleRecordButton.id = "FTVT-toggleRecordButton";
 		controlsDiv.appendChild(this.toggleRecordButton);
 		this.playButton=document.createElement("button");
 		this.playButton.type="button";
@@ -76,17 +77,20 @@ class UserInterface {
 		controlsDiv.appendChild(showLicenseButton);
 		showLicenseButton.outerHTML="<button popovertarget='FTVT-license' title='show License'>⚖️</button>";
 
+		let targetFrequencyBlock = document.createElement("div");
+		targetFrequencyBlock.classList.add("FTVT-frequencyBlock");
 		let targetFrequencySelectorLabel = document.createElement("label");
 		targetFrequencySelectorLabel.htmlFor="TargetFrequencySelector";
-		targetFrequencySelectorLabel.innerHTML="🎯: ";
-		controlsDiv.appendChild(targetFrequencySelectorLabel)
+		targetFrequencySelectorLabel.innerHTML="🎯";
+		targetFrequencyBlock.appendChild(targetFrequencySelectorLabel)
 		this.targetFrequencySelector = document.createElement("input");
 		this.targetFrequencySelector.type="number";
 		this.targetFrequencySelector.min="0";
 		this.targetFrequencySelector.value="250";
 		this.targetFrequencySelector.step="any";
-		controlsDiv.appendChild(this.targetFrequencySelector);
-		controlsDiv.appendChild(document.createTextNode(" Hz"));
+		targetFrequencyBlock.appendChild(this.targetFrequencySelector);
+		targetFrequencyBlock.appendChild(document.createTextNode(" Hz"));
+		controlsDiv.appendChild(targetFrequencyBlock);
 
 		this.noteSelector = document.createElement("div");
 		this.noteSelector.id = 'FTVT-noteSelector';

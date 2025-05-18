@@ -31,6 +31,7 @@
 				:root {
 					color-scheme: light;
 					--main-col: black;
+					--inv-col: white;
 					--bg-col: #f9d3ff;
 					--accent-col: purple;
 					--accent-bg-col: #f2b0fc;
@@ -46,6 +47,7 @@
 				:root {
 					color-scheme: dark;
 					--main-col: white;
+					--inv-col: black;
 					--bg-col: #2a111e;
 					--accent-col: fuchsia;
 					--accent-bg-col: #27142d;
@@ -128,8 +130,8 @@
 				height: 100%;
 			}
 
-			button, .downloadLink {
-				min-width: 3cm;
+			button, .downloadLink, .FTVT-frequencyBlock {
+				min-width: calc((var(--max-width) - 11*10px)/12);
 				min-height: 1.5cm;
 				margin: 5px;
 				font-size: 2rem;
@@ -149,6 +151,33 @@
 			}
 			#FTVT-controls input, #FTVT-controls select {
 				font-size: 2rem;
+			}
+			.FTVT-frequencyBlock {
+				input {
+					min-height: calc(1.5cm - 4px);
+					border-radius: 0;
+					border: none;
+					margin-left: 0.2em;
+				}
+				padding-left: 0.2em;
+				padding-right: 0.2em;
+			}
+			.FTVT-frequencyBlock:has(:focus) {
+				border-color: cyan;
+				background-color: var(--inv-col);
+				input {
+					background-color: var(--inv-col);
+					outline: none;
+				}
+			}
+			.FTVT-frequencyBlock:has(:invalid) {
+				border-color: orange;
+				background-color: yellow;
+				color: black;
+				input {
+					color: red;
+					background-color: yellow;
+				}
 			}
 
 			footer {
@@ -181,13 +210,6 @@
 				appearance: textfield;
 				text-align: right;
 				font-family: monospace;
-			}
-			input:valid {
-				border-color: var(--accent-col);
-			}
-			input:invalid {
-				border-color: orange;
-				background-color: yellow;
 			}
 			#FTVT-threshold {
 				display: flex;
@@ -258,10 +280,18 @@
 			.FTVT-language {
 				font-style: italic;
 			}
-			#FTVT-noteSelector {
+			#FTVT-toggleRecordButton {
+				margin-left: 0;
+			}
+			.FTVT-octaveDiv{
 				display: flex;
 				flex-wrap: wrap;
-				justify-content: space-between;
+				:first-child {
+					margin-left: 0;
+				}
+				:last-child {
+					margin-right: 0;
+				}
 			}
 		</style>
 		<script src="main.js"></script>

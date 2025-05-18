@@ -93,7 +93,7 @@
 			}
 
 			table {
-				width: var(--max-width);
+				width: calc(var(--max-width) - 2em);
 				margin-left: auto;
 				margin-right: auto;
 				border: 2px solid var(--accent-col);
@@ -133,7 +133,7 @@
 			}
 
 			button, .downloadLink, .FTVT-frequencyBlock {
-				min-width: calc((var(--max-width) - 11*10px)/12);
+				min-width: calc((var(--max-width) - 1em - 11*10px)/12);
 				min-height: 1.5cm;
 				margin: 5px;
 				font-size: 2rem;
@@ -274,6 +274,8 @@
 				max-width: var(--max-width);
 				margin-left: auto;
 				margin-right: auto;
+				padding-left: 0.5em;
+				padding-right: 0.5em;
 			}
 			.FTVT-popover {
 				max-width: var(--max-width);
@@ -289,12 +291,10 @@
 			.FTVT-octaveDiv, .FTVT-mainControls {
 				display: flex;
 				flex-wrap: wrap;
-				:first-child {
-					margin-left: 0;
-				}
-				:last-child {
-					margin-right: 0;
-				}
+				button, label {margin: 0};
+				gap: 10px;
+				margin-top: 10px;
+				margin-bottom: 10px;
 			}
 			.FTVT-flexSpacer{
 				flex-grow: 1;

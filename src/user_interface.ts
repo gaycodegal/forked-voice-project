@@ -1,13 +1,13 @@
 import {DOCUMENTATION} from "./documentation"
 
+import {TextDisplayElement} from "./texts"
+
 export class UserInterface {
 	root: HTMLElement;
 	canvas: HTMLCanvasElement;
 	freqOut: HTMLOutputElement;
 	volumeSelector: HTMLInputElement;
-	languageSelector: HTMLSelectElement;
-	textSelector: HTMLSelectElement;
-	textDisplay: HTMLQuoteElement;
+	textDisplay: TextDisplayElement;
 	targetFrequencySelector: HTMLInputElement;
 	playButton: HTMLButtonElement;
 	noteSelector: HTMLDivElement;
@@ -33,17 +33,8 @@ export class UserInterface {
 		this.volumeSelector = volumeSelector;
 		controlsDiv.appendChild(canvasControls);
 
-
-		this.languageSelector = document.createElement("select");
-		this.languageSelector.id = "FTVT-languageSelector";
-		controlsDiv.appendChild(this.languageSelector);
-		this.textSelector = document.createElement("select");
-		this.textSelector.id = "FTVT-textSelector";
-		controlsDiv.appendChild(this.textSelector);
-
-		this.textDisplay = document.createElement("blockquote");
-		this.textDisplay.id="FTVT-textDisplay";
-		controlsDiv.appendChild(this.textDisplay);
+		this.textDisplay = new TextDisplayElement();
+		controlsDiv.appendChild(this.textDisplay.getRoot());
 
 		let mainControlsDiv = document.createElement("div");
 		mainControlsDiv.classList.add("FTVT-mainControls");

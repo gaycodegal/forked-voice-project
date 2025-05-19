@@ -247,6 +247,7 @@ ul.no-bullets {
 	background-color: var(--accent-bg-col);
 	border-radius: var(--border-radius);
 	border-top-left-radius: 0;
+	border-top-right-radius: 0;
 	hyphens: auto;
 	p {
 		margin-top: 0.3em;
@@ -321,5 +322,17 @@ label {
 		width: calc(50% - 5px);
 		min-width: 20em;
 		flex-grow: 1;
+	}
+}
+#FTVT-selectorDiv {
+	display: flex;
+	select {
+		text-overflow: ellipsis;
+		overflow-x: hidden;
+		flex-shrink: 0;
+	}
+	:last-child {
+		flex-grow: 1;
+		flex-shrink: 1;
 	}
 }

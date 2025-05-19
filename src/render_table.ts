@@ -3,20 +3,19 @@ import {UserInterface} from "./user_interface"
 import {RecordStats, Quantiles} from "./recording"
 import {Gender, Genders} from "./gender_pitch"
 import {frequencyToHTML} from "./notes"
+import {TextDisplayElement} from "./texts"
 
 export class TableManager {
 
 	numRecordings : number = 0;
 	resultsTable: HTMLElement;
+	textDisplay: TextDisplayElement;
 	targetFrequencySelector: HTMLInputElement;
-	languageSelector: HTMLSelectElement;
-	textSelector: HTMLSelectElement;
 
 	constructor(ui: UserInterface) {
 		this.resultsTable = ui.resultsTable;
+		this.textDisplay = ui.textDisplay;
 		this.targetFrequencySelector = ui.targetFrequencySelector;
-		this.languageSelector = ui.languageSelector;
-		this.textSelector = ui.textSelector;
 	}
 
 	renderCounter() : HTMLTableCellElement {
@@ -61,11 +60,11 @@ export class TableManager {
 	renderMetaCell() : HTMLTableCellElement {
 		let td = document.createElement("td");
 		let textNameSpan = document.createElement("span");
-		textNameSpan.innerHTML = this.textSelector.value;
+		textNameSpan.innerHTML = this.textDisplay.getSelectedTextName();
 		td.appendChild(textNameSpan);
 		td.appendChild(document.createElement("br"));
 		let languageSpan = document.createElement("span");
-		languageSpan.innerHTML = this.languageSelector.value;
+		languageSpan.innerHTML = this.textDisplay.getSelectedLanguage();
 		languageSpan.classList.add("FTVT-language");
 		td.appendChild(languageSpan);
 		td.appendChild(document.createElement("br"));

@@ -1,17 +1,38 @@
 
 import {UserInterface} from "./user_interface";
 
-import { TEXTS_TABLE } from "./raw_texts"
+import { TEXTS_TABLE } from "./raw_texts";
 
-export class TextManager {
+function clearSelector(element: HTMLSelectElement) {
+	var i, L = element.options.length - 1;
+	for(i = L; i >= 0; i--) {
+		element.remove(i);
+	}
+}
+
+export class TextDisplayElement {
+	root: HTMLDivElement;
 	languageSelector: HTMLSelectElement;
 	textSelector: HTMLSelectElement;
 	textDisplay: HTMLQuoteElement;
 
-	constructor(ui: UserInterface) {
-		this.languageSelector = ui.languageSelector;
-		this.textSelector = ui.textSelector;
-		this.textDisplay = ui.textDisplay;
+	constructor() {
+		this.root = document.createElement("div");
+		let selectorDiv = document.createElement("div");
+		selectorDiv.id = "FTVT-selectorDiv";
+		this.languageSelector = document.createElement("select");
+		this.languageSelector.id = "FTVT-languageSelector";
+		selectorDiv.appendChild(this.languageSelector);
+
+		this.textSelector = document.createElement("select");
+		this.textSelector.id = "FTVT-textSelector";
+		selectorDiv.appendChild(this.textSelector);
+
+		this.root.appendChild(selectorDiv);
+
+		this.textDisplay = document.createElement("blockquote");
+		this.textDisplay.id="FTVT-textDisplay";
+		this.root.appendChild(this.textDisplay);
 		for(let language in TEXTS_TABLE) {
 			const option = new Option(language);
 			const languageCode = TEXTS_TABLE[language]['languageCode'];
@@ -29,11 +50,16 @@ export class TextManager {
 		this.getSelectedText();
 	}
 
-	public static clearSelector(element: HTMLSelectElement) {
-		var i, L = element.options.length - 1;
-		for(i = L; i >= 0; i--) {
-			element.remove(i);
-		}
+	getRoot(): HTMLDivElement {
+		return this.root;
+	}
+
+	getSelectedTextName(): string {
+		return this.textSelector.value;
+	}
+
+	getSelectedLanguage(): string {
+		return this.languageSelector.value;
 	}
 
 	getSelectedText() {
@@ -49,7 +75,7 @@ export class TextManager {
 	onLanguageSelect() {
 		const language = this.languageSelector.value;
 		const languageCode = TEXTS_TABLE[language]['languageCode'];
-		TextManager.clearSelector(this.textSelector);
+		clearSelector(this.textSelector);
 		for(let key in TEXTS_TABLE[language]) {
 			if (key != "languageCode") {
 				this.textSelector.add(new Option(key));

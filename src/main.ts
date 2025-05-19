@@ -1,7 +1,7 @@
 import {UserInterface} from "./user_interface"
 import {Recorder} from "./recording"
 import {Spectrum} from "./spectrum"
-import {TextManager} from "./texts"
+//import {TextManager} from "./texts"
 import {TargetFrequencyManager} from "./target_frequency"
 import {TableManager} from "./render_table"
 import {Threshold} from "./threshold"
@@ -15,7 +15,7 @@ window.addEventListener("load", (event) => {
 	}
 	let ui = new UserInterface(root);
 	let threshold = new Threshold(ui);
-	let textManager = new TextManager(ui);
+	//let textManager = new TextManager(ui);
 	let tableManager = new TableManager(ui);
 	let recorder = new Recorder(ui, tableManager);
 	let targetFrequencyManager = new TargetFrequencyManager(ui);

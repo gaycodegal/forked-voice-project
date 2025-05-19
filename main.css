@@ -316,9 +316,9 @@ label {
 #FTVT-canvasControls {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 10px;
+	gap: 0px 5px;
 	label {
-		width: calc(50% - 10px);
+		width: calc(50% - 5px);
 		min-width: 20em;
 		flex-grow: 1;
 	}

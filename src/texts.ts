@@ -18,20 +18,20 @@ export class TextDisplayElement {
 
 	constructor() {
 		this.root = document.createElement("div");
+		this.root.classList.add("FTVT-textDisplay");
 		let selectorDiv = document.createElement("div");
-		selectorDiv.id = "FTVT-selectorDiv";
+		selectorDiv.classList.add("FTVT-selectorDiv");
 		this.languageSelector = document.createElement("select");
-		this.languageSelector.id = "FTVT-languageSelector";
+		this.languageSelector.classList.add("FTVT-languageSelector");
 		selectorDiv.appendChild(this.languageSelector);
 
 		this.textSelector = document.createElement("select");
-		this.textSelector.id = "FTVT-textSelector";
+		this.textSelector.classList.add("FTVT-textSelector");
 		selectorDiv.appendChild(this.textSelector);
 
 		this.root.appendChild(selectorDiv);
 
 		this.textDisplay = document.createElement("blockquote");
-		this.textDisplay.id="FTVT-textDisplay";
 		this.root.appendChild(this.textDisplay);
 		for(let language in TEXTS_TABLE) {
 			const option = new Option(language);

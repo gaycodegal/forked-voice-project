@@ -138,6 +138,8 @@ export class UserInterface {
 			ret.innerHTML=content;
 			return ret;
 		}
+		let topLeft = document.createElement("td");
+		topLeft.width="2%";
 
 		let tableDiv =document.createElement("div");
 		let table = document.createElement("table");
@@ -145,7 +147,7 @@ export class UserInterface {
 		table.appendChild(thead);
 		let tr = document.createElement("tr");
 		thead.appendChild(tr);
-		tr.appendChild(createTh("2%", ""));
+		tr.appendChild(topLeft);
 		tr.appendChild(createTh("3%", "⏬"));
 		tr.appendChild(createTh("3%", "♂️"));
 		tr.appendChild(createTh("3%", "⏺️"));

@@ -248,6 +248,10 @@ ul.no-bullets {
 	border-radius: var(--border-radius);
 	border-top-left-radius: 0;
 	hyphens: auto;
+	p {
+		margin-top: 0.3em;
+		margin-bottom: 0.3em;
+	}
 }
 header, #FTVT-controls {
 	font-size: 2rem;

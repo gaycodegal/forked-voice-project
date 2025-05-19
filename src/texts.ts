@@ -40,9 +40,9 @@ export class TextManager {
 		const lang = this.languageSelector.value;
 		let text = this.textSelector.value;
 		if (lang in TEXTS_TABLE && text in TEXTS_TABLE[lang]){
-			this.textDisplay.innerText = TEXTS_TABLE[lang][text];
+			this.textDisplay.innerHTML = TEXTS_TABLE[lang][text];
 		} else {
-			this.textDisplay.innerText = "";
+			this.textDisplay.innerHTML = "";
 		}
 	}
 

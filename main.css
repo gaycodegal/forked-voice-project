@@ -313,3 +313,13 @@ label {
 		line-height: 0;
 	}
 }
+#FTVT-canvasControls {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	label {
+		width: calc(50% - 10px);
+		min-width: 20em;
+		flex-grow: 1;
+	}
+}

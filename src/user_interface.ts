@@ -3,11 +3,11 @@ import {DOCUMENTATION} from "./documentation"
 export class UserInterface {
 	root: HTMLElement;
 	canvas: HTMLCanvasElement;
+	freqOut: HTMLOutputElement;
 	volumeSelector: HTMLInputElement;
 	languageSelector: HTMLSelectElement;
 	textSelector: HTMLSelectElement;
 	textDisplay: HTMLQuoteElement;
-	freqOut: HTMLOutputElement;
 	targetFrequencySelector: HTMLInputElement;
 	playButton: HTMLButtonElement;
 	noteSelector: HTMLDivElement;
@@ -28,27 +28,10 @@ export class UserInterface {
 		this.root.appendChild(controlsDiv);
 		controlsDiv.id="FTVT-controls";
 
-		let freqOutLabel = document.createElement("label");
-		freqOutLabel.innerHTML = "Main Frequency:";
-		this.freqOut = document.createElement("output");
-		freqOutLabel.appendChild(this.freqOut);
-		controlsDiv.appendChild(freqOutLabel);
-
-		let thresholdDiv = document.createElement("label");
-		thresholdDiv.id = "FTVT-threshold";
-		let volumeLabel = document.createElement("span");
-		volumeLabel.innerHTML = "Volume-Threshold:";
-		volumeLabel.style.flexShrink = "0";
-		thresholdDiv.appendChild(volumeLabel)
-		this.volumeSelector = document.createElement("input");
-		this.volumeSelector.type = "range";
-		this.volumeSelector.min = "0";
-		this.volumeSelector.max = "255";
-		this.volumeSelector.step="1";
-		this.volumeSelector.value="32";
-		this.volumeSelector.style.flexGrow = "1";
-		thresholdDiv.appendChild(this.volumeSelector);
-		controlsDiv.appendChild(thresholdDiv);
+		let [canvasControls, freqOut, volumeSelector] = this.createCanvasControls();
+		this.freqOut = freqOut;
+		this.volumeSelector = volumeSelector;
+		controlsDiv.appendChild(canvasControls);
 
 
 		this.languageSelector = document.createElement("select");
@@ -117,6 +100,33 @@ export class UserInterface {
 		controlsDiv.appendChild(this.noteSelector);
 
 		this.resultsTable = this.createResultsTable();
+	}
+
+	private createCanvasControls() : [HTMLDivElement, HTMLOutputElement, HTMLInputElement] {
+		let ret = document.createElement("div");
+		ret.id = "FTVT-canvasControls";
+		let freqOutLabel = document.createElement("label");
+		freqOutLabel.innerHTML = "Main Frequency:";
+		let freqOut = document.createElement("output");
+		freqOutLabel.appendChild(freqOut);
+		ret.appendChild(freqOutLabel);
+
+		let thresholdDiv = document.createElement("label");
+		thresholdDiv.id = "FTVT-threshold";
+		let volumeLabel = document.createElement("span");
+		volumeLabel.innerHTML = "Volume-Threshold:";
+		volumeLabel.style.flexShrink = "0";
+		thresholdDiv.appendChild(volumeLabel)
+		let volumeSelector = document.createElement("input");
+		volumeSelector.type = "range";
+		volumeSelector.min = "0";
+		volumeSelector.max = "255";
+		volumeSelector.step="1";
+		volumeSelector.value="32";
+		volumeSelector.style.flexGrow = "1";
+		thresholdDiv.appendChild(volumeSelector);
+		ret.appendChild(thresholdDiv);
+		return [ret, freqOut, volumeSelector];
 	}
 
 	private createDocumentation(): HTMLDivElement {

@@ -1,11 +1,9 @@
-#pragma once
+import {Note} from "./notes"
+import {frequencyToColor} from "./gender_pitch"
 
-#include "notes.ts"
-#include "gender_pitch.ts"
+import {UserInterface} from "./user_interface"
 
-#include "user_interface.ts"
-
-class TargetFrequencyManager {
+export class TargetFrequencyManager {
 	context: AudioContext;
 	targetFrequencySelector: HTMLInputElement;
 	playButton: HTMLButtonElement;

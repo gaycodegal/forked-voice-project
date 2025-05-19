@@ -1,8 +1,6 @@
-#pragma once
+import {UserInterface} from "./user_interface"
 
-#include "user_interface.ts"
-
-class Threshold {
+export class Threshold {
 	currentThreshold : number = 0;
 
 	constructor(ui: UserInterface) {

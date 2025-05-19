@@ -1,12 +1,10 @@
-#pragma once
-
-#include "color.ts"
+import {Color} from "./color"
 
 const ENBY_FREQUENCY_COLOR = Color.load("enby-freq-color", new Color(64,128,64));
 const MASC_FREQUENCY_COLOR = Color.load("masc-freq-color", new Color(64,64,255));
 const FEM_FREQUENCY_COLOR =  Color.load("fem-freq-color", new Color(255,64,64));
 
-enum Genders {
+export enum Genders {
 	InfraMasc,
 	Masc,
 	Enby,
@@ -14,7 +12,7 @@ enum Genders {
 	UltraFem,
 };
 
-class Gender {
+export class Gender {
 	value: Genders;
 
 	constructor(gender: Genders) {
@@ -56,6 +54,6 @@ class Gender {
 	}
 }
 
-function frequencyToColor(freq: number) : Color {
+export function frequencyToColor(freq: number) : Color {
 	return Gender.fromFrequency(freq).toColor();
 }

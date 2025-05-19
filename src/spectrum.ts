@@ -1,13 +1,14 @@
-#pragma once
+import {BaseFrequencyIndices} from "./frequencies"
+import {Threshold} from "./threshold"
+import {TargetFrequencyManager} from "./target_frequency"
+import {frequencyToColor} from "./gender_pitch"
+import {UserInterface} from "./user_interface"
+import {Recorder} from "./recording"
+import {Color} from "./color"
+import {mainFrequencyIndex} from "./frequencies"
+import {Note} from "./notes"
 
-#include "frequencies.ts"
-#include "threshold.ts"
-#include "target_frequency.ts"
-#include "gender_pitch.ts"
-#include "user_interface.ts"
-#include "recording.ts"
-
-class Spectrum {
+export class Spectrum {
 	maxDisplayFrequency : number = 1600;
 	hertzPerBin    : number = 0;
 	baseBand : BaseFrequencyIndices;

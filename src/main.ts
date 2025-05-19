@@ -1,9 +1,10 @@
-#include "user_interface.ts"
-#include "recording.ts"
-#include "spectrum.ts"
-#include "texts.ts"
-#include "target_frequency.ts"
-#include "render_table.ts"
+import {UserInterface} from "./user_interface"
+import {Recorder} from "./recording"
+import {Spectrum} from "./spectrum"
+import {TextManager} from "./texts"
+import {TargetFrequencyManager} from "./target_frequency"
+import {TableManager} from "./render_table"
+import {Threshold} from "./threshold"
 
 
 window.addEventListener("load", (event) => {

@@ -1,7 +1,4 @@
-#pragma once
-
-
-class Color {
+export class Color {
 	constructor(r: number, g: number, b:number, alpha: number = 255) {
 		this.r =r;
 		this.g =g;

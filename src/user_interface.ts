@@ -1,8 +1,6 @@
-#pragma once
+import {DOCUMENTATION} from "./documentation"
 
-#include "documentation.ts"
-
-class UserInterface {
+export class UserInterface {
 	root: HTMLElement;
 	canvas: HTMLCanvasElement;
 	volumeSelector: HTMLInputElement;

@@ -1,12 +1,9 @@
-#pragma once
 
-#include "user_interface.ts"
+import {UserInterface} from "./user_interface";
 
-const TEXTS_TABLE : {[language: string]: {[title: string]: string}} =
-#include "texts.json"
+import { TEXTS_TABLE } from "./raw_texts"
 
-
-class TextManager {
+export class TextManager {
 	languageSelector: HTMLSelectElement;
 	textSelector: HTMLSelectElement;
 	textDisplay: HTMLQuoteElement;

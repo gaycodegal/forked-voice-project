@@ -1,18 +1,20 @@
-#pragma once
 
-#include "notes.ts"
-#include "render_table.ts"
+import {Note} from "./notes"
+import {TableManager} from "./render_table"
+import {Gender, Genders} from "./gender_pitch"
+import {UserInterface} from "./user_interface"
+import {toIndex, stableSum} from "./utils"
 
 type GenderShare = {[key in Genders]: number};
-type Quantiles = {[key in string]: number};
+export type Quantiles = {[key in string]: number};
 
-interface RecordStats {
+export interface RecordStats {
 	shares: GenderShare;
 	average: number;
 	quantiles: Quantiles;
 }
 
-class Recorder {
+export class Recorder {
 	button : HTMLButtonElement;
 	currentRecording : number[] | null = null;
 	mediaRecorder: MediaRecorder | null = null;

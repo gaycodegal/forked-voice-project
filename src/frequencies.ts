@@ -1,8 +1,6 @@
-#pragma once
-
 const HARMONIC_DETECTION_FACTOR = 0.5;
 
-class BaseFrequencyIndices {
+export class BaseFrequencyIndices {
 	constructor (min: number, max: number) {
 		this.min = min;
 		this.max = max;
@@ -23,7 +21,7 @@ function isHarmonic(data: any, index: number, baseBand: BaseFrequencyIndices) : 
 	return false;
 }
 
-function mainFrequencyIndex(data: any, baseBand: BaseFrequencyIndices) : number {
+export function mainFrequencyIndex(data: any, baseBand: BaseFrequencyIndices) : number {
 	if (data.length < 1) {
 		throw "mainFrequencyIndex must only be called with non-empty arrays";
 	}

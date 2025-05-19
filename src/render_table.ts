@@ -1,9 +1,10 @@
-#pragma once
+import {stableSum} from "./utils"
+import {UserInterface} from "./user_interface"
+import {RecordStats, Quantiles} from "./recording"
+import {Gender, Genders} from "./gender_pitch"
+import {frequencyToHTML} from "./notes"
 
-#include "utils.ts"
-#include "user_interface.ts"
-
-class TableManager {
+export class TableManager {
 
 	numRecordings : number = 0;
 	resultsTable: HTMLElement;

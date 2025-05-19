@@ -1,4 +1,4 @@
-{
+export const TEXTS_TABLE : {[language: string]: {[title: string]: string}} = {
 	"English" : {
 		"languageCode": "en",
 		"Universal Declaration of Human Rights" :

@@ -1,7 +1,5 @@
-#pragma once
-
 /// sums the values in the provided array, but does so in a way that ensure numeric stability
-function stableSum(data: number[], low: number = 0, high: number = -1, split: number = 10) : number{
+export function stableSum(data: number[], low: number = 0, high: number = -1, split: number = 10) : number{
 	if (high < 0) {
 		high = data.length;
 	}
@@ -18,7 +16,7 @@ function stableSum(data: number[], low: number = 0, high: number = -1, split: nu
 
 }
 
-function toIndex(pos: number, length: number): number {
+export function toIndex(pos: number, length: number): number {
 	return Math.min(length, (Math.max(0, Math.round(pos*length))));
 }
 

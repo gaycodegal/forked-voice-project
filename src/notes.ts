@@ -1,10 +1,11 @@
-#pragma once
+import { frequencyToColor } from "./gender_pitch"
+
 
 const TUNING_PITCH = 440;
 
 const NOTE_NAMES : {[index: string]:  string} = {"-9": "C", "-8" : "C♯", "-7": "D", "-6": "D♯", "-5": "E", "-4": "F", "-3": "F♯" , "-2": "G", "-1": "G♯", "0": "A", "1": "A♯", "2": "B"};
 
-class Note {
+export class Note {
 	index: number;
 	octave: number;
 
@@ -38,7 +39,7 @@ function frequencyToString(freq: number) : string {
 	return freq.toFixed(2) + " Hz (" + Note.fromFrequency(freq).toString() + ")" ;
 }
 
-function frequencyToHTML(freq: number, label: string = "") : HTMLSpanElement {
+export function frequencyToHTML(freq: number, label: string = "") : HTMLSpanElement {
 	let span = document.createElement("span");
 	span.innerHTML = label + frequencyToString(freq);
 	span.style.color = frequencyToColor(freq).toString();

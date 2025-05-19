@@ -1,6 +1,4 @@
-#pragma once
-
-let DOCUMENTATION = {
+export const DOCUMENTATION = {
 	'about': "<div popover='auto' id='FTVT-about' class='FTVT-popover'>\
 		<h2>About this Application</h2>\
 		\

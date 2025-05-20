@@ -8,7 +8,7 @@ body {
 	margin-right: auto;
 }
 
-div:has(> table), div:has(#FTVT-canvas) {
+div:has(> table) /*,div:has(#FTVT-canvas)*/ {
 	overflow-x: auto;
 }
 
@@ -201,7 +201,6 @@ ul.no-bullets {
 	border-bottom: solid var(--accent-col);
 	background-color: var(--canvas-bg-col);
 	margin: 0;
-	width: 100%;
 	border-width: 3px;
 }
 header, #FTVT-controls {

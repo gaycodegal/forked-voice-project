@@ -33,6 +33,7 @@ export class Spectrum {
 	mainAnalyser: AnalyserNode;
 	playingAudioElement: HTMLAudioElement|null=null;
 	audioSink: HTMLAudioElement;
+	canvasHeight: number;
 
 	constructor(mediaStream: MediaStream, ui: UserInterface, tableManager: TableManager,recorder: Recorder, targetFrequencyManager: TargetFrequencyManager) {
 		this.baseBand = new BaseFrequencyIndices(0,0);
@@ -49,10 +50,9 @@ export class Spectrum {
 		this.audioSink = new Audio();
 
 		this.canvas.width = document.body.clientWidth;
-		document.body.addEventListener("resize", (event) => {
+		new ResizeObserver((entries) => {
 			this.canvas.width = document.body.clientWidth;
-		});
-		this.canvas.height = 512;// this.maxDisplayFrequency / this.hertzPerBin;
+		}).observe(document.body);
 		
 		let [analyser, hertzPerBin] = this.createAnalyser(mediaStream);
 		this.mainAnalyser = analyser;
@@ -61,7 +61,9 @@ export class Spectrum {
 		const indexMaxHumanFrequency = Math.round(450 / this.hertzPerBin);
 		const indexMinHumanFrequency = Math.round(85 / this.hertzPerBin);
 		this.baseBand = new BaseFrequencyIndices(indexMinHumanFrequency, indexMaxHumanFrequency);
-		this.canvas.height = this.maxDisplayFrequency / this.hertzPerBin;
+		this.canvasHeight = this.maxDisplayFrequency / this.hertzPerBin;
+		this.canvas.height = this.canvasHeight;
+		this.canvas.style.height = this.canvasHeight.toString();
 		let data = new Uint8Array(this.canvas.height);
 		setInterval(() => {
 			if (this.playbackInput) {

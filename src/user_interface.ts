@@ -1,9 +1,6 @@
 import {DOCUMENTATION} from "./documentation"
-
 import {TextDisplayElement} from "./texts"
-
 import {CanvasControls} from "./canvas_controls"
-
 import {Settings} from "./settings"
 
 export class UserInterface {

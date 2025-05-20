@@ -4,6 +4,7 @@ import {RecordStats, Quantiles} from "./recording"
 import {Gender, Genders} from "./gender_pitch"
 import {frequencyToHTML} from "./notes"
 import {TextDisplayElement} from "./texts"
+import {NoteDisplay} from "./note_display"
 
 export class TableManager {
 
@@ -50,7 +51,7 @@ export class TableManager {
 	addQuantilesToList(ul: HTMLUListElement,quantiles: Quantiles){
 		for (const key in quantiles) {
 			let li = document.createElement("li");
-			li.appendChild(frequencyToHTML(quantiles[key], key + ": "));
+			li.appendChild((new NoteDisplay(quantiles[key], key)).getRoot())
 			ul.appendChild(li);
 		}
 	}
@@ -61,7 +62,7 @@ export class TableManager {
 		ulAverageFrequency.classList.add("no-bullets");
 		this.addQuantilesToList(ulAverageFrequency, stats.quantiles);
 		let liAverageFrequency = document.createElement("li");
-		liAverageFrequency.appendChild(frequencyToHTML(stats.average, "avg: "));
+		liAverageFrequency.appendChild((new NoteDisplay(stats.average, "avg")).getRoot())
 		ulAverageFrequency.appendChild(liAverageFrequency);
 		tdAverageFrequency.appendChild(ulAverageFrequency);
 		tdAverageFrequency.classList.add("NumericTableField");
@@ -80,8 +81,9 @@ export class TableManager {
 		td.appendChild(languageSpan);
 		td.appendChild(document.createElement("br"));
 		let targetFrequencySpan = document.createElement("span");
-		targetFrequencySpan.appendChild(document.createTextNode("🎯: "));
-		targetFrequencySpan.appendChild(frequencyToHTML(Number(this.targetFrequencySelector.value)));
+		targetFrequencySpan.appendChild((new NoteDisplay(Number(this.targetFrequencySelector.value), "🎯")).getRoot())
+		//targetFrequencySpan.appendChild(document.createTextNode("🎯: "));
+		//targetFrequencySpan.appendChild(frequencyToHTML(Number(this.targetFrequencySelector.value)));
 		td.appendChild(targetFrequencySpan)
 
 		return td;

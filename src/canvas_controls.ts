@@ -2,12 +2,13 @@
 import {Note} from "./notes"
 import {frequencyToColor} from "./gender_pitch"
 import {Settings} from "./settings"
+import {NoteDisplay} from "./note_display"
 
 export class CanvasControls {
 	root: HTMLDivElement;
 	toggleRecordButton: HTMLButtonElement;
 	togglePlayButton: HTMLButtonElement;
-	freqOut: HTMLOutputElement;
+	noteDisplay: NoteDisplay;
 	volumeSelector: HTMLInputElement;
 
 	currentThreshold: number = 0;
@@ -30,8 +31,9 @@ export class CanvasControls {
 
 		let freqOutLabel = document.createElement("label");
 		freqOutLabel.innerHTML = "Main Frequency:";
-		this.freqOut = document.createElement("output");
-		freqOutLabel.appendChild(this.freqOut);
+		//this.freqOut = document.createElement("output");
+		this.noteDisplay = new NoteDisplay(null);
+		freqOutLabel.appendChild(this.noteDisplay.getRoot());
 		this.root.appendChild(freqOutLabel);
 
 		let thresholdDiv = document.createElement("label");
@@ -66,14 +68,7 @@ export class CanvasControls {
 	}
 
 	stateMainFrequency(freq: number | null) {
-		if (freq  == null) {
-			this.freqOut.innerHTML = "-<sub></sub>";
-			this.freqOut.style.color = "white";
-		} else {
-			const note = Note.fromFrequency(freq);
-			this.freqOut.innerHTML = (freq).toFixed(0) + " Hz (" +note.toString() + ")";
-			this.freqOut.style.color = frequencyToColor(freq).toString();
-		}
+		this.noteDisplay.setFrequency(freq);
 	}
 }
 

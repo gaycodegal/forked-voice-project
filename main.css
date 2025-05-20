@@ -36,8 +36,6 @@ td {
 
 .NumericTableField {
 	text-align: right;
-	font-family: monospace;
-	padding-right: 0.5em;
 }
 
 a {
@@ -116,6 +114,28 @@ button, .downloadLink, .FTVT-frequencyBlock {
 	input {
 		color: red;
 		background-color: yellow;
+	}
+}
+
+.FTVT-noteDisplay {
+	abbr {
+		text-decoration: none;
+	}
+	.FTVT-frequency {
+		display: inline-block;
+		width: 2.5em;
+		text-align: right;
+	}
+	.FTVT-note {
+		display: inline-block;
+		width: 2.5em;
+		text-align: left;
+	}
+	.FTVT-gender {
+		display: inline-block;
+		width: 1em;
+		text-align: right;
+		margin-right: 0.5em;
 	}
 }
 

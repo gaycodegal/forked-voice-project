@@ -52,6 +52,16 @@ export class Gender {
 	public toEnum(): Genders {
 		return this.value;
 	}
+
+	public toEmoji(): string {
+		switch(this.value) {
+			case Genders.InfraMasc: return "⏬";
+			case Genders.Masc:      return "♂️";
+			case Genders.Enby:      return "⏺️";
+			case Genders.Fem:       return "♀️";
+			case Genders.UltraFem:  return "⏫";
+		}
+	}
 }
 
 export function frequencyToColor(freq: number) : Color {

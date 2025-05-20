@@ -7,7 +7,7 @@ all: main.js icons/ftvt_512.png icons/ftvt_192.png
 
 main.js: $(SOURCES) $(DATA)
 	tsc --strict src/main.ts --noEmit  --resolveJsonModule --esModuleInterop -t esnext --moduleResolution bundler
-	esbuild --bundle src/main.ts --outfile=$@
+	esbuild --bundle --minify src/main.ts --outfile=$@
 
 icons:
 	mkdir icons

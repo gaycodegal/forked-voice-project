@@ -1,12 +1,15 @@
 SOURCES=$(wildcard src/*.ts)
 DATA=$(wildcard src/*.json)
 
-.PHONY: all
+.PHONY: all uncheckedBuild
 
 all: main.js icons/ftvt_512.png icons/ftvt_192.png
 
 main.js: $(SOURCES) $(DATA)
 	tsc --strict src/main.ts --noEmit  --resolveJsonModule --esModuleInterop -t esnext --moduleResolution bundler
+	esbuild --bundle --minify src/main.ts --outfile=$@
+
+uncheckedBuild:
 	esbuild --bundle --minify src/main.ts --outfile=$@
 
 icons:

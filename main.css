@@ -264,9 +264,12 @@ sub {
 	flex-wrap: wrap;
 	gap: 0px 5px;
 	label {
+		flex-grow: 1;
+	}
+	.FTVT-threshold {
 		width: calc(40%);
 		min-width: 20em;
-		flex-grow: 1;
+		flex-grow: 999;
 	}
 	button {
 		margin-left: 0;

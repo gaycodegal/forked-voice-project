@@ -1,5 +1,4 @@
 import {BaseFrequencyIndices} from "./frequencies"
-import {Threshold} from "./threshold"
 import {TargetFrequencyManager} from "./target_frequency"
 import {frequencyToColor} from "./gender_pitch"
 import {UserInterface} from "./user_interface"
@@ -8,6 +7,7 @@ import {Color} from "./color"
 import {mainFrequencyIndex} from "./frequencies"
 import {Note} from "./notes"
 import {TableManager} from "./render_table"
+import {CanvasControls} from "./canvas_controls"
 
 function getMediaStream(e: HTMLAudioElement): MediaStream {
 	// @ts-ignore
@@ -27,22 +27,23 @@ export class Spectrum {
 	baseBand : BaseFrequencyIndices;
 	canvas: HTMLCanvasElement;
 	ctx: CanvasRenderingContext2D;
-	threshold: Threshold;
-	freqOut: HTMLOutputElement;
+	canvasControls: CanvasControls;
 	recorder: Recorder;
 	targetFrequencyManager: TargetFrequencyManager;
 	mainAnalyser: AnalyserNode;
 	playingAudioElement: HTMLAudioElement|null=null;
 	audioSink: HTMLAudioElement;
 
-	constructor(mediaStream: MediaStream, ui: UserInterface, threshold: Threshold, tableManager: TableManager,recorder: Recorder, targetFrequencyManager: TargetFrequencyManager) {
+	constructor(mediaStream: MediaStream, ui: UserInterface, tableManager: TableManager,recorder: Recorder, targetFrequencyManager: TargetFrequencyManager) {
 		this.baseBand = new BaseFrequencyIndices(0,0);
 		this.canvas = ui.canvas;
 		const ctx = this.canvas.getContext("2d");
 		if (ctx == null) {throw "No 2d-context in canvas element";}
 		this.ctx = ctx;
-		this.threshold = threshold;
-		this.freqOut = ui.freqOut
+		this.canvasControls = ui.canvasControls;
+		this.canvasControls.togglePlayButton.addEventListener("click", (event) => {
+			this.toggleMainInputPlayback();
+		});
 		this.recorder = recorder;
 		this.targetFrequencyManager= targetFrequencyManager;
 		this.audioSink = new Audio();
@@ -77,13 +78,12 @@ export class Spectrum {
 		e.addEventListener("play", (event) => {
 			this.playingAudioElement?.pause();
 			this.playingAudioElement = e;
-			//let stream : MediaStream = e.mozCaptureStream();
 			let stream = getMediaStream(e);
 			let [analyser, _] = this.createAnalyser(stream);
 			this.audioSink.srcObject=stream;
 			this.audioSink.play();
 			this.stopMainInputPlayback();
-			//this.drawVerticalLine();
+			this.drawVerticalLine();
 			let data = new Uint8Array(this.canvas.height);
 			intervalId = setInterval(() => {
 				analyser.getByteFrequencyData(data);
@@ -109,7 +109,6 @@ export class Spectrum {
 
 	stopMainInputPlayback() {
 		this.playbackInput = false;
-		this.drawVerticalLine();
 	}
 	startMainInputPlayback() {
 		this.drawVerticalLine();
@@ -153,7 +152,7 @@ export class Spectrum {
 		const height = image.length / 4;
 		for (let i = 0; i < data.length ; ++i) {
 			let d = data[i]
-			image[4*(height-i)-1] = Math.max(this.threshold.get(),d);
+			image[4*(height-i)-1] = Math.max(this.canvasControls.getThreshold(),d);
 		}
 	}
 
@@ -163,29 +162,18 @@ export class Spectrum {
 		this.writePixel(image, index, Color.TARGET_FREQUENCY_COLOR);
 	}
 
-	stateMainFrequency(freq: number | null) {
-		if (freq  == null) {
-			this.freqOut.innerHTML = "-<sub></sub>";
-			this.freqOut.style.color = "white";
-		} else {
-			const note = Note.fromFrequency(freq);
-			this.freqOut.innerHTML = (freq).toFixed(0) + " Hz (" +note.toString() + ")";
-			this.freqOut.style.color = frequencyToColor(freq).toString();
-		}
-	}
-
 	markMainFrequency(image: Uint8ClampedArray, data: Uint8Array) {
 		const indexMaxFrequency = mainFrequencyIndex(data, this.baseBand);
 		const maxAmplitude = data[indexMaxFrequency];
-		if (maxAmplitude > this.threshold.get()) {
+		if (maxAmplitude > this.canvasControls.getThreshold()) {
 			const maxFrequency = indexMaxFrequency * this.hertzPerBin;
 			this.writePixel(image, indexMaxFrequency-1, Color.MAIN_FREQUENCY_COLOR);
 			this.writePixel(image, indexMaxFrequency,   Color.MAIN_FREQUENCY_COLOR);
 			this.writePixel(image, indexMaxFrequency+1, Color.MAIN_FREQUENCY_COLOR);
-			this.stateMainFrequency(maxFrequency);
+			this.canvasControls.stateMainFrequency(maxFrequency);
 			this.recorder.pushIfRecording(maxFrequency);
 		} else {
-			this.stateMainFrequency(null);
+			this.canvasControls.stateMainFrequency(null);
 		}
 	}
 

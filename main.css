@@ -111,11 +111,11 @@ tbody td {
 
 button, .downloadLink, .FTVT-frequencyBlock {
 	min-width: var(--button-width);
-	min-height: 1.5cm;
+	line-height: 2em;
 	margin: 5px;
 	font-size: 2rem;
 	border-color: var(--accent-col);
-	border-width: 2px;
+	border-width: 3px;
 	border-style: solid;
 	border-radius: var(--border-radius);
 	background-color: var(--accent-bg-col);
@@ -124,7 +124,7 @@ button, .downloadLink, .FTVT-frequencyBlock {
 	padding: 0;
 }
 .downloadLink {
-	line-height: calc(1.5cm - 4px);
+	line-height: 2em;
 	text-decoration: none;
 	padding: 0;
 }
@@ -287,14 +287,18 @@ label {
 		line-height: 0;
 	}
 }
-#FTVT-canvasControls {
+.FTVT-canvasControls {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 0px 5px;
 	label {
-		width: calc(50% - 5px);
+		width: calc(40%);
 		min-width: 20em;
 		flex-grow: 1;
+	}
+	button {
+		margin-left: 0;
+		margin-right: 0;
 	}
 }
 .FTVT-textDisplay {

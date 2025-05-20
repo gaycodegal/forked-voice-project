@@ -2,11 +2,12 @@ import {DOCUMENTATION} from "./documentation"
 
 import {TextDisplayElement} from "./texts"
 
+import {CanvasControls} from "./canvas_controls"
+
 export class UserInterface {
 	root: HTMLElement;
 	canvas: HTMLCanvasElement;
-	freqOut: HTMLOutputElement;
-	volumeSelector: HTMLInputElement;
+	canvasControls: CanvasControls;
 	textDisplay: TextDisplayElement;
 	targetFrequencySelector: HTMLInputElement;
 	playButton: HTMLButtonElement;
@@ -28,10 +29,8 @@ export class UserInterface {
 		this.root.appendChild(controlsDiv);
 		controlsDiv.id="FTVT-controls";
 
-		let [canvasControls, freqOut, volumeSelector] = this.createCanvasControls();
-		this.freqOut = freqOut;
-		this.volumeSelector = volumeSelector;
-		controlsDiv.appendChild(canvasControls);
+		this.canvasControls = new CanvasControls();
+		controlsDiv.appendChild(this.canvasControls.getRoot());
 
 		this.textDisplay = new TextDisplayElement();
 		controlsDiv.appendChild(this.textDisplay.getRoot());
@@ -91,33 +90,6 @@ export class UserInterface {
 		controlsDiv.appendChild(this.noteSelector);
 
 		this.resultsTable = this.createResultsTable();
-	}
-
-	private createCanvasControls() : [HTMLDivElement, HTMLOutputElement, HTMLInputElement] {
-		let ret = document.createElement("div");
-		ret.id = "FTVT-canvasControls";
-		let freqOutLabel = document.createElement("label");
-		freqOutLabel.innerHTML = "Main Frequency:";
-		let freqOut = document.createElement("output");
-		freqOutLabel.appendChild(freqOut);
-		ret.appendChild(freqOutLabel);
-
-		let thresholdDiv = document.createElement("label");
-		thresholdDiv.id = "FTVT-threshold";
-		let volumeLabel = document.createElement("span");
-		volumeLabel.innerHTML = "Volume-Threshold:";
-		volumeLabel.style.flexShrink = "0";
-		thresholdDiv.appendChild(volumeLabel)
-		let volumeSelector = document.createElement("input");
-		volumeSelector.type = "range";
-		volumeSelector.min = "0";
-		volumeSelector.max = "255";
-		volumeSelector.step="1";
-		volumeSelector.value="32";
-		volumeSelector.style.flexGrow = "1";
-		thresholdDiv.appendChild(volumeSelector);
-		ret.appendChild(thresholdDiv);
-		return [ret, freqOut, volumeSelector];
 	}
 
 	private createDocumentation(): HTMLDivElement {

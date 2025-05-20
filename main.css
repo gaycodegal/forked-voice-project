@@ -19,8 +19,10 @@ table {
 	border-top: 3px solid var(--accent-col);
 	border-bottom: 3px solid var(--accent-col);
 	border-collapse: collapse;
-	margin-top: 2em;
 	margin-bottom: 2em;
+}
+table:not(:has(tbody tr)) {
+	display: none;
 }
 th {
 	border-top: 3px solid var(--accent-col);
@@ -205,6 +207,9 @@ header, #FTVT-controls {
 	margin-right: auto;
 	padding-left: 0.5em;
 	padding-right: 0.5em;
+}
+#FTVT-controls {
+	margin-bottom: 2em;
 }
 .FTVT-popover {
 	width: 80%;

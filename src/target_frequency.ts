@@ -2,8 +2,10 @@ import {Note} from "./notes"
 import {frequencyToColor} from "./gender_pitch"
 
 import {UserInterface} from "./user_interface"
+import {Settings} from "./settings"
 
 export class TargetFrequencyManager {
+	settings: Settings;
 	context: AudioContext;
 	targetFrequencySelector: HTMLInputElement;
 	playButton: HTMLButtonElement;
@@ -11,6 +13,7 @@ export class TargetFrequencyManager {
 	oscillator: OscillatorNode|null;
 
 	constructor(ui: UserInterface) {
+		this.settings = ui.settings;
 		this.context = new window.AudioContext();
 		this.oscillator = null;
 		this.targetFrequencySelector = ui.targetFrequencySelector;
@@ -31,6 +34,7 @@ export class TargetFrequencyManager {
 
 	setTarget(value: number) {
 		this.targetFrequencySelector.value = String(value);
+		this.settings.storage.update("target frequency", value.toString());
 	}
 
 

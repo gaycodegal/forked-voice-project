@@ -1,6 +1,7 @@
 
 import {Note} from "./notes"
 import {frequencyToColor} from "./gender_pitch"
+import {Settings} from "./settings"
 
 export class CanvasControls {
 	root: HTMLDivElement;
@@ -11,7 +12,7 @@ export class CanvasControls {
 
 	currentThreshold: number = 0;
 
-	constructor() {
+	constructor(settings: Settings) {
 		this.root = document.createElement("div");
 		this.root.classList.add("FTVT-canvasControls");
 
@@ -44,13 +45,14 @@ export class CanvasControls {
 		this.volumeSelector.min = "0";
 		this.volumeSelector.max = "255";
 		this.volumeSelector.step="1";
-		this.volumeSelector.value="32";
+		this.volumeSelector.value=settings.storage.getOr("volume threshold", "32");
 		this.volumeSelector.style.flexGrow = "1";
 		thresholdDiv.appendChild(this.volumeSelector);
 		this.root.appendChild(thresholdDiv);
 
 		this.currentThreshold = Number(this.volumeSelector.value);
 		this.volumeSelector.addEventListener("change", (event) => {
+			settings.storage.update("volume threshold", this.volumeSelector.value);
 			this.currentThreshold = Number(this.volumeSelector.value);
 		});
 	}

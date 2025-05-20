@@ -16,21 +16,28 @@ table {
 	width: calc(var(--max-width) - 2em);
 	margin-left: auto;
 	margin-right: auto;
-	border: 2px solid var(--accent-col);
+	border-top: 3px solid var(--accent-col);
+	border-bottom: 3px solid var(--accent-col);
 	border-collapse: collapse;
+	margin-top: 2em;
+	margin-bottom: 2em;
 }
 th {
-	border: 2px solid var(--accent-col);
+	border-top: 3px solid var(--accent-col);
+	border-bottom: 3px solid var(--accent-col);
 	padding: 2px;
 }
 td {
-	border: 1px solid var(--accent-col);
-	padding: 5px;
-	text-align: center;
+	border-top: 2px solid var(--accent-col);
+	border-bottom: 2px solid var(--accent-col);
+	padding: 0px;
+	vertical-align: top;
 }
 
 .NumericTableField {
 	text-align: right;
+	font-family: monospace;
+	padding-right: 0.5em;
 }
 
 a {
@@ -64,6 +71,7 @@ button, .downloadLink, .FTVT-frequencyBlock {
 	background-color: var(--accent-bg-col);
 	display: inline-block;
 	vertical-align: bottom;
+	text-align: center;
 	padding: 0;
 }
 .downloadLink {
@@ -227,9 +235,9 @@ label {
 		height: calc(1.5cm-4px);
 		line-height: 2em;
 	}
-	sub {
-		line-height: 0;
-	}
+}
+sub {
+	line-height: 0;
 }
 .FTVT-canvasControls {
 	display: flex;

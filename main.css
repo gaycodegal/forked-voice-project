@@ -247,6 +247,7 @@ label {
 }
 .FTVT-textDisplay {
 	.FTVT-selectorDiv {
+		margin-top:5px;
 		display: flex;
 		select {
 			text-overflow: ellipsis;

@@ -159,6 +159,8 @@ select {
 	border-color: var(--accent-col);
 	border-width: 3px;
 	border-radius: var(--border-radius);
+	padding-left: 0.5em;
+	padding-right: 0.5em;
 }
 
 select:hover, button:hover, .downloadLink:hover {
@@ -287,9 +289,11 @@ sub {
 	.FTVT-selectorDiv {
 		margin-top:5px;
 		display: flex;
+		height: 2em;
 		select {
 			text-overflow: ellipsis;
 			overflow-x: hidden;
+			appearance: none;
 		}
 		.FTVT-languageSelector {
 			border-radius: 0;

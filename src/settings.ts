@@ -58,16 +58,39 @@ class Storage extends BooleanSetting {
 			return value;
 		}
 	}
+	getOrInsert(key: string, fallback: string) {
+		if (!this.available) {
+			return fallback;
+		}
+		const value = localStorage.getItem(key);
+		if (value == null) {
+			localStorage.setItem(key, fallback);
+			return fallback;
+		} else {
+			return value;
+		}
+
+	}
 	update(key: string, value: string) {
 		if (this.available()) {
 			localStorage.setItem(key, value);
 		}
+	}
+	increment(key: string, n: number): number {
+		if (!this.available()) {
+			return n+1;
+		}
+		const storageNum = Number(this.getOrInsert(key, n.toFixed(0)));
+		const ret = Math.max(storageNum, n) + 1;
+		localStorage.setItem(key, ret.toString());
+		return ret;
 	}
 }
 
 export class Settings {
 	root: HTMLDivElement;
 	storage: Storage;
+	recordingId: number;
 
 	constructor() {
 		this.root = document.createElement("div");
@@ -78,9 +101,15 @@ export class Settings {
 		this.root.innerHTML="<h2>Programm Settings</h2>";
 
 		this.storage = new Storage(this.root);
+		this.recordingId = Number(this.storage.getOr("recording index", "0"));
 	}
 
 	getRoot(): HTMLDivElement {
 		return this.root;
+	}
+
+	newRecordingId(): number {
+		this.recordingId = this.storage.increment("recording index", this.recordingId);
+		return this.recordingId;
 	}
 }

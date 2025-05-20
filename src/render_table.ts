@@ -5,6 +5,7 @@ import {Gender, Genders} from "./gender_pitch"
 import {frequencyToHTML} from "./notes"
 import {TextDisplayElement} from "./texts"
 import {NoteDisplay} from "./note_display"
+import {Settings} from "./settings"
 
 export class TableManager {
 
@@ -13,12 +14,14 @@ export class TableManager {
 	textDisplay: TextDisplayElement;
 	targetFrequencySelector: HTMLInputElement;
 	registerAudioCallbacks: {(e: HTMLAudioElement): void;}[];
+	settings: Settings;
 
 	constructor(ui: UserInterface) {
 		this.resultsTable = ui.resultsTable;
 		this.textDisplay = ui.textDisplay;
 		this.targetFrequencySelector = ui.targetFrequencySelector;
 		this.registerAudioCallbacks = [];
+		this.settings = ui.settings;
 	}
 
 	addAudioRegistrationFunction(f: {(e: HTMLAudioElement): void}) {
@@ -32,7 +35,7 @@ export class TableManager {
 
 	renderCounter() : HTMLTableCellElement {
 		let td = document.createElement("td");
-		td.innerHTML = "#" + (++(this.numRecordings)).toFixed(0);
+		td.innerHTML = "#" + this.settings.newRecordingId();
 		return td;
 	}
 
@@ -82,8 +85,6 @@ export class TableManager {
 		td.appendChild(document.createElement("br"));
 		let targetFrequencySpan = document.createElement("span");
 		targetFrequencySpan.appendChild((new NoteDisplay(Number(this.targetFrequencySelector.value), "🎯")).getRoot())
-		//targetFrequencySpan.appendChild(document.createTextNode("🎯: "));
-		//targetFrequencySpan.appendChild(frequencyToHTML(Number(this.targetFrequencySelector.value)));
 		td.appendChild(targetFrequencySpan)
 
 		return td;
@@ -94,7 +95,6 @@ export class TableManager {
 		const audioURL = window.URL.createObjectURL(blob);
 
 		const td = document.createElement("td");
-		// TODO: remove once links are turned to buttons:
 		td.classList.add("ActionField");
 
 		const audio = document.createElement("audio");

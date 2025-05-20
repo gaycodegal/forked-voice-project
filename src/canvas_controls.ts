@@ -4,6 +4,7 @@ import {frequencyToColor} from "./gender_pitch"
 
 export class CanvasControls {
 	root: HTMLDivElement;
+	toggleRecordButton: HTMLButtonElement;
 	togglePlayButton: HTMLButtonElement;
 	freqOut: HTMLOutputElement;
 	volumeSelector: HTMLInputElement;
@@ -13,6 +14,14 @@ export class CanvasControls {
 	constructor() {
 		this.root = document.createElement("div");
 		this.root.classList.add("FTVT-canvasControls");
+
+		this.toggleRecordButton = document.createElement("button");
+		this.toggleRecordButton.innerHTML="⏺️";
+		this.toggleRecordButton.title="Toggle Recording";
+		this.toggleRecordButton.style.backgroundColor="green";
+		this.toggleRecordButton.style.color="white";
+		this.toggleRecordButton.id = "FTVT-toggleRecordButton";
+		this.root.appendChild(this.toggleRecordButton);
 
 		this.togglePlayButton = document.createElement("button");
 		this.togglePlayButton.innerHTML="⏯️";

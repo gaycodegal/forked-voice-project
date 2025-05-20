@@ -12,7 +12,6 @@ export class UserInterface {
 	targetFrequencySelector: HTMLInputElement;
 	playButton: HTMLButtonElement;
 	noteSelector: HTMLDivElement;
-	toggleRecordButton: HTMLButtonElement;
 	resultsTable: HTMLElement;
 
 	constructor(root: HTMLElement) {
@@ -38,14 +37,6 @@ export class UserInterface {
 		let mainControlsDiv = document.createElement("div");
 		mainControlsDiv.classList.add("FTVT-mainControls");
 
-		this.toggleRecordButton = document.createElement("button");
-		this.toggleRecordButton.innerHTML="⏺️";
-		this.toggleRecordButton.title="Toggle Recording";
-		this.toggleRecordButton.style.backgroundColor="green";
-		this.toggleRecordButton.style.color="white";
-		this.toggleRecordButton.id = "FTVT-toggleRecordButton";
-		mainControlsDiv.appendChild(this.toggleRecordButton);
-		
 		this.playButton=document.createElement("button");
 		this.playButton.type="button";
 		this.playButton.innerHTML="🔊";

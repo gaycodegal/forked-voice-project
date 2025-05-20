@@ -22,7 +22,7 @@ export class Recorder {
 	tableManager: TableManager;
 
 	constructor(mediaStream: MediaStream, ui: UserInterface, tableManager: TableManager) {
-		this.button = ui.toggleRecordButton;
+		this.button = ui.canvasControls.toggleRecordButton;
 		this.tableManager = tableManager;
 		this.button.addEventListener("click", (event) => {
 			this.toggleRecording();

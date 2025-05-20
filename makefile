@@ -3,14 +3,19 @@ DATA=$(wildcard src/*.json)
 
 .PHONY: all uncheckedBuild
 
-all: main.js icons/ftvt_512.png icons/ftvt_192.png
+all: bundeled.html main.js icons/ftvt_512.png icons/ftvt_192.png
 
-main.js: $(SOURCES) $(DATA)
+bundeled.html: main.html main.js main.css custom.css makefile
+	./embed_resources.py -i main.html -o $@
+
+
+main.js: $(SOURCES) $(DATA) makefile
 	tsc --strict src/main.ts --noEmit  --resolveJsonModule --esModuleInterop -t esnext --moduleResolution bundler
 	esbuild --bundle --minify src/main.ts --outfile=$@
 
 uncheckedBuild:
 	esbuild --bundle --minify src/main.ts --outfile=main.js
+	./embed_resources.py -i main.html -o bundeled.html
 
 icons:
 	mkdir icons

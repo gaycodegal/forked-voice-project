@@ -11,11 +11,22 @@ export class TableManager {
 	resultsTable: HTMLElement;
 	textDisplay: TextDisplayElement;
 	targetFrequencySelector: HTMLInputElement;
+	registerAudioCallbacks: {(e: HTMLAudioElement): void;}[];
 
 	constructor(ui: UserInterface) {
 		this.resultsTable = ui.resultsTable;
 		this.textDisplay = ui.textDisplay;
 		this.targetFrequencySelector = ui.targetFrequencySelector;
+		this.registerAudioCallbacks = [];
+	}
+
+	addAudioRegistrationFunction(f: {(e: HTMLAudioElement): void}) {
+		this.registerAudioCallbacks.push(f);
+	}
+	registerAudio(e: HTMLAudioElement) {
+		for (const f of this.registerAudioCallbacks) {
+			f(e);
+		}
 	}
 
 	renderCounter() : HTMLTableCellElement {
@@ -87,6 +98,7 @@ export class TableManager {
 		const audio = document.createElement("audio");
 		audio.setAttribute("controls", "");
 		audio.src = audioURL;
+		this.registerAudio(audio);
 		td.appendChild(audio);
 		
 		td.appendChild(document.createElement("br"));

@@ -17,16 +17,17 @@ export interface RecordStats {
 export class Recorder {
 	button : HTMLButtonElement;
 	currentRecording : number[] | null = null;
-	mediaRecorder: MediaRecorder | null = null;
+	mediaRecorder: MediaRecorder;
 	mediaRecording: Blob[] = [];
 	tableManager: TableManager;
 
-	constructor(ui: UserInterface, tableManager: TableManager) {
+	constructor(mediaStream: MediaStream, ui: UserInterface, tableManager: TableManager) {
 		this.button = ui.toggleRecordButton;
 		this.tableManager = tableManager;
 		this.button.addEventListener("click", (event) => {
 			this.toggleRecording();
 		});
+		this.mediaRecorder = new MediaRecorder(mediaStream);
 	}
 
 	computeQuantiles(unsortedData: number[]): Quantiles {
@@ -90,8 +91,4 @@ export class Recorder {
 		}
 	}
 
-	setupRecorder(stream: MediaStream): MediaStream {
-		this.mediaRecorder = new MediaRecorder(stream);
-		return stream;
-	}
 }

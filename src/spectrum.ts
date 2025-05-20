@@ -7,10 +7,23 @@ import {Recorder} from "./recording"
 import {Color} from "./color"
 import {mainFrequencyIndex} from "./frequencies"
 import {Note} from "./notes"
+import {TableManager} from "./render_table"
+
+function getMediaStream(e: HTMLAudioElement): MediaStream {
+	// @ts-ignore
+	if (e.mozCaptureStream) {
+		// @ts-ignore
+		return e.mozCaptureStream();
+	} else {
+		// @ts-ignore
+		return e.captureStream();
+	}
+}
 
 export class Spectrum {
 	maxDisplayFrequency : number = 1600;
 	hertzPerBin    : number = 0;
+	playbackInput : boolean = true;
 	baseBand : BaseFrequencyIndices;
 	canvas: HTMLCanvasElement;
 	ctx: CanvasRenderingContext2D;
@@ -18,8 +31,11 @@ export class Spectrum {
 	freqOut: HTMLOutputElement;
 	recorder: Recorder;
 	targetFrequencyManager: TargetFrequencyManager;
+	mainAnalyser: AnalyserNode;
+	playingAudioElement: HTMLAudioElement|null=null;
+	audioSink: HTMLAudioElement;
 
-	constructor(ui: UserInterface, threshold: Threshold, recorder: Recorder, targetFrequencyManager: TargetFrequencyManager) {
+	constructor(mediaStream: MediaStream, ui: UserInterface, threshold: Threshold, tableManager: TableManager,recorder: Recorder, targetFrequencyManager: TargetFrequencyManager) {
 		this.baseBand = new BaseFrequencyIndices(0,0);
 		this.canvas = ui.canvas;
 		const ctx = this.canvas.getContext("2d");
@@ -29,11 +45,82 @@ export class Spectrum {
 		this.freqOut = ui.freqOut
 		this.recorder = recorder;
 		this.targetFrequencyManager= targetFrequencyManager;
-		navigator.mediaDevices
-			.getUserMedia({audio: true})
-			.then(this.spectrum.bind(this))
-			.then(recorder.setupRecorder.bind(recorder))
-			.catch(console.log);
+		this.audioSink = new Audio();
+
+		this.canvas.width = document.body.clientWidth;
+		document.body.addEventListener("resize", (event) => {
+			this.canvas.width = document.body.clientWidth;
+		});
+		this.canvas.height = 512;// this.maxDisplayFrequency / this.hertzPerBin;
+		
+		let [analyser, hertzPerBin] = this.createAnalyser(mediaStream);
+		this.mainAnalyser = analyser;
+		this.hertzPerBin = hertzPerBin;
+
+		const indexMaxHumanFrequency = Math.round(450 / this.hertzPerBin);
+		const indexMinHumanFrequency = Math.round(85 / this.hertzPerBin);
+		this.baseBand = new BaseFrequencyIndices(indexMinHumanFrequency, indexMaxHumanFrequency);
+		this.canvas.height = this.maxDisplayFrequency / this.hertzPerBin;
+		let data = new Uint8Array(this.canvas.height);
+		setInterval(() => {
+			if (this.playbackInput) {
+				analyser.getByteFrequencyData(data);
+				this.shiftLeft(1);
+				this.ctx.putImageData(this.renderAnalysis(data), this.canvas.width-1, 0);
+			}
+		}, 20);
+		tableManager.addAudioRegistrationFunction((e) => {this.registerAudioElement(e);});
+	}
+
+	registerAudioElement(e: HTMLAudioElement) {
+		let intervalId = 0;
+		e.addEventListener("play", (event) => {
+			this.playingAudioElement?.pause();
+			this.playingAudioElement = e;
+			//let stream : MediaStream = e.mozCaptureStream();
+			let stream = getMediaStream(e);
+			let [analyser, _] = this.createAnalyser(stream);
+			this.audioSink.srcObject=stream;
+			this.audioSink.play();
+			this.stopMainInputPlayback();
+			//this.drawVerticalLine();
+			let data = new Uint8Array(this.canvas.height);
+			intervalId = setInterval(() => {
+				analyser.getByteFrequencyData(data);
+				this.shiftLeft(1);
+				this.ctx.putImageData(this.renderAnalysis(data), this.canvas.width-1, 0);
+			}, 20);
+		});
+		e.addEventListener('pause', (event) => {
+			clearInterval(intervalId);
+			this.playingAudioElement = null;
+			this.audioSink.pause();
+			this.startMainInputPlayback();
+		});
+	}
+
+	drawVerticalLine() {
+		const height = this.ctx.canvas.height;
+		const width = this.ctx.canvas.width;
+		this.shiftLeft(5);
+		this.ctx.fillStyle= Color.MAIN_FREQUENCY_COLOR.toString();
+		this.ctx.fillRect(width-5, 0, 5, height);
+	}
+
+	stopMainInputPlayback() {
+		this.playbackInput = false;
+		this.drawVerticalLine();
+	}
+	startMainInputPlayback() {
+		this.drawVerticalLine();
+		this.playbackInput = true;
+	}
+	toggleMainInputPlayback() {
+		if (this.playbackInput) {
+			this.stopMainInputPlayback();
+		} else {
+			this.startMainInputPlayback();
+		}
 	}
 
 	shiftLeft(n: Number) {
@@ -43,7 +130,7 @@ export class Spectrum {
 		this.ctx.globalCompositeOperation = "source-over"
 	}
 
-	writePixel(out: Uint8Array, i: number, col: Color) {
+	writePixel(out: Uint8ClampedArray, i: number, col: Color) {
 		const j = out.length - 4*i;
 		out[j+0] = col.r;
 		out[j+1] = col.g;
@@ -56,13 +143,13 @@ export class Spectrum {
 		let imageData = this.ctx.createImageData(1,height);
 		let freq = 0;
 		for (let i = 0; i < imageData.data.length; ++i) {
-			this.writePixel(imageData.data as unknown as Uint8Array, i, frequencyToColor(freq));
+			this.writePixel(imageData.data, i, frequencyToColor(freq));
 			freq += this.hertzPerBin;
 		}
 		return imageData;
 	}
 
-	drawSpectrum(image: Uint8Array, data: Uint8Array) {
+	drawSpectrum(image: Uint8ClampedArray, data: Uint8Array) {
 		const height = image.length / 4;
 		for (let i = 0; i < data.length ; ++i) {
 			let d = data[i]
@@ -70,7 +157,7 @@ export class Spectrum {
 		}
 	}
 
-	markTargetFrequency(image: Uint8Array) {
+	markTargetFrequency(image: Uint8ClampedArray) {
 		const targetFrequency = this.targetFrequencyManager.target();
 		const index = Math.round(targetFrequency / this.hertzPerBin);
 		this.writePixel(image, index, Color.TARGET_FREQUENCY_COLOR);
@@ -87,7 +174,7 @@ export class Spectrum {
 		}
 	}
 
-	markMainFrequency(image: Uint8Array, data: Uint8Array) {
+	markMainFrequency(image: Uint8ClampedArray, data: Uint8Array) {
 		const indexMaxFrequency = mainFrequencyIndex(data, this.baseBand);
 		const maxAmplitude = data[indexMaxFrequency];
 		if (maxAmplitude > this.threshold.get()) {
@@ -111,33 +198,14 @@ export class Spectrum {
 		return imageData;
 	}
 
-	spectrum(stream: MediaStream): MediaStream {
+	createAnalyser(stream: MediaStream): [AnalyserNode, number] {
 		const audioCtx = new AudioContext();
 		const analyser = audioCtx.createAnalyser();
 		const maxFrequency = audioCtx.sampleRate / 2;
 		analyser.fftSize=1024*32;
 		analyser.smoothingTimeConstant = 0.0;
 		audioCtx.createMediaStreamSource(stream).connect(analyser);
-		this.hertzPerBin = maxFrequency / analyser.frequencyBinCount;
-
-		const indexMaxHumanFrequency = Math.round(450 / this.hertzPerBin);
-		const indexMinHumanFrequency = Math.round(85 / this.hertzPerBin);
-		this.baseBand = new BaseFrequencyIndices(indexMinHumanFrequency, indexMaxHumanFrequency);
-
-
-		this.canvas.width = document.body.clientWidth;
-		document.body.addEventListener("resize", (event) => {
-			this.canvas.width = document.body.clientWidth;
-		});
-		this.canvas.height = this.maxDisplayFrequency / this.hertzPerBin;
-
-		let data = new Uint8Array(this.canvas.height);
-		setInterval(() => {
-			this.shiftLeft(1);
-			analyser.getByteFrequencyData(data);
-			this.ctx.putImageData(this.renderAnalysis(data), this.canvas.width-1, 0);
-		}, 20);
-
-		return stream;
-	};
+		const hertzPerBin = maxFrequency / analyser.frequencyBinCount;
+		return [analyser, hertzPerBin];
+	}
 }

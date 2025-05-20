@@ -10,7 +10,7 @@ main.js: $(SOURCES) $(DATA)
 	esbuild --bundle --minify src/main.ts --outfile=$@
 
 uncheckedBuild:
-	esbuild --bundle --minify src/main.ts --outfile=$@
+	esbuild --bundle --minify src/main.ts --outfile=main.js
 
 icons:
 	mkdir icons

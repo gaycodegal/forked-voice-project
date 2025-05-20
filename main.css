@@ -24,9 +24,11 @@ table {
 table:not(:has(tbody tr)) {
 	display: none;
 }
-th {
+thead {
 	border-top: 3px solid var(--accent-col);
 	border-bottom: 3px solid var(--accent-col);
+}
+th {
 	padding: 2px;
 }
 td {

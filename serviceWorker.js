@@ -2,7 +2,9 @@
 const cachedResources = [
 	'/',
 	'/favicon.svg',
-	'/manifest.json'
+	'/manifest.json',
+	'/icons/ftvt_192.png',
+	'/icons/ftvt_512.png',
 ];
 
 const addResourcesToCache = async (resources) => {

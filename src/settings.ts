@@ -128,12 +128,31 @@ class BooleanSetting {
 	}
 }
 
+async function toggleCaching(enable: boolean) {
+	if (navigator.serviceWorker) {
+		if (enable) {
+			await navigator.serviceWorker.register("serviceWorker.js");
+		} else {
+			if (navigator.serviceWorker.controller) {
+				navigator.serviceWorker.controller.postMessage({
+					type: 'delete caches',
+				});
+			}
+			navigator.serviceWorker.getRegistrations().then(registrations => {
+				for (const registration of registrations) {
+					registration.unregister();
+				}
+			});
+		}
+	}
+}
 
 export class Settings {
 	root: HTMLDivElement;
 	storage: Storage;
 	recordingId: number;
 	enableStorage: BooleanSetting;
+	enableCaching: BooleanSetting;
 	autoplay: BooleanSetting;
 
 	constructor() {
@@ -145,23 +164,13 @@ export class Settings {
 		this.root.innerHTML="<h2>Programm Settings</h2>";
 
 		this.storage = new Storage(this.root);
-		this.enableStorage = new BooleanSetting(this.storage, this.root, "enable storage", "Store Settings in Browser", false);
+		this.enableStorage = new BooleanSetting(this.storage, this.root, "enable storage", "Store settings (locally).", false);
 		this.enableStorage.addToggleListener((b) => {this.storage.setAvailable(b);});
-		this.autoplay = new BooleanSetting(this.storage, this.root, "autoplay", "Automatically play Recording");
+		this.enableCaching = new BooleanSetting(this.storage, this.root, "enable caching", "Cache this application.", true, !!(navigator.serviceWorker) && !!(navigator.serviceWorker.controller));
+		this.enableCaching.addToggleListener((b) => {toggleCaching(b);});
+		this.autoplay = new BooleanSetting(this.storage, this.root, "autoplay", "Automatically play recordings.");
 		this.recordingId = Number(this.storage.getOrInsert("recording index", "0"));
 		this.storage.registerCollector(() => {return ["recording index", this.recordingId.toFixed(0)];});
-
-		let clearCachesButton = document.createElement("button");
-		clearCachesButton.classList.add("FTVT-wideButton");
-		clearCachesButton.innerHTML = "<b>Clear Caches</b>";
-		clearCachesButton.addEventListener("click", (event) => {
-			if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-				navigator.serviceWorker.controller.postMessage({
-					type: 'delete caches',
-				});
-			}
-		});
-		this.root.appendChild(clearCachesButton);
 	}
 
 	getRoot(): HTMLDivElement {

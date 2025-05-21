@@ -50,9 +50,7 @@ export class Spectrum {
 		this.audioSink = new Audio();
 
 		this.canvas.width = document.body.clientWidth;
-		new ResizeObserver((entries) => {
-			this.canvas.width = document.body.clientWidth;
-		}).observe(document.body);
+		new ResizeObserver((_) => {this.resizeCanvas();}).observe(document.body);
 		
 		let [analyser, hertzPerBin] = this.createAnalyser(mediaStream);
 		this.mainAnalyser = analyser;
@@ -73,6 +71,20 @@ export class Spectrum {
 			}
 		}, 20);
 		tableManager.addAudioRegistrationFunction((e) => {this.registerAudioElement(e);});
+	}
+
+	resizeCanvas() {
+		const oldWidth = this.canvas.width;
+		const newWidth = document.body.clientWidth;
+		if (oldWidth > newWidth) {
+			const oldImage = this.ctx.getImageData(oldWidth - newWidth, 0, newWidth, this.canvasHeight);
+			this.canvas.width = newWidth;
+			this.ctx.putImageData(oldImage, 0, 0);
+		} else {
+			const oldImage = this.ctx.getImageData(0, 0, oldWidth, this.canvasHeight);
+			this.canvas.width = newWidth;
+			this.ctx.putImageData(oldImage, newWidth-oldWidth, 0);
+		}
 	}
 
 	registerAudioElement(e: HTMLAudioElement) {

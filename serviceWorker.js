@@ -1,4 +1,10 @@
 
+const cachedResources = [
+	'/',
+	'/favicon.svg',
+	'/manifest.json'
+];
+
 const addResourcesToCache = async (resources) => {
 	const cache = await caches.open("v1");
 	await cache.addAll(resources);
@@ -11,11 +17,7 @@ const putInCache = async (request, response) => {
 
 self.addEventListener('install', (event) => {
 	event.waitUntil(
-		addResourcesToCache([
-		'/',
-		'/favicon.svg',
-		'/manifest.json'
-		])
+		addResourcesToCache(cachedResources)
 	);
 });
 
@@ -31,4 +33,13 @@ const cacheFirst = async (request, event) => {
 
 self.addEventListener("fetch", (event) => {
 	event.respondWith(cacheFirst(event.request, event));
+});
+
+self.addEventListener("message", async (event) => {
+	if (event.data && event.data.type === "delete caches") {
+		const cache = await caches.open("v1");
+		for (const resource of cachedResources) {
+			await cache.delete(resource);
+		}
+	}
 });

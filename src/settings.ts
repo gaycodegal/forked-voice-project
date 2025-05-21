@@ -150,6 +150,18 @@ export class Settings {
 		this.autoplay = new BooleanSetting(this.storage, this.root, "autoplay", "Automatically play Recording");
 		this.recordingId = Number(this.storage.getOrInsert("recording index", "0"));
 		this.storage.registerCollector(() => {return ["recording index", this.recordingId.toFixed(0)];});
+
+		let clearCachesButton = document.createElement("button");
+		clearCachesButton.classList.add("FTVT-wideButton");
+		clearCachesButton.innerHTML = "<b>Clear Caches</b>";
+		clearCachesButton.addEventListener("click", (event) => {
+			if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+				navigator.serviceWorker.controller.postMessage({
+					type: 'delete caches',
+				});
+			}
+		});
+		this.root.appendChild(clearCachesButton);
 	}
 
 	getRoot(): HTMLDivElement {

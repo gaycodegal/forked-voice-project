@@ -7,23 +7,22 @@ const cachedResources = [
 	'/icons/ftvt_512.png',
 ];
 
-const addResourcesToCache = async (resources) => {
+async function addResourcesToCache(resources:string[]) {
 	const cache = await caches.open("v1");
 	await cache.addAll(resources);
-};
+}
 
-const putInCache = async (request, response) => {
+const putInCache = async (request: Request, response: Response) => {
 	const cache = await caches.open("v1");
 	await cache.put(request, response);
 };
 
 self.addEventListener('install', (event) => {
-	event.waitUntil(
-		addResourcesToCache(cachedResources)
-	);
+	// @ts-ignore
+	event.waitUntil(addResourcesToCache(cachedResources));
 });
 
-const cacheFirst = async (request, event) => {
+async function cacheFirst(request: Request, event: ExtendableEvent) {
 	const responseFromCache = await caches.match(request);
 	if (responseFromCache) {
 		return responseFromCache;
@@ -33,15 +32,22 @@ const cacheFirst = async (request, event) => {
 	return responseFromNetwork;
 };
 
-self.addEventListener("fetch", (event) => {
+self.addEventListener("fetch", (event: Event) => {
+	// @ts-ignore
 	event.respondWith(cacheFirst(event.request, event));
 });
 
 self.addEventListener("message", async (event) => {
-	if (event.data && event.data.type === "delete caches") {
+	if (event.data) {
 		const cache = await caches.open("v1");
-		for (const resource of cachedResources) {
-			await cache.delete(resource);
+		switch (event.data.type ) {
+			case("delete caches"):
+				for (const resource of cachedResources) {
+					await cache.delete(resource);
+				}
+				break;
+			case "update caches":
+				await cache.addAll(cachedResources);
 		}
 	}
 });

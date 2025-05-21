@@ -23,6 +23,8 @@ export class UserInterface {
 		let canvasDiv = document.createElement("div");
 		this.canvas = document.createElement("canvas");
 		this.canvas.id="FTVT-canvas"
+		this.canvas.width = document.body.clientWidth;
+		this.canvas.height = "1188px"; // what I had locally, this is only an initial value anyways, so no need to be perfect.
 		canvasDiv.appendChild(this.canvas)
 		this.root.appendChild(canvasDiv)
 

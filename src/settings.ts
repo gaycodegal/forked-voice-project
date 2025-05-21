@@ -147,6 +147,14 @@ async function toggleCaching(enable: boolean) {
 	}
 }
 
+async function requestBackgroundUpdate() {
+	if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+		navigator.serviceWorker.controller.postMessage({
+			type: 'update caches',
+		});
+	}
+}
+
 export class Settings {
 	root: HTMLDivElement;
 	storage: Storage;
@@ -171,6 +179,15 @@ export class Settings {
 		this.autoplay = new BooleanSetting(this.storage, this.root, "autoplay", "Automatically play recordings.");
 		this.recordingId = Number(this.storage.getOrInsert("recording index", "0"));
 		this.storage.registerCollector(() => {return ["recording index", this.recordingId.toFixed(0)];});
+
+		let requestUpdateButton = document.createElement("button");
+		requestUpdateButton.innerText = "Attempt Update";
+		requestUpdateButton.classList.add("FTVT-wideButton");
+		requestUpdateButton.addEventListener("click", (event)=>{
+			requestBackgroundUpdate();
+			alert("Update requested.");
+		});
+		this.root.appendChild(requestUpdateButton);
 	}
 
 	getRoot(): HTMLDivElement {

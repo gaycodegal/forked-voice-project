@@ -340,3 +340,9 @@ sub {
 		}
 	}
 }
+.FTVT-wideButton {
+	width: 100%;
+	text-align: center;
+	font-weight: bold;
+	margin: 0;
+}

@@ -148,7 +148,8 @@ export class Settings {
 		this.enableStorage = new BooleanSetting(this.storage, this.root, "enable storage", "Store Settings in Browser", false);
 		this.enableStorage.addToggleListener((b) => {this.storage.setAvailable(b);});
 		this.autoplay = new BooleanSetting(this.storage, this.root, "autoplay", "Automatically play Recording");
-		this.recordingId = Number(this.storage.getOr("recording index", "0"));
+		this.recordingId = Number(this.storage.getOrInsert("recording index", "0"));
+		this.storage.registerCollector(() => {return ["recording index", this.recordingId.toFixed(0)];});
 	}
 
 	getRoot(): HTMLDivElement {
@@ -162,5 +163,17 @@ export class Settings {
 
 	autoplayRecording(): boolean {
 		return this.autoplay.getValue();
+	}
+
+	registerInput(name: string, input: HTMLInputElement, preferStoredValue: boolean = true) {
+		this.storage.registerCollector(() => {return [name, input.value];});
+		if (preferStoredValue) {
+			input.value = this.storage.getOrInsert(name, input.value);
+		} else {
+			this.storage.update(name, input.value);
+		}
+		input.addEventListener("change", (event) => {
+			this.storage.update(name, input.value);
+		});
 	}
 }

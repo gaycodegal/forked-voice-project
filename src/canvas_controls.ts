@@ -31,7 +31,6 @@ export class CanvasControls {
 
 		let freqOutLabel = document.createElement("label");
 		freqOutLabel.innerHTML = "Main Frequency:";
-		//this.freqOut = document.createElement("output");
 		this.noteDisplay = new NoteDisplay(null);
 		freqOutLabel.appendChild(this.noteDisplay.getRoot());
 		this.root.appendChild(freqOutLabel);
@@ -46,15 +45,15 @@ export class CanvasControls {
 		this.volumeSelector.type = "range";
 		this.volumeSelector.min = "0";
 		this.volumeSelector.max = "255";
-		this.volumeSelector.step="1";
-		this.volumeSelector.value=settings.storage.getOr("volume threshold", "32");
+		this.volumeSelector.step = "1";
+		this.volumeSelector.value = "32";
+		settings.registerInput("volume threshold", this.volumeSelector);
 		this.volumeSelector.style.flexGrow = "1";
 		thresholdDiv.appendChild(this.volumeSelector);
 		this.root.appendChild(thresholdDiv);
 
 		this.currentThreshold = Number(this.volumeSelector.value);
 		this.volumeSelector.addEventListener("change", (event) => {
-			settings.storage.update("volume threshold", this.volumeSelector.value);
 			this.currentThreshold = Number(this.volumeSelector.value);
 		});
 	}

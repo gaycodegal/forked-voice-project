@@ -34,7 +34,7 @@ export class TargetFrequencyManager {
 
 	setTarget(value: number) {
 		this.targetFrequencySelector.value = String(value);
-		this.settings.storage.update("target frequency", value.toString());
+		this.targetFrequencySelector.dispatchEvent(new Event("change"));
 	}
 
 

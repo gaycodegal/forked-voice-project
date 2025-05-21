@@ -129,14 +129,9 @@ function createTargetFrequencyBlock(parent: HTMLElement, settings: Settings): HT
 	let targetFrequencySelector = document.createElement("input");
 	targetFrequencySelector.type="number";
 	targetFrequencySelector.min="0";
-	targetFrequencySelector.value=settings.storage.getOr("target frequency", "250");
+	targetFrequencySelector.value="250";
 	targetFrequencySelector.step="any";
-	targetFrequencySelector.addEventListener("change", (event) => {
-		const num = targetFrequencySelector.value;
-		if (num) {
-			settings.storage.update("target frequency", num.toString());
-		}
-	});
+	settings.registerInput("target frequency", targetFrequencySelector);
 	targetFrequencyBlock.appendChild(targetFrequencySelector);
 	let targetFrequencyUnitLabel = document.createElement("abbr");
 	targetFrequencyUnitLabel.title="Hertz";

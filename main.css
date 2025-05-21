@@ -215,6 +215,7 @@ header, #FTVT-controls {
 	margin-bottom: 2em;
 }
 .FTVT-popover {
+	padding: 1em;
 	width: 80%;
 	max-width: calc(0.8 * var(--max-width));
 	max-height: 90vh;

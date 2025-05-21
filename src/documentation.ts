@@ -3,9 +3,8 @@ import version from "../version.json";
 export const DOCUMENTATION = {
 'about':
 "<div popover='auto' id='FTVT-about' class='FTVT-popover'> \
-<h2>About this Application</h2> \
-<p>Name: <span class='FTVT-application-name'>Free 🏳️‍⚧️ Voice Training</span></p> \
-<p>Version: <span class='FTVT-versionNumber'>" + version.value + "</span></p> \
+<h2>Free 🏳️‍⚧️ Voice Training (FTVT)</h2> \
+<p>Version <span class='FTVT-versionNumber'>" + version.value + "</span></p> \
 \
 <h3>How to use this app</h3> \
 <p> \
@@ -16,28 +15,6 @@ Higher harmonics in particular can be quite confusing, see <a href='https://tech
 <p> \
 Then try out all the other buttons, write a more detailed explanation and ask to have it added to this section, because the current version is mostly a placeholder. 😉︎ \
 </p> \
-\
-<h3>Contributing</h3> \
-<p> \
-Contributions are always very welcome! Check out the <a href='https://gitlab.com/FJW/free-trans-voice-analyzer/'>Project-Page on Gitlab</a>! \
-</p> \
-<p> \
-If you are a programmer and willing to put up with typescript you can either check out the existing <a href='https://gitlab.com/FJW/free-trans-voice-analyzer/-/issues'>issues</a>, \
-submit new features you thought of for yourself (but maybe coordinate before you put in too much time), \
-or do what is the most honorable task of all and reduce technical debt. \
-</p> \
-<p> \
-If you don’t know how to program, despair not: \
-Programmers are notoriously lazy when it comes to wrting documentation, which in this case even includes advice for voice-training. \
-Help there would be very valuable. \
-You can also submit texts to read, especially texts in languages that are not yet covered (just make sure they are in the public domain to avoid licensing issues). \
-</p> \
-\
-<h4>Contributors</h4> \
-<ul> \
-<li>This project is currently maintained by <a href='https://fiona.onl'>Fiona</a> (<a href='https://blahaj.zone/@Fiona'>🦈</a>), who also started it.</li> \
-<li><a href='https://leonora.app/'>Leonora</a> (<a href='https://helvede.net/@Herover'>🦣</a>) added the ability to record audio-files and save them.</li> \
-</ul> \
 \
 <h3>Background</h3> \
 <p> \
@@ -71,6 +48,28 @@ No external ressources of any kind in any form. \
 Your meta-data stay between you, the webserver (if any) and your internet-service-provider; your data stay with you alone, unless you explicitly ask the webserver to store something for you. \
 (At this time there is no functionality to store anything server-side, this provision is just here to cover any potential future features.) \
 </li> \
+</ul> \
+\
+<h3>Contributing</h3> \
+<p> \
+Contributions are always very welcome! Check out the <a href='https://gitlab.com/FJW/free-trans-voice-analyzer/'>Project-Page on Gitlab</a>! \
+</p> \
+<p> \
+If you are a programmer and willing to put up with typescript you can either check out the existing <a href='https://gitlab.com/FJW/free-trans-voice-analyzer/-/issues'>issues</a>, \
+submit new features you thought of for yourself (but maybe coordinate before you put in too much time), \
+or do what is the most honorable task of all and reduce technical debt. \
+</p> \
+<p> \
+If you don’t know how to program, despair not: \
+Programmers are notoriously lazy when it comes to wrting documentation, which in this case even includes advice for voice-training. \
+Help there would be very valuable. \
+You can also submit texts to read, especially texts in languages that are not yet covered (just make sure they are in the public domain to avoid licensing issues). \
+</p> \
+\
+<h4>Contributors</h4> \
+<ul> \
+<li>This project is currently maintained by <a href='https://fiona.onl'>Fiona</a> (<a href='https://blahaj.zone/@Fiona'>🦈</a>), who also started it.</li> \
+<li><a href='https://leonora.app/'>Leonora</a> (<a href='https://helvede.net/@Herover'>🦣</a>) added the ability to record audio-files and save them.</li> \
 </ul> \
 \
 <h3>License</h3> \

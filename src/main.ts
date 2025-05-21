@@ -22,5 +22,6 @@ window.addEventListener("load", async (event) => {
 		alert("Could not Open Audio-Input; Sadly the spectrum won’t really work without…");
 		return;
 	}
+	await navigator.serviceWorker.register("serviceWorker.js");
 });
 

@@ -161,7 +161,7 @@ export class Settings {
 		this.root.id = "FTVT-settings";
 		this.root.classList.add("FTVT-popover");
 
-		this.root.innerHTML="<h2>Programm Settings</h2>";
+		this.root.innerHTML="<h2>Settings</h2>";
 
 		this.storage = new Storage(this.root);
 		this.enableStorage = new BooleanSetting(this.storage, this.root, "enable storage", "Store settings (locally).", false);

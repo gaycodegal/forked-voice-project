@@ -11,7 +11,7 @@ bundeled.html: main.html main.js main.css custom.css makefile
 
 main.js: $(SOURCES) $(DATA) makefile
 	tsc --strict src/main.ts --noEmit  --resolveJsonModule --esModuleInterop -t esnext --moduleResolution bundler
-	esbuild --bundle --minify src/main.ts --outfile=$@
+	esbuild --bundle src/main.ts --outfile=$@
 
 uncheckedBuild:
 	esbuild --bundle --minify src/main.ts --outfile=main.js

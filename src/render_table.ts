@@ -106,7 +106,7 @@ export class TableManager {
 		return td;
 	}
 
-	renderPlayback(recording: Blob[], tr: HTMLTableRowElement): HTMLTableCellElement {
+	renderPlayback(recording: Blob[], tr: HTMLTableRowElement): [HTMLTableCellElement, HTMLAudioElement] {
 		const blob = new Blob(recording, { type: "audio/ogg; codecs=opus" });
 		const audioURL = window.URL.createObjectURL(blob);
 
@@ -133,7 +133,7 @@ export class TableManager {
 			tr.remove();
 		};
 		td.appendChild(removeButton);
-		return td;
+		return [td, audio];
 	}
 
 	renderNotes() : HTMLTableCellElement {
@@ -145,19 +145,26 @@ export class TableManager {
 	}
 
 
-	renderRecording(stats: RecordStats, recording: Blob[]) : HTMLTableRowElement {
+	renderRecording(stats: RecordStats, recording: Blob[]) : [HTMLTableRowElement, HTMLAudioElement] {
 		let tr = document.createElement("tr");
 		tr.appendChild(this.renderCounter());
 		this.renderShares(tr, stats);
 		tr.appendChild(this.renderQuantiles(stats));
 		tr.appendChild(this.renderMetaCell(stats));
-		tr.appendChild(this.renderPlayback(recording, tr));
+		const [playbackCell, audio] = this.renderPlayback(recording, tr)
+		tr.appendChild(playbackCell);
 		tr.appendChild(this.renderNotes());
 
-		return tr;
+		return [tr, audio];
 	}
 
 	addRecording(stats: RecordStats, recording: Blob[]) {
-		this.resultsTable.insertBefore(this.renderRecording(stats, recording), this.resultsTable.children[0]);
+		const [tableRow, audio] = this.renderRecording(stats, recording);
+		this.resultsTable.insertBefore(tableRow, this.resultsTable.children[0]);
+		if (this.settings.autoplayRecording()) {
+			audio.addEventListener("canplaythrough", (event) => {
+				audio.play();
+			}, {once: true});
+		}
 	}
 }

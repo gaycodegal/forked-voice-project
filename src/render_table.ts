@@ -72,20 +72,36 @@ export class TableManager {
 		return tdAverageFrequency;
 	}
 
-	renderMetaCell() : HTMLTableCellElement {
+	renderMetaCell(stats: RecordStats) : HTMLTableCellElement {
 		let td = document.createElement("td");
 		let textNameSpan = document.createElement("span");
-		textNameSpan.innerHTML = this.textDisplay.getSelectedTextName();
+		textNameSpan.innerHTML = stats.textName;
 		td.appendChild(textNameSpan);
+
 		td.appendChild(document.createElement("br"));
 		let languageSpan = document.createElement("span");
-		languageSpan.innerHTML = this.textDisplay.getSelectedLanguage();
+		languageSpan.innerHTML = stats.language;
 		languageSpan.classList.add("FTVT-language");
 		td.appendChild(languageSpan);
+		
 		td.appendChild(document.createElement("br"));
 		let targetFrequencySpan = document.createElement("span");
-		targetFrequencySpan.appendChild((new NoteDisplay(Number(this.targetFrequencySelector.value), "🎯")).getRoot())
+		targetFrequencySpan.appendChild((new NoteDisplay(stats.target, "🎯")).getRoot())
 		td.appendChild(targetFrequencySpan)
+
+		td.appendChild(document.createElement("br"));
+		td.appendChild(document.createTextNode("🕰️: "));
+		let startTimeSpan = document.createElement("time");
+		startTimeSpan.innerText = stats.startTime.toTimeString().substr(0, 8);
+		startTimeSpan.dateTime = stats.startTime.toISOString();
+		td.appendChild(startTimeSpan);
+		td.appendChild(document.createTextNode(" - "));
+		let endTimeSpan = document.createElement("time");
+		endTimeSpan.innerText = stats.endTime.toTimeString().substr(0, 8);
+		endTimeSpan.dateTime = stats.endTime.toISOString();
+		td.appendChild(endTimeSpan);
+		td.appendChild(document.createElement("br"));
+		td.appendChild(document.createTextNode("📅: " + stats.startTime.toISOString().substr(0, 10)));
 
 		return td;
 	}
@@ -134,7 +150,7 @@ export class TableManager {
 		tr.appendChild(this.renderCounter());
 		this.renderShares(tr, stats);
 		tr.appendChild(this.renderQuantiles(stats));
-		tr.appendChild(this.renderMetaCell());
+		tr.appendChild(this.renderMetaCell(stats));
 		tr.appendChild(this.renderPlayback(recording, tr));
 		tr.appendChild(this.renderNotes());
 

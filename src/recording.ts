@@ -4,6 +4,7 @@ import {TableManager} from "./render_table"
 import {Gender, Genders} from "./gender_pitch"
 import {UserInterface} from "./user_interface"
 import {toIndex, stableSum} from "./utils"
+import {TextDisplayElement} from "./texts"
 
 type GenderShare = {[key in Genders]: number};
 export type Quantiles = {[key in string]: number};
@@ -12,6 +13,11 @@ export interface RecordStats {
 	shares: GenderShare;
 	average: number;
 	quantiles: Quantiles;
+	target: number;
+	language: string;
+	textName: string;
+	startTime: Date;
+	endTime: Date;
 }
 
 export class Recorder {
@@ -20,10 +26,22 @@ export class Recorder {
 	mediaRecorder: MediaRecorder;
 	mediaRecording: Blob[] = [];
 	tableManager: TableManager;
+	textDisplay: TextDisplayElement;
+	targetFrequencySelector: HTMLInputElement;
+	startTime: Date;
+	endTime: Date;
 
 	constructor(mediaStream: MediaStream, ui: UserInterface, tableManager: TableManager) {
 		this.button = ui.canvasControls.toggleRecordButton;
 		this.tableManager = tableManager;
+
+		this.textDisplay = ui.textDisplay;
+		this.targetFrequencySelector = ui.targetFrequencySelector;
+
+		// just as placeholders:
+		this.startTime = new Date(Date.now());
+		this.endTime= this.startTime;
+
 		this.button.addEventListener("click", (event) => {
 			this.toggleRecording();
 		});
@@ -47,7 +65,7 @@ export class Recorder {
 		this.currentRecording?.push(maxFreq);
 	}
 
-	analyzeRecording(frequencyData: number[]): RecordStats {
+	collectStats(frequencyData: number[]): RecordStats {
 		let stats : GenderShare = {
 			[Genders.UltraFem]: 0,
 			[Genders.Fem]: 0,
@@ -62,7 +80,12 @@ export class Recorder {
 		return {
 			"shares": stats,
 			"average": stableSum(frequencyData) / frequencyData.length,
-			"quantiles": this.computeQuantiles(frequencyData)
+			"quantiles": this.computeQuantiles(frequencyData),
+			"target": Number(this.targetFrequencySelector.value),
+			"language": this.textDisplay.getSelectedLanguage(),
+			"textName": this.textDisplay.getSelectedTextName(),
+			"startTime": this.startTime,
+			"endTime": this.endTime
 		};
 	}
 
@@ -70,6 +93,7 @@ export class Recorder {
 		if (this.currentRecording === null) {
 			this.currentRecording = [];
 			this.button.style.backgroundColor = "red";
+			this.startTime = new Date(Date.now());
 			if (this.mediaRecorder) {
 				this.mediaRecording = [];
 				this.mediaRecorder.start();
@@ -78,12 +102,13 @@ export class Recorder {
 			let recording = this.currentRecording;
 			this.currentRecording = null;
 			this.button.style.backgroundColor = "green";
+			this.endTime = new Date(Date.now());
 
 			if (this.mediaRecorder) {
 				if (recording.length > 0) {
 					this.mediaRecorder.ondataavailable = (e) => {
 						this.mediaRecording.push(e.data);
-						this.tableManager.addRecording(this.analyzeRecording(recording), this.mediaRecording);
+						this.tableManager.addRecording(this.collectStats(recording), this.mediaRecording);
 					}
 				}
 				this.mediaRecorder.stop();

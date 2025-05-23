@@ -23,10 +23,12 @@ export class TextDisplayElement {
 		selectorDiv.classList.add("FTVT-selectorDiv");
 		this.languageSelector = document.createElement("select");
 		this.languageSelector.classList.add("FTVT-languageSelector");
+		this.languageSelector.title = "Select Language"
 		selectorDiv.appendChild(this.languageSelector);
 
 		this.textSelector = document.createElement("select");
 		this.textSelector.classList.add("FTVT-textSelector");
+		this.textSelector.title = "Select Text";
 		selectorDiv.appendChild(this.textSelector);
 
 		this.root.appendChild(selectorDiv);

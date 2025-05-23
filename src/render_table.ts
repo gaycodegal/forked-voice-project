@@ -139,6 +139,7 @@ export class TableManager {
 	renderNotes() : HTMLTableCellElement {
 		const tdNote = document.createElement("td");
 		let noteField = document.createElement("textarea");
+		noteField.title = "personal notes"
 		noteField.style.width = "100%";
 		tdNote.appendChild(noteField);
 		return tdNote;

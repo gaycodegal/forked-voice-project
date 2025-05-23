@@ -30,7 +30,7 @@ export class CanvasControls {
 		this.root.appendChild(this.togglePlayButton);
 
 		let freqOutLabel = document.createElement("label");
-		freqOutLabel.innerHTML = "Main Frequency:";
+		freqOutLabel.innerHTML = "<span style='flex-grow: 1;'>Main Frequency: </span>";
 		this.noteDisplay = new NoteDisplay(null);
 		freqOutLabel.appendChild(this.noteDisplay.getRoot());
 		this.root.appendChild(freqOutLabel);

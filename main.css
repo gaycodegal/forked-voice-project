@@ -164,8 +164,11 @@ select {
 	padding-right: 0.5em;
 }
 
-select:hover, button:hover, .downloadLink:hover {
+select:hover, button:hover, .downloadLink:hover, input:hover, label:has(input):hover {
 	background-color: var(--accent-bg-col-2);
+}
+button[disabled]:hover, input[disabled]:hover, label:has(input[disabled]):hover {
+	background-color: var(--accent-bg-col);
 }
 
 input[type="number"] {

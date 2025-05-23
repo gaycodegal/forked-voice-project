@@ -83,7 +83,7 @@ class BooleanSetting {
 	checkbox: HTMLInputElement;
 	storage: Storage;
 	name: string;
-	callbacks: ((b:boolean)=>void)[];
+	callbacks: ((b:boolean, checkbox: HTMLInputElement)=>void)[];
 
 	constructor(storage: Storage, parent: HTMLElement, name: string, label: string, register: boolean = true, defaultValue: boolean = false) {
 		this.name = name;
@@ -111,7 +111,7 @@ class BooleanSetting {
 	onToggle(b:boolean) {
 		this.storage.update(this.name, b.toString());
 		for (const callback of this.callbacks) {
-			callback(b);
+			callback(b, this.checkbox);
 		}
 	}
 
@@ -123,27 +123,37 @@ class BooleanSetting {
 		return this.checkbox.checked;
 	}
 
-	addToggleListener(callback: (b: boolean) => void) {
+	addToggleListener(callback: (b: boolean, checkbox: HTMLInputElement) => void) {
 		this.callbacks.push(callback);
+	}
+
+	disable() {
+		this.checkbox.disabled = true;
 	}
 }
 
-async function toggleCaching(enable: boolean) {
-	if (navigator.serviceWorker) {
-		if (enable) {
+async function toggleCaching(enable: boolean, checkbox: HTMLInputElement ,downloadButton: HTMLButtonElement) {
+	if (enable) {
+		try {
 			await navigator.serviceWorker.register("serviceWorker.js");
-		} else {
-			if (navigator.serviceWorker.controller) {
-				navigator.serviceWorker.controller.postMessage({
-					type: 'delete caches',
-				});
-			}
-			navigator.serviceWorker.getRegistrations().then(registrations => {
-				for (const registration of registrations) {
-					registration.unregister();
-				}
+			downloadButton.disabled = false;
+		} catch (e) {
+			alert("Could not register serviceWorker: " + e)
+			checkbox.checked = false;
+			return;
+		}
+	} else {
+		downloadButton.disabled = true;
+		if (navigator.serviceWorker.controller) {
+			navigator.serviceWorker.controller.postMessage({
+				type: 'delete caches',
 			});
 		}
+		navigator.serviceWorker.getRegistrations().then(registrations => {
+			for (const registration of registrations) {
+				registration.unregister();
+			}
+		});
 	}
 }
 
@@ -173,9 +183,8 @@ export class Settings {
 
 		this.storage = new Storage(this.root);
 		this.enableStorage = new BooleanSetting(this.storage, this.root, "enable storage", "Store settings (locally).", false);
-		this.enableStorage.addToggleListener((b) => {this.storage.setAvailable(b);});
+		this.enableStorage.addToggleListener((b, _) => {this.storage.setAvailable(b);});
 		this.enableCaching = new BooleanSetting(this.storage, this.root, "enable caching", "Cache this application.", true, !!(navigator.serviceWorker) && !!(navigator.serviceWorker.controller));
-		this.enableCaching.addToggleListener((b) => {toggleCaching(b);});
 		this.autoplay = new BooleanSetting(this.storage, this.root, "autoplay", "Automatically play recordings.");
 		this.recordingId = Number(this.storage.getOrInsert("recording index", "0"));
 		this.storage.registerCollector(() => {return ["recording index", this.recordingId.toFixed(0)];});
@@ -183,11 +192,15 @@ export class Settings {
 		let requestUpdateButton = document.createElement("button");
 		requestUpdateButton.innerText = "Attempt Update";
 		requestUpdateButton.classList.add("FTVT-wideButton");
+		if (! navigator.serviceWorker.controller) {
+			requestUpdateButton.disabled = true;
+		}
 		requestUpdateButton.addEventListener("click", (event)=>{
 			requestBackgroundUpdate();
 			alert("Update requested.");
 		});
 		this.root.appendChild(requestUpdateButton);
+		this.enableCaching.addToggleListener((b, checkbox) => {toggleCaching(b, checkbox, requestUpdateButton);});
 	}
 
 	getRoot(): HTMLDivElement {

@@ -5,7 +5,7 @@ from typing import TextIO
 import html
 import html.parser
 
-def make_tag(tag: str, attrs: list[tuple[str, str|None]], exclude: set[str] = set()) -> str:
+def make_tag(tag: str, attrs: list[tuple[str, str|None]], exclude: set[str] = set(), startendtag: bool = False) -> str:
     ret = f"<{tag}"
     for k,v in attrs:
         if k not in exclude:
@@ -14,11 +14,12 @@ def make_tag(tag: str, attrs: list[tuple[str, str|None]], exclude: set[str] = se
             else:
                 ret += f" {k}"
 
+    if startendtag:
+        ret += "/"
     return ret + ">"
 
 class MyParser(html.parser.HTMLParser):
     output: TextIO
-    open_tag: str|None = None
 
     def __init__(self, output: TextIO) -> None:
         super(MyParser, self).__init__()
@@ -27,7 +28,7 @@ class MyParser(html.parser.HTMLParser):
     def handle_decl(self, decl: str) -> None:
         self.output.write(f"<!{decl}>")
 
-    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+    def handle_starttag_custom(self, tag: str, attrs: list[tuple[str, str | None]], startendtag: bool = False) -> None:
         attr_map = {k:str(v) for (k,v) in attrs}
         match tag:
             case 'link':
@@ -36,24 +37,30 @@ class MyParser(html.parser.HTMLParser):
                         self.output.write(make_tag('style', attrs, {"href", "rel"}))
                         self.output.write(stylesheet.read())
                         self.open_tag = "style"
+                    if startendtag:
+                        self.handle_endtag("style")
                 else:
-                    self.output.write(make_tag(tag, attrs))
+                    self.output.write(make_tag(tag, attrs, set(), startendtag))
             case 'script':
                 if attr_map["src"] is not None:
                     with open(attr_map["src"], "r") as script:
                         self.output.write(make_tag(tag, attrs, {"src"}))
                         self.output.write(script.read())
+                    if startendtag:
+                        self.handle_endtag("script")
                 else:
-                    self.output.write(make_tag(tag, attrs))
+                    self.output.write(make_tag(tag, attrs, set(), startendtag))
             case _:
-                self.output.write(make_tag(tag, attrs))
+                self.output.write(make_tag(tag, attrs, set(), startendtag))
+
+    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        return self.handle_starttag_custom(tag, attrs, True)
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        return self.handle_starttag_custom(tag, attrs, False)
 
     def handle_endtag(self, tag: str) -> None:
-        if self.open_tag:
-            self.output.write(f"</{self.open_tag}>")
-            self.open_tag = None
-        else:
-            self.output.write(f"</{tag}>")
+        self.output.write(f"</{tag}>")
 
     def handle_data(self, data: str) -> None:
         self.output.write(data)

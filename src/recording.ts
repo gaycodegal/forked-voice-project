@@ -111,7 +111,7 @@ export class Recorder {
 			this.mediaRecorder.addEventListener("dataavailable", (e) => {
 				this.mediaRecording.push(e.data);
 				this.tableManager.addRecording(this.collectStats(recording), this.mediaRecording);
-			});
+			}, {once: true});
 			this.mediaRecorder.stop();
 		}
 	}

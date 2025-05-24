@@ -235,7 +235,7 @@ export class Settings {
 		return this.autoplay.getValue();
 	}
 
-	registerInput(name: string, input: HTMLInputElement, preferStoredValue: boolean = true) {
+	registerInput(name: string, input: HTMLInputElement|HTMLSelectElement, preferStoredValue: boolean = true) {
 		this.storage.registerCollector(() => {return [name, input.value];});
 		if (preferStoredValue) {
 			input.value = this.storage.getOrInsert(name, input.value);

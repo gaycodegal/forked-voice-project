@@ -3,6 +3,8 @@ import {UserInterface} from "./user_interface";
 
 import { TEXTS_TABLE } from "./raw_texts";
 
+import {Settings} from "./settings"
+
 function clearSelector(element: HTMLSelectElement) {
 	var i, L = element.options.length - 1;
 	for(i = L; i >= 0; i--) {
@@ -16,7 +18,7 @@ export class TextDisplayElement {
 	textSelector: HTMLSelectElement;
 	textDisplay: HTMLQuoteElement;
 
-	constructor() {
+	constructor(settings: Settings) {
 		this.root = document.createElement("div");
 		this.root.classList.add("FTVT-textDisplay");
 		let selectorDiv = document.createElement("div");
@@ -41,15 +43,17 @@ export class TextDisplayElement {
 			option.lang = languageCode;
 			this.languageSelector.add(option);
 		}
+		settings.registerInput("language", this.languageSelector);
 		this.onLanguageSelect();
 		this.languageSelector.addEventListener("change", (event) => {
 			this.onLanguageSelect();
 			this.getSelectedText();
 		});
+		settings.registerInput("display-text", this.textSelector);
+		this.getSelectedText();
 		this.textSelector.addEventListener("change", (event) => {
 			this.getSelectedText();
 		});
-		this.getSelectedText();
 	}
 
 	getRoot(): HTMLDivElement {
@@ -85,5 +89,6 @@ export class TextDisplayElement {
 		}
 		this.textSelector.lang = languageCode;
 		this.textDisplay.lang = languageCode;
+		this.textSelector.dispatchEvent(new Event("change"));
 	}
 }

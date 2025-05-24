@@ -40,7 +40,7 @@ export class UserInterface {
 		this.canvasControls = new CanvasControls(this.settings);
 		controlsDiv.appendChild(this.canvasControls.getRoot());
 
-		this.textDisplay = new TextDisplayElement();
+		this.textDisplay = new TextDisplayElement(this.settings);
 		controlsDiv.appendChild(this.textDisplay.getRoot());
 
 		let mainControlsDiv = document.createElement("div");

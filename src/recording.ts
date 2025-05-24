@@ -89,30 +89,38 @@ export class Recorder {
 		};
 	}
 
+	startRecording() {
+		this.currentRecording = [];
+		this.button.style.backgroundColor = "red";
+		this.startTime = new Date(Date.now());
+		if (this.mediaRecorder) {
+			this.mediaRecording = [];
+			this.mediaRecorder.start();
+		}
+	}
+	endRecording() {
+		let recording = this.currentRecording;
+		if (recording == null) {
+			recording = [];
+		}
+		this.currentRecording = null;
+		this.button.style.backgroundColor = "green";
+		this.endTime = new Date(Date.now());
+
+		if (this.mediaRecorder) {
+			this.mediaRecorder.addEventListener("dataavailable", (e) => {
+				this.mediaRecording.push(e.data);
+				this.tableManager.addRecording(this.collectStats(recording), this.mediaRecording);
+			});
+			this.mediaRecorder.stop();
+		}
+	}
+
 	toggleRecording() {
 		if (this.currentRecording === null) {
-			this.currentRecording = [];
-			this.button.style.backgroundColor = "red";
-			this.startTime = new Date(Date.now());
-			if (this.mediaRecorder) {
-				this.mediaRecording = [];
-				this.mediaRecorder.start();
-			}
+			this.startRecording();
 		} else {
-			let recording = this.currentRecording;
-			this.currentRecording = null;
-			this.button.style.backgroundColor = "green";
-			this.endTime = new Date(Date.now());
-
-			if (this.mediaRecorder) {
-				if (recording.length > 0) {
-					this.mediaRecorder.ondataavailable = (e) => {
-						this.mediaRecording.push(e.data);
-						this.tableManager.addRecording(this.collectStats(recording), this.mediaRecording);
-					}
-				}
-				this.mediaRecorder.stop();
-			}
+			this.endRecording();
 		}
 	}
 

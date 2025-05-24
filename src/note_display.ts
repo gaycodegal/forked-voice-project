@@ -38,7 +38,7 @@ export class NoteDisplay {
 	}
 
 	setFrequency(frequency: number|null = null) {
-		if (frequency == null) {
+		if (frequency == null || isNaN(frequency)) {
 			this.frequencyDisplay.innerText="-";
 			this.noteDisplay.innerHTML=""
 			this.genderDisplay.innerText = "";

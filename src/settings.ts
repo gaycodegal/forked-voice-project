@@ -208,7 +208,7 @@ export class Settings {
 		this.enableStorage.addToggleListener(async (b, checkbox) => {
 			const active = b && checkbox.checked;
 			if (active) {
-				await this.db.try_open();
+				await this.db.tryClosedOpen();
 			} else {
 				await this.db.close();
 			}
@@ -218,7 +218,7 @@ export class Settings {
 	
 	public static async construct(): Promise<Settings> {
 		const ret = new Settings();
-		await ret.db.try_open_if(ret.enableStorage.getValue());
+		await ret.db.tryClosedOpenIf(ret.enableStorage.getValue());
 		return ret;
 	}
 

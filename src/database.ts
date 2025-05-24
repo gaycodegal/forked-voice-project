@@ -1,3 +1,5 @@
+import {RecordStats} from "./recording"
+
 
 export class Database {
 	db: IDBDatabase | null;
@@ -10,7 +12,7 @@ export class Database {
 
 	public static async construct(name: string, open: boolean) {
 		const ret = new Database(name, null);
-		return ret.try_open_if(open);
+		return ret.tryOpenIf(open);
 	}
 
 	isOpen(): boolean {
@@ -24,37 +26,44 @@ export class Database {
 		}
 	}
 
-	async try_open(): Promise<boolean> {
+	async tryOpen(): Promise<boolean> {
 		await this.close();
-		const result = await window.indexedDB.open(this.name);
-		if (result.error) {
-			this.db = null;
-			return false;
-		} else {
-			this.db = result.result;
-			return true;
-		}
+		this.db = await new Promise((resolve, reject) => {
+			const openRequest = window.indexedDB.open(this.name);
+			if (openRequest == null) {
+				reject(null);
+			}
+			openRequest.onsuccess = (event) => {
+				resolve(openRequest.result);
+				console.log("successfully opened indexedDB");
+			};
+			openRequest.onerror =(event) => {
+				console.log("Could not open database:\n" + event);
+				reject(null);
+			};
+		});
+		return !!this.db;
 	}
-	async try_open_if(b: boolean): Promise<boolean> {
+	async tryOpenIf(b: boolean): Promise<boolean> {
 		if (b) {
-			return this.try_open();
+			return this.tryOpen();
 		} else {
 			return false;
 		}
 	}
 
-	async try_closed_open_if(b: boolean) {
+	async tryClosedOpenIf(b: boolean) {
 		if (this.db) {
 			return true;
 		} else if (!b) {
 			return false;
 		} else {
-			return this.try_open();
+			return this.tryOpen();
 		}
 	}
 	
-	async try_closed_open() {
-		return this.try_closed_open_if(true);
+	async tryClosedOpen() {
+		return this.tryClosedOpenIf(true);
 	}
 
 	store(objectStoreName: string, key: string, value: any) {
@@ -74,5 +83,10 @@ export class Database {
 		const transaction = this.db.transaction(objectStoreName);
 		const objectStore = transaction.objectStore(objectStoreName);
 		return objectStore.get(key);
+	}
+
+	addRecording(stats: RecordStats, recording: Blob[]) {
+		console.log(this.db);
+		console.log(stats);
 	}
 }

@@ -44,8 +44,13 @@ export class TableManager {
 		for (const gender of Gender.genders){ 
 			let td = document.createElement("td");
 			td.classList.add("NumericTableField");
-			td.innerHTML = (100 * stats.shares[gender.toEnum()] / total).toFixed(0) + "%";
-			td.style.backgroundColor = gender.toColor().scale(stats.shares[gender.toEnum()]/total).toString();
+			if (total == 0) {
+				td.innerHTML = "-";
+				td.style.backgroundColor = "black";
+			} else {
+				td.innerHTML = (100 * stats.shares[gender.toEnum()] / total).toFixed(0) + "%";
+				td.style.backgroundColor = gender.toColor().scale(stats.shares[gender.toEnum()]/total).toString();
+			}
 			td.style.color = "white";
 			tr.appendChild(td);
 		}
@@ -139,8 +144,8 @@ export class TableManager {
 	renderNotes() : HTMLTableCellElement {
 		const tdNote = document.createElement("td");
 		let noteField = document.createElement("textarea");
-		noteField.title = "personal notes"
-		noteField.style.width = "100%";
+		noteField.title = "personal notes";
+		noteField.placeholder = "Space for your own notes…";
 		tdNote.appendChild(noteField);
 		return tdNote;
 	}
@@ -162,10 +167,12 @@ export class TableManager {
 	addRecording(stats: RecordStats, recording: Blob[]) {
 		const [tableRow, audio] = this.renderRecording(stats, recording);
 		this.resultsTable.insertBefore(tableRow, this.resultsTable.children[0]);
+		// TODO: split of into addNewRecording
 		if (this.settings.autoplayRecording()) {
 			audio.addEventListener("canplaythrough", (event) => {
 				audio.play();
 			}, {once: true});
 		}
+		this.settings.db.addRecording(stats, recording);
 	}
 }

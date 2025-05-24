@@ -11,7 +11,7 @@ window.addEventListener("load", async (event) => {
 		alert("No element with root-id found");
 		return;
 	}
-	let ui = new UserInterface(root);
+	let ui = await UserInterface.construct(root);
 	let tableManager = new TableManager(ui);
 	let audioInputStream = await navigator.mediaDevices.getUserMedia({audio: true}).catch(console.log);
 	if (audioInputStream) {

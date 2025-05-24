@@ -14,10 +14,15 @@ export class UserInterface {
 	noteSelector: HTMLDivElement;
 	resultsTable: HTMLElement;
 
-	constructor(root: HTMLElement) {
+	public static async construct(root: HTMLElement) {
+		const settings = await Settings.construct();
+		return new UserInterface(root, settings);
+	}
+
+	private constructor(root: HTMLElement, settings: Settings) {
 		this.root = root
 		root.appendChild(createDocumentation());
-		this.settings= new Settings();
+		this.settings= settings;
 		root.appendChild(this.settings.getRoot());
 
 		let canvasDiv = document.createElement("div");

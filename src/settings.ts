@@ -1,6 +1,5 @@
 
-// TODO: These classes are a mess in need of restructuring: Storage should be separate!
-
+import {Database} from "./database"
 
 class Storage {
 	public static NAME = "enable storage";
@@ -172,8 +171,9 @@ export class Settings {
 	enableStorage: BooleanSetting;
 	enableCaching: BooleanSetting;
 	autoplay: BooleanSetting;
+	db: Database;
 
-	constructor() {
+	private constructor() {
 		this.root = document.createElement("div");
 		this.root.popover="auto";
 		this.root.id = "FTVT-settings";
@@ -184,7 +184,9 @@ export class Settings {
 		this.storage = new Storage(this.root);
 		this.enableStorage = new BooleanSetting(this.storage, this.root, "enable storage", "Store settings (locally).", false);
 		this.enableStorage.addToggleListener((b, _) => {this.storage.setAvailable(b);});
-		this.enableCaching = new BooleanSetting(this.storage, this.root, "enable caching", "Cache this application.", true, !!(navigator.serviceWorker) && !!(navigator.serviceWorker.controller));
+		this.enableCaching = new BooleanSetting(
+			this.storage, this.root, "enable caching", "Cache this application.", true,
+			!!(navigator.serviceWorker) && !!(navigator.serviceWorker.controller));
 		this.autoplay = new BooleanSetting(this.storage, this.root, "autoplay", "Automatically play recordings.");
 		this.recordingId = Number(this.storage.getOrInsert("recording index", "0"));
 		this.storage.registerCollector(() => {return ["recording index", this.recordingId.toFixed(0)];});
@@ -201,6 +203,23 @@ export class Settings {
 		});
 		this.root.appendChild(requestUpdateButton);
 		this.enableCaching.addToggleListener((b, checkbox) => {toggleCaching(b, checkbox, requestUpdateButton);});
+
+		this.db = new Database("recordings", null);
+		this.enableStorage.addToggleListener(async (b, checkbox) => {
+			const active = b && checkbox.checked;
+			if (active) {
+				await this.db.try_open();
+			} else {
+				await this.db.close();
+			}
+
+		});
+	}
+	
+	public static async construct(): Promise<Settings> {
+		const ret = new Settings();
+		await ret.db.try_open_if(ret.enableStorage.getValue());
+		return ret;
 	}
 
 	getRoot(): HTMLDivElement {

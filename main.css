@@ -109,7 +109,7 @@ button, .downloadLink, .FTVT-frequencyBlock {
 .FTVT-frequencyBlock:has(:focus) {
 	border-color: cyan;
 	background-color: var(--inv-col);
-	input {
+	input, input:hover {
 		background-color: var(--inv-col);
 		outline: none;
 	}
@@ -169,6 +169,9 @@ select {
 
 select:hover, button:hover, .downloadLink:hover, input:hover, label:has(input):hover {
 	background-color: var(--accent-bg-col-2);
+	input {
+		background-color: var(--accent-bg-col-2);
+	}
 }
 button[disabled]:hover, input[disabled]:hover, label:has(input[disabled]):hover {
 	background-color: var(--accent-bg-col);

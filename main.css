@@ -20,22 +20,39 @@ table {
 	border-bottom: 3px solid var(--accent-col);
 	border-collapse: collapse;
 	margin-bottom: 2em;
+
+	textarea {
+		margin: 0;
+		padding: 0;
+		border: none;
+		width: 100%;
+		height: 100%;
+		resize: none;
+		overflow-y: auto;
+	}
+
+	thead {
+		border-top: 3px solid var(--accent-col);
+		border-bottom: 3px solid var(--accent-col);
+	}
+	tbody td {
+		height: 11em;
+	}
+	th {
+		padding: 2px;
+	}
+	td {
+		border-top: 2px solid var(--accent-col);
+		border-bottom: 2px solid var(--accent-col);
+		padding: 0px;
+		vertical-align: top;
+	}
+	audio {
+		width: 100%;
+	}
 }
 table:not(:has(tbody tr)) {
 	display: none;
-}
-thead {
-	border-top: 3px solid var(--accent-col);
-	border-bottom: 3px solid var(--accent-col);
-}
-th {
-	padding: 2px;
-}
-td {
-	border-top: 2px solid var(--accent-col);
-	border-bottom: 2px solid var(--accent-col);
-	padding: 0px;
-	vertical-align: top;
 }
 
 .NumericTableField {
@@ -46,20 +63,6 @@ a {
 	color: var(--link-col);
 }
 
-td audio {
-	width: 100%;
-}
-textarea {
-	width: 100%;
-	height: 100%;
-	resize: none;
-}
-tbody tr {
-	height: 11em;
-}
-tbody td {
-	height: 100%;
-}
 
 button, .downloadLink, .FTVT-frequencyBlock {
 	min-width: var(--button-width);
@@ -202,6 +205,7 @@ ul.no-bullets {
 }
 
 #FTVT-canvas {
+	border-top: solid var(--accent-col);
 	border-bottom: solid var(--accent-col);
 	background-color: var(--canvas-bg-col);
 	margin: 0;
@@ -243,15 +247,9 @@ header, #FTVT-controls {
 	flex-grow: 1;
 	flex-shrink: 1;
 }
-header, footer {
-	display: none;
-}
-@media not (display-mode: standalone) {
+@media (display-mode: standalone) {
 	header, footer {
-		display: block;
-	}
-	#FTVT-canvas {
-		border-top: solid var(--accent-col);
+		display: none;
 	}
 }
 label {

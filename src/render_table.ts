@@ -131,6 +131,7 @@ export class TableManager {
 		downloadLink.setAttribute("download", "voice_recording.ogg");
 		downloadLink.classList.add("downloadLink");
 		downloadLink.href = audioURL;
+		downloadLink.role = "button";
 		td.appendChild(downloadLink);
 		const removeButton = document.createElement("button");
 		removeButton.innerHTML = "❌";

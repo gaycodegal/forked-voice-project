@@ -6,6 +6,7 @@ import {UserInterface} from "./user_interface"
 import {toIndex, stableSum} from "./utils"
 import {TextDisplayElement} from "./texts"
 import {Settings} from "./settings"
+import {FrequencyInputElement} from "./inputs"
 
 type GenderShare = {[key in Genders]: number};
 export type Quantiles = {[key in string]: number};
@@ -36,7 +37,7 @@ export class Recorder {
 	mediaRecording: Blob|null = null;
 	tableManager: TableManager;
 	textDisplay: TextDisplayElement;
-	targetFrequencySelector: HTMLInputElement;
+	targetFrequencySelector: FrequencyInputElement;
 	startTime: Date;
 	endTime: Date;
 	settings: Settings;
@@ -93,7 +94,7 @@ export class Recorder {
 			"shares": stats,
 			"average": stableSum(frequencyData) / frequencyData.length,
 			"quantiles": this.computeQuantiles(frequencyData),
-			"target": Number(this.targetFrequencySelector.value),
+			"target": this.targetFrequencySelector.getValue(),
 			"language": this.textDisplay.getSelectedLanguage(),
 			"textName": this.textDisplay.getSelectedTextName(),
 			"startTime": this.startTime,

@@ -2,6 +2,7 @@ import {DOCUMENTATION} from "./documentation"
 import {TextDisplayElement} from "./texts"
 import {CanvasControls} from "./canvas_controls"
 import {Settings} from "./settings"
+import {FrequencyInputElement} from "./inputs";
 
 export class UserInterface {
 	root: HTMLElement;
@@ -9,7 +10,7 @@ export class UserInterface {
 	canvas: HTMLCanvasElement;
 	canvasControls: CanvasControls;
 	textDisplay: TextDisplayElement;
-	targetFrequencySelector: HTMLInputElement;
+	targetFrequencySelector: FrequencyInputElement;
 	playButton: HTMLButtonElement;
 	noteSelector: HTMLDivElement;
 	resultsTable: HTMLElement;
@@ -52,7 +53,8 @@ export class UserInterface {
 		this.playButton.title="Play Target Sound";
 		mainControlsDiv.appendChild(this.playButton);
 
-		this.targetFrequencySelector = createTargetFrequencyBlock(mainControlsDiv, this.settings);
+		this.targetFrequencySelector = new FrequencyInputElement(mainControlsDiv, "🎯", "Target Frequency", 250, this.settings, "target frequency");
+		// createTargetFrequencyBlock(mainControlsDiv, this.settings);
 
 		let mainControlsSpacer = document.createElement("span");
 		mainControlsSpacer.classList.add("FTVT-flexSpacer");
@@ -101,7 +103,7 @@ function createResultsTable(parent: HTMLElement): HTMLElement {
 		return ret;
 	}
 	let topLeft = document.createElement("td");
-	topLeft.width="2%";
+	topLeft.width="3%";
 
 	let tableDiv =document.createElement("div");
 	let table = document.createElement("table");
@@ -115,7 +117,7 @@ function createResultsTable(parent: HTMLElement): HTMLElement {
 	tr.appendChild(createTh("3%", "⏺️"));
 	tr.appendChild(createTh("3%", "♀️"));
 	tr.appendChild(createTh("3%", "⏫"));
-	tr.appendChild(createTh("13%", "Quantiles"));
+	tr.appendChild(createTh("12%", "Quantiles"));
 	tr.appendChild(createTh("20%", "Reference"));
 	tr.appendChild(createTh("25%", "Recording"));
 	tr.appendChild(createTh("25%", "Notes"));
@@ -124,27 +126,4 @@ function createResultsTable(parent: HTMLElement): HTMLElement {
 	tableDiv.appendChild(table);
 	parent.appendChild(tableDiv);
 	return tbody;
-}
-
-function createTargetFrequencyBlock(parent: HTMLElement, settings: Settings): HTMLInputElement {
-	let targetFrequencyBlock = document.createElement("label");
-	targetFrequencyBlock.classList.add("FTVT-frequencyBlock");
-	let targetFrequencySelectorLabel = document.createElement("abbr");
-	targetFrequencySelectorLabel.title="target frequency";
-	targetFrequencySelectorLabel.innerHTML="🎯";
-	targetFrequencyBlock.appendChild(targetFrequencySelectorLabel)
-	let targetFrequencySelector = document.createElement("input");
-	targetFrequencySelector.type="number";
-	targetFrequencySelector.min="0";
-	targetFrequencySelector.value="250";
-	targetFrequencySelector.step="any";
-	settings.registerInput("target frequency", targetFrequencySelector);
-	targetFrequencyBlock.appendChild(targetFrequencySelector);
-	let targetFrequencyUnitLabel = document.createElement("abbr");
-	targetFrequencyUnitLabel.title="Hertz";
-	targetFrequencyUnitLabel.innerHTML="Hz";
-	targetFrequencyUnitLabel.classList.add("FTVT-unit");
-	targetFrequencyBlock.appendChild(targetFrequencyUnitLabel);
-	parent.appendChild(targetFrequencyBlock);
-	return targetFrequencySelector;
 }

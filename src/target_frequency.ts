@@ -1,13 +1,13 @@
 import {Note} from "./notes"
 import {frequencyToColor} from "./gender_pitch"
-
+import {FrequencyInputElement} from "./inputs";
 import {UserInterface} from "./user_interface"
 import {Settings} from "./settings"
 
 export class TargetFrequencyManager {
 	settings: Settings;
 	context: AudioContext;
-	targetFrequencySelector: HTMLInputElement;
+	targetFrequencySelector: FrequencyInputElement;
 	playButton: HTMLButtonElement;
 	noteSelector: HTMLDivElement;
 	oscillator: OscillatorNode|null;
@@ -29,12 +29,11 @@ export class TargetFrequencyManager {
 	}
 
 	target() : number {
-		return Number(this.targetFrequencySelector.value);
+		return Number(this.targetFrequencySelector.getValue());
 	}
 
 	setTarget(value: number) {
-		this.targetFrequencySelector.value = String(value);
-		this.targetFrequencySelector.dispatchEvent(new Event("change"));
+		this.targetFrequencySelector.setValue(value);
 	}
 
 

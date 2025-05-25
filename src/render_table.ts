@@ -13,14 +13,12 @@ export class TableManager {
 	numRecordings : number = 0;
 	resultsTable: HTMLElement;
 	textDisplay: TextDisplayElement;
-	targetFrequencySelector: HTMLInputElement;
 	registerAudioCallbacks: {(e: HTMLAudioElement): void;}[];
 	settings: Settings;
 
 	constructor(ui: UserInterface) {
 		this.resultsTable = ui.resultsTable;
 		this.textDisplay = ui.textDisplay;
-		this.targetFrequencySelector = ui.targetFrequencySelector;
 		this.registerAudioCallbacks = [];
 		this.settings = ui.settings;
 	}

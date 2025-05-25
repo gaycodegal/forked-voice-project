@@ -88,8 +88,9 @@ button, .downloadLink, .FTVT-frequencyBlock {
 	font-size: 2rem;
 }
 .FTVT-frequencyBlock {
+	font-size: 2rem;
 	display: flex;
-	width: calc(var(--button-width) * 2 + 10px);
+	width: calc(var(--button-width) * 3 + 20px);
 	input {
 		min-height: calc(1.5cm - 4px);
 		border-radius: 0;
@@ -102,9 +103,34 @@ button, .downloadLink, .FTVT-frequencyBlock {
 	}
 	abbr {
 		text-decoration: none;
+		flex-shrink: 0;
+		margin-left: 0.2em;
+		margin-right: 0.2em;
 	}
-	padding-left: 0.2em;
-	padding-right: 0.2em;
+	.FTVT-unit {
+		display: inline-block;
+		width: 1.5em;
+		text-align: left;
+		margin-left: 0.2em;
+		margin-right: 0.1em;
+		flex-shrink: 0;
+	}
+	.FTVT-note {
+		display: inline-block;
+		width: 2em;
+		text-align: left;
+		margin-left: 0.1em;
+		margin-right: 0.1em;
+		flex-shrink: 0;
+	}
+	.FTVT-gender {
+		display: inline-block;
+		width: 1.5em;
+		text-align: right;
+		margin-left: 0.1em;
+		margin-right: 0.2em;
+		flex-shrink: 0;
+	}
 }
 .FTVT-frequencyBlock:has(:focus) {
 	border-color: cyan;
@@ -118,7 +144,7 @@ button, .downloadLink, .FTVT-frequencyBlock {
 	border-color: orange;
 	background-color: yellow;
 	color: black;
-	input {
+	input, input:hover {
 		color: red;
 		background-color: yellow;
 	}

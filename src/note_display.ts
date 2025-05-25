@@ -1,4 +1,4 @@
-import {Note, NOTE_NAMES} from "./notes";
+import {Note} from "./notes";
 import {Gender} from "./gender_pitch";
 
 export class NoteDisplay {

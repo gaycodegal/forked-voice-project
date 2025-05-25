@@ -166,7 +166,9 @@ export class Spectrum {
 		const height = image.length / 4;
 		for (let i = 0; i < data.length ; ++i) {
 			let d = data[i]
-			image[4*(height-i)-1] = Math.max(this.canvasControls.getThreshold(),d);
+			image[4*(height-i)-1] = d;//Math.max(this.canvasControls.getThreshold(),d);
+			// TODO: this was always based on the threshold, but should it be?
+			// Leaving it turned of for now to help decide and maybe turn it into an option later on…
 		}
 	}
 

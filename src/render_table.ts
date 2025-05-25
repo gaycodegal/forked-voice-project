@@ -97,21 +97,21 @@ export class TableManager {
 		td.appendChild(document.createElement("br"));
 		td.appendChild(document.createTextNode("🕰️: "));
 		let startTimeSpan = document.createElement("time");
-		startTimeSpan.innerText = stats.startTime.toTimeString().substr(0, 8);
+		startTimeSpan.innerText = stats.startTime.toLocaleTimeString("en-SE");
 		startTimeSpan.dateTime = stats.startTime.toISOString();
 		td.appendChild(startTimeSpan);
 		td.appendChild(document.createTextNode(" - "));
 		let endTimeSpan = document.createElement("time");
-		endTimeSpan.innerText = stats.endTime.toTimeString().substr(0, 8);
+		endTimeSpan.innerText = stats.endTime.toLocaleTimeString("en-SE");
 		endTimeSpan.dateTime = stats.endTime.toISOString();
 		td.appendChild(endTimeSpan);
 		td.appendChild(document.createElement("br"));
-		td.appendChild(document.createTextNode("📅: " + stats.startTime.toISOString().substr(0, 10)));
+		td.appendChild(document.createTextNode("📅: " + stats.startTime.toLocaleDateString("en-SE")));
 
 		return td;
 	}
 
-	renderPlayback(recording: Blob[], tr: HTMLTableRowElement): [HTMLTableCellElement, HTMLAudioElement] {
+	renderPlayback(recording: Blob[], tr: HTMLTableRowElement, stats: RecordStats): [HTMLTableCellElement, HTMLAudioElement] {
 		const blob = new Blob(recording, { type: "audio/ogg; codecs=opus" });
 		const audioURL = window.URL.createObjectURL(blob);
 
@@ -128,7 +128,8 @@ export class TableManager {
 
 		const downloadLink = document.createElement("a");
 		downloadLink.innerText = "⬇️";
-		downloadLink.setAttribute("download", "voice_recording.ogg");
+		downloadLink.setAttribute("download",
+			"voice_recording_" + stats.startTime.toLocaleString("en-SE").replace(", ", "_") + ".ogg");
 		downloadLink.classList.add("downloadLink");
 		downloadLink.href = audioURL;
 		downloadLink.role = "button";
@@ -158,7 +159,7 @@ export class TableManager {
 		this.renderShares(tr, stats);
 		tr.appendChild(this.renderQuantiles(stats));
 		tr.appendChild(this.renderMetaCell(stats));
-		const [playbackCell, audio] = this.renderPlayback(recording, tr)
+		const [playbackCell, audio] = this.renderPlayback(recording, tr, stats)
 		tr.appendChild(playbackCell);
 		tr.appendChild(this.renderNotes());
 

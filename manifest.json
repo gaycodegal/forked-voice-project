@@ -6,7 +6,7 @@
 			"src": "favicon.svg",
 			"sizes": "any",
 			"type": "image/svg+xml",
-			"purpose": "any maskable"
+			"purpose": "any"
 		},
 		{
 			"src": "favicon_bw.svg",
@@ -17,13 +17,13 @@
 			"src": "icons/ftvt_192.png",
 			"sizes": "192x192",
 			"type": "image/png",
-			"purpose": "any maskable"
+			"purpose": "any"
 		},
 		{
 			"src": "icons/ftvt_512.png",
 			"sizes": "512x512",
 			"type": "image/png",
-			"purpose": "any maskable"
+			"purpose": "any"
 		}
 	],
 	"start_url": ".",

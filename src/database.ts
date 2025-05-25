@@ -41,7 +41,6 @@ export class Database {
 				resolve(openRequest.result);
 			};
 			openRequest.onerror =(event) => {
-				console.log("Could not open database:\n" + event);
 				reject(null);
 			};
 			openRequest.onupgradeneeded = (event) => {
@@ -147,7 +146,6 @@ export class Database {
 		if (!this.db) {
 			return false;
 		}
-		console.log(id + ": " + notes);
 		const transaction = this.db.transaction(["notes"], "readwrite");
 		transaction.objectStore("notes").put({"id": id, "notes": notes});
 		return true;
@@ -167,15 +165,12 @@ export class Database {
 				resolve(request.result);
 			};
 			request.onerror =(event) => {
-				console.log("Could not open recordings"+ event);
 				reject(null);
 			};
 		});
 		const notes = await this.getNotes();
 		const notes_dict : {[id: number]: string} = {};
 		notes.forEach((entry, index) => notes_dict[entry.id] = entry.notes);
-		console.log(notes);
-		console.log(notes_dict);
 		for (const entry of recordings) {
 			if (entry.id in notes_dict) {
 				entry.notes = notes_dict[entry.id];

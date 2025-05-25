@@ -8,6 +8,7 @@ import {mainFrequencyIndex} from "./frequencies"
 import {Note} from "./notes"
 import {TableManager} from "./render_table"
 import {CanvasControls} from "./canvas_controls"
+import {Settings} from "./settings"
 
 function getMediaStream(e: HTMLAudioElement): MediaStream {
 	// @ts-ignore
@@ -34,6 +35,7 @@ export class Spectrum {
 	playingAudioElement: HTMLAudioElement|null=null;
 	audioSink: HTMLAudioElement;
 	canvasHeight: number;
+	settings: Settings;
 
 	constructor(mediaStream: MediaStream, ui: UserInterface, tableManager: TableManager,recorder: Recorder, targetFrequencyManager: TargetFrequencyManager) {
 		this.baseBand = new BaseFrequencyIndices(0,0);
@@ -45,6 +47,7 @@ export class Spectrum {
 		this.canvasControls.togglePlayButton.addEventListener("click", (event) => {
 			this.toggleMainInputPlayback();
 		});
+		this.settings = ui.settings;
 		this.recorder = recorder;
 		this.targetFrequencyManager= targetFrequencyManager;
 		this.audioSink = new Audio();
@@ -163,12 +166,14 @@ export class Spectrum {
 	}
 
 	drawSpectrum(image: Uint8ClampedArray, data: Uint8Array) {
+		let clip = 0
+		if (this.settings.clipSpectrum.getValue()) {
+			clip = this.canvasControls.getThreshold();
+		}
 		const height = image.length / 4;
 		for (let i = 0; i < data.length ; ++i) {
 			let d = data[i]
-			image[4*(height-i)-1] = d;//Math.max(this.canvasControls.getThreshold(),d);
-			// TODO: this was always based on the threshold, but should it be?
-			// Leaving it turned of for now to help decide and maybe turn it into an option later on…
+			image[4*(height-i)-1] = Math.max(d, clip);
 		}
 	}
 

@@ -179,6 +179,7 @@ export class Settings {
 	enableRecordingsStorage: BooleanSetting;
 	enableCaching: BooleanSetting;
 	autoplay: BooleanSetting;
+	clipSpectrum: BooleanSetting;
 	db: Database;
 
 	private constructor() {
@@ -208,8 +209,11 @@ export class Settings {
 		}
 		
 		this.autoplay = new BooleanSetting(this.storage, this.root, "autoplay", "Automatically play recordings.");
+
 		this.recordingId = Number(this.storage.getOrInsert("recording index", "0"));
 		this.storage.registerCollector(() => {return ["recording index", this.recordingId.toFixed(0)];});
+
+		this.clipSpectrum = new BooleanSetting(this.storage, this.root, "clip spectrum", "Clip spectrum colors to threshold.");
 
 		let requestUpdateButton = document.createElement("button");
 		requestUpdateButton.innerText = "Attempt Update";

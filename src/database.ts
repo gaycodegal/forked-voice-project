@@ -1,5 +1,9 @@
-import {RecordStats} from "./recording"
+import {RecordStats, Recording} from "./recording"
 
+interface NotesEntry {
+	id: number;
+	notes: string;
+}
 
 export class Database {
 	db: IDBDatabase | null;
@@ -35,7 +39,6 @@ export class Database {
 			}
 			openRequest.onsuccess = (event) => {
 				resolve(openRequest.result);
-				console.log("successfully opened indexedDB");
 			};
 			openRequest.onerror =(event) => {
 				console.log("Could not open database:\n" + event);
@@ -44,9 +47,8 @@ export class Database {
 			openRequest.onupgradeneeded = (event) => {
 				// @ts-ignore
 				const db = event.target.result; // Literally from MDN…
-				const statsStore = db.createObjectStore("stats", {keyPath: "id"});
-				const recordingsStore = db.createObjectStore("recordings");
-				const notesStore = db.createObjectStore("notes");
+				const statsStore = db.createObjectStore("recordings", {keyPath: "id"});
+				const notesStore = db.createObjectStore("notes", {keyPath: "id"});
 			};
 		});
 		return !!this.db;
@@ -73,6 +75,14 @@ export class Database {
 		return this.tryClosedOpenIf(true);
 	}
 
+	async setAvailable(b: boolean) {
+		if (b) {
+			await this.tryClosedOpen()
+		} else {
+			await this.close();
+		}
+	}
+
 	store(objectStoreName: string, key: string, value: any) {
 		if (this.db == null) {
 			return;
@@ -83,6 +93,22 @@ export class Database {
 
 	}
 
+	async getNotes(): Promise<NotesEntry[]> {
+		return new Promise((resolve, reject) => {
+			if (this.db == null) {
+				return resolve([]);
+			}
+			const transaction = this.db.transaction(["notes"]);
+			const objectStore = transaction.objectStore("notes");
+			const request = objectStore.getAll();
+			request.onsuccess = (event) => {
+				resolve(request.result);
+			};
+			request.onerror = (event) => {
+				resolve([]);
+			}
+		});
+	}
 	get(objectStoreName: string, key: string): any|null {
 		if (this.db == null) {
 			return null;
@@ -93,19 +119,27 @@ export class Database {
 	}
 
 	addRecording(stats: RecordStats, recording: Blob, notes: string = ""): boolean {
-		console.log(stats.id, !!this.db, recording.size);
 		if (!this.db) {
 			return false;
 		}
-		const transaction = this.db.transaction(["stats", "recordings", "notes"], "readwrite");
-		const id = stats.id.toFixed(0);
-		transaction.objectStore("stats").add(stats)
-		transaction.objectStore("recordings").add(recording, id);
-		transaction.objectStore("notes").add(notes, id);
-
-		transaction.oncomplete = (event) => {
-			console.log("added " + stats);
-		};
+		const transaction = this.db.transaction(["recordings"], "readwrite");
+		transaction.objectStore("recordings").add({
+			"id": stats.id,
+			"stats": stats,
+			"recording": recording,
+			"notes": notes
+		});
+		if (notes != "") {
+			transaction.objectStore("notes").add(notes, stats.id);
+		}
+		return true;
+	}
+	deleteRecording(id: number) {
+		if (!this.db) {
+			return false;
+		}
+		const transaction = this.db.transaction(["recordings"], "readwrite");
+		transaction.objectStore("recordings").delete(id);
 		return true;
 	}
 
@@ -113,8 +147,40 @@ export class Database {
 		if (!this.db) {
 			return false;
 		}
+		console.log(id + ": " + notes);
 		const transaction = this.db.transaction(["notes"], "readwrite");
-		transaction.objectStore("notes").put(notes, id.toFixed(0));
+		transaction.objectStore("notes").put({"id": id, "notes": notes});
 		return true;
+	}
+
+	async getRecordings(): Promise<Recording[]> {
+		const recordings : Recording[] = await new Promise((resolve, reject) => {
+			if (this.db == null) {
+				return resolve([]);
+			}
+			const transaction = this.db.transaction(["recordings"]);
+			const request = transaction.objectStore("recordings").getAll();
+			if (request == null) {
+				reject(null);
+			}
+			request.onsuccess = (event) => {
+				resolve(request.result);
+			};
+			request.onerror =(event) => {
+				console.log("Could not open recordings"+ event);
+				reject(null);
+			};
+		});
+		const notes = await this.getNotes();
+		const notes_dict : {[id: number]: string} = {};
+		notes.forEach((entry, index) => notes_dict[entry.id] = entry.notes);
+		console.log(notes);
+		console.log(notes_dict);
+		for (const entry of recordings) {
+			if (entry.id in notes_dict) {
+				entry.notes = notes_dict[entry.id];
+			}
+		}
+		return recordings;
 	}
 }

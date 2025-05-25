@@ -22,6 +22,13 @@ export interface RecordStats {
 	endTime: Date;
 }
 
+export interface Recording {
+	id: number;
+	stats: RecordStats;
+	recording: Blob;
+	notes: string;
+}
+
 export class Recorder {
 	button : HTMLButtonElement;
 	currentRecording : number[] | null = null;
@@ -115,7 +122,7 @@ export class Recorder {
 		if (this.mediaRecorder) {
 			this.mediaRecorder.addEventListener("dataavailable", (e) => {
 				this.mediaRecording = e.data;
-				this.tableManager.addRecording(this.collectStats(recording), this.mediaRecording);
+				this.tableManager.addNewRecording(this.collectStats(recording), this.mediaRecording);
 			}, {once: true});
 			this.mediaRecorder.stop();
 		}

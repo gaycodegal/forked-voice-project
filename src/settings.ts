@@ -122,6 +122,13 @@ class BooleanSetting {
 		return this.checkbox.checked;
 	}
 
+	setValue(b: boolean) {
+		if (b != this.getValue()) {
+			this.checkbox.checked = false;
+			this.checkbox.dispatchEvent(new Event("change"));
+		}
+	}
+
 	addToggleListener(callback: (b: boolean, checkbox: HTMLInputElement) => void) {
 		this.callbacks.push(callback);
 	}
@@ -169,6 +176,7 @@ export class Settings {
 	storage: Storage;
 	recordingId: number;
 	enableStorage: BooleanSetting;
+	enableRecordingsStorage: BooleanSetting;
 	enableCaching: BooleanSetting;
 	autoplay: BooleanSetting;
 	db: Database;
@@ -184,9 +192,18 @@ export class Settings {
 		this.storage = new Storage(this.root);
 		this.enableStorage = new BooleanSetting(this.storage, this.root, "enable storage", "Store settings (locally).", false);
 		this.enableStorage.addToggleListener((b, _) => {this.storage.setAvailable(b);});
+
+		this.db = new Database("recordings", null);
+		this.enableRecordingsStorage = new BooleanSetting(this.storage, this.root, "enable recordings storage",
+			"Store new recordings (locally).", false);
+		this.enableRecordingsStorage.addToggleListener((b, checkbox) => {
+			this.db.setAvailable(b && checkbox.checked);
+		});
+
 		this.enableCaching = new BooleanSetting(
 			this.storage, this.root, "enable caching", "Cache this application.", true,
 			!!(navigator.serviceWorker) && !!(navigator.serviceWorker.controller));
+		
 		this.autoplay = new BooleanSetting(this.storage, this.root, "autoplay", "Automatically play recordings.");
 		this.recordingId = Number(this.storage.getOrInsert("recording index", "0"));
 		this.storage.registerCollector(() => {return ["recording index", this.recordingId.toFixed(0)];});
@@ -202,23 +219,23 @@ export class Settings {
 			alert("Update requested.");
 		});
 		this.root.appendChild(requestUpdateButton);
+
+		let deleteRecordingsDBButton = document.createElement("button");
+		deleteRecordingsDBButton.innerText = "Delete Recordings Database";
+		deleteRecordingsDBButton.classList.add("FTVT-wideButton");
+		deleteRecordingsDBButton.addEventListener("click", (event) => {
+			this.enableRecordingsStorage.setValue(false);
+			indexedDB.deleteDatabase("recordings");
+		});
+		this.root.appendChild(deleteRecordingsDBButton);
+
 		this.enableCaching.addToggleListener((b, checkbox) => {toggleCaching(b, checkbox, requestUpdateButton);});
 
-		this.db = new Database("recordings", null);
-		this.enableStorage.addToggleListener(async (b, checkbox) => {
-			const active = b && checkbox.checked;
-			if (active) {
-				await this.db.tryClosedOpen();
-			} else {
-				await this.db.close();
-			}
-
-		});
 	}
 	
 	public static async construct(): Promise<Settings> {
 		const ret = new Settings();
-		await ret.db.tryClosedOpenIf(ret.enableStorage.getValue());
+		await ret.db.setAvailable(ret.enableRecordingsStorage.getValue());
 		return ret;
 	}
 

@@ -350,7 +350,8 @@ sub {
 	width: 100%;
 	text-align: center;
 	font-weight: bold;
-	margin: 0;
+	margin-left: 0;
+	margin-right: 0;
 }
 p:has(.FTVT-version) {
 	text-align: center;

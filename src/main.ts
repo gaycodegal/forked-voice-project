@@ -13,6 +13,7 @@ window.addEventListener("load", async (event) => {
 	}
 	let ui = await UserInterface.construct(root);
 	let tableManager = new TableManager(ui);
+	await tableManager.loadOldRecordings();
 	let audioInputStream = await navigator.mediaDevices.getUserMedia({audio: true}).catch(console.log);
 	if (audioInputStream) {
 		let recorder = new Recorder(audioInputStream, ui, tableManager);

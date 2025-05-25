@@ -139,16 +139,18 @@ export class TableManager {
 		removeButton.innerHTML = "❌";
 		removeButton.onclick = () => {
 			tr.remove();
+			this.settings.db.deleteRecording(stats.id);
 		};
 		td.appendChild(removeButton);
 		return [td, audio];
 	}
 
-	renderNotes(id: number) : HTMLTableCellElement {
+	renderNotes(id: number, content: string) : HTMLTableCellElement {
 		const tdNote = document.createElement("td");
 		let noteField = document.createElement("textarea");
 		noteField.title = "personal notes";
 		noteField.placeholder = "Space for your own notes…";
+		noteField.value = content;
 		noteField.addEventListener("change", (event) => {
 			this.settings.db.updateNotes(id, noteField.value);
 		});
@@ -157,7 +159,7 @@ export class TableManager {
 	}
 
 
-	renderRecording(stats: RecordStats, recording: Blob) : [HTMLTableRowElement, HTMLAudioElement] {
+	renderRecording(stats: RecordStats, recording: Blob, notes: string="") : [HTMLTableRowElement, HTMLAudioElement] {
 		let tr = document.createElement("tr");
 		tr.appendChild(this.renderCounter(stats));
 		this.renderShares(tr, stats);
@@ -165,12 +167,24 @@ export class TableManager {
 		tr.appendChild(this.renderMetaCell(stats));
 		const [playbackCell, audio] = this.renderPlayback(recording, tr, stats)
 		tr.appendChild(playbackCell);
-		tr.appendChild(this.renderNotes(stats.id));
+		tr.appendChild(this.renderNotes(stats.id, notes));
 
 		return [tr, audio];
 	}
 
-	addRecording(stats: RecordStats, recording: Blob) {
+	addRecording(stats: RecordStats, recording: Blob, notes: string = "") {
+		const [tableRow, audio] = this.renderRecording(stats, recording, notes);
+		this.resultsTable.insertBefore(tableRow, this.resultsTable.children[0]);
+	}
+
+	async loadOldRecordings() {
+		const recordings = await this.settings.db.getRecordings();
+		for (const record of recordings) {
+			this.addRecording(record.stats, record.recording, record.notes);
+		}
+	}
+
+	addNewRecording(stats: RecordStats, recording: Blob) {
 		const [tableRow, audio] = this.renderRecording(stats, recording);
 		this.resultsTable.insertBefore(tableRow, this.resultsTable.children[0]);
 		// TODO: split of into addNewRecording

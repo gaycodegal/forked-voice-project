@@ -7,6 +7,6 @@
 	<circle cx='64' cy='64' r='34' fill='#F5A9B8' />
 	<circle cx='64' cy='64' r='24' fill='#5BCEFA' />
 	<polygon fill='#444444' points='52,64 76,64 68,120 60,120' transform='rotate(-35,64,64)' />
-	<path stroke='#444444' fill='transparent' transform='rotate(-35,64,64)' stroke-width='2' d='M 64 120 Q 64 130 80 130 T 90 140 T 90 150' />
+	<path stroke='#444444' fill='none' transform='rotate(-35,64,64)' stroke-width='2' d='M 64 120 Q 64 130 80 130 T 90 140 T 90 150' />
 	<circle cx='64' cy='64' r='14' fill='#222222' />
 </svg>

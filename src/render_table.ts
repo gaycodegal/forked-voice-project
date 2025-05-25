@@ -33,9 +33,9 @@ export class TableManager {
 		}
 	}
 
-	renderCounter() : HTMLTableCellElement {
+	renderCounter(stats: RecordStats) : HTMLTableCellElement {
 		let td = document.createElement("td");
-		td.innerHTML = "#" + this.settings.newRecordingId();
+		td.innerHTML = "#" + stats.id;
 		return td;
 	}
 
@@ -111,8 +111,8 @@ export class TableManager {
 		return td;
 	}
 
-	renderPlayback(recording: Blob[], tr: HTMLTableRowElement, stats: RecordStats): [HTMLTableCellElement, HTMLAudioElement] {
-		const blob = new Blob(recording, { type: "audio/ogg; codecs=opus" });
+	renderPlayback(recording: Blob, tr: HTMLTableRowElement, stats: RecordStats): [HTMLTableCellElement, HTMLAudioElement] {
+		const blob = recording.slice(0, recording.size,"audio/ogg; codecs=opus");
 		const audioURL = window.URL.createObjectURL(blob);
 
 		const td = document.createElement("td");
@@ -153,9 +153,9 @@ export class TableManager {
 	}
 
 
-	renderRecording(stats: RecordStats, recording: Blob[]) : [HTMLTableRowElement, HTMLAudioElement] {
+	renderRecording(stats: RecordStats, recording: Blob) : [HTMLTableRowElement, HTMLAudioElement] {
 		let tr = document.createElement("tr");
-		tr.appendChild(this.renderCounter());
+		tr.appendChild(this.renderCounter(stats));
 		this.renderShares(tr, stats);
 		tr.appendChild(this.renderQuantiles(stats));
 		tr.appendChild(this.renderMetaCell(stats));
@@ -166,7 +166,7 @@ export class TableManager {
 		return [tr, audio];
 	}
 
-	addRecording(stats: RecordStats, recording: Blob[]) {
+	addRecording(stats: RecordStats, recording: Blob) {
 		const [tableRow, audio] = this.renderRecording(stats, recording);
 		this.resultsTable.insertBefore(tableRow, this.resultsTable.children[0]);
 		// TODO: split of into addNewRecording

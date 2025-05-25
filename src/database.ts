@@ -41,6 +41,13 @@ export class Database {
 				console.log("Could not open database:\n" + event);
 				reject(null);
 			};
+			openRequest.onupgradeneeded = (event) => {
+				// @ts-ignore
+				const db = event.target.result; // Literally from MDN…
+				const statsStore = db.createObjectStore("stats", {keyPath: "id"});
+				const recordingsStore = db.createObjectStore("recordings");
+				const notesStore = db.createObjectStore("notes");
+			};
 		});
 		return !!this.db;
 	}
@@ -85,8 +92,20 @@ export class Database {
 		return objectStore.get(key);
 	}
 
-	addRecording(stats: RecordStats, recording: Blob[]) {
-		console.log(this.db);
-		console.log(stats);
+	addRecording(stats: RecordStats, recording: Blob, notes: string = ""): boolean {
+		console.log(stats.id, !!this.db, recording.size);
+		if (!this.db) {
+			return false;
+		}
+		const transaction = this.db.transaction(["stats", "recordings", "notes"], "readwrite");
+		const id = stats.id.toFixed(0);
+		transaction.objectStore("stats").add(stats)
+		transaction.objectStore("recordings").add(recording, id);
+		transaction.objectStore("notes").add(notes, id);
+
+		transaction.oncomplete = (event) => {
+			console.log("added " + stats);
+		};
+		return true;
 	}
 }

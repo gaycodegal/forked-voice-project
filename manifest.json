@@ -12,6 +12,7 @@
 			"src": "favicon_bw.svg",
 			"sizes": "any",
 			"purpose": "monochrome maskable"
+		},
 		{
 			"src": "icons/ftvt_192.png",
 			"sizes": "192x192",

@@ -203,6 +203,9 @@ export class Settings {
 		this.enableCaching = new BooleanSetting(
 			this.storage, this.root, "enable caching", "Cache this application.", true,
 			!!(navigator.serviceWorker) && !!(navigator.serviceWorker.controller));
+		if (window.location.protocol == "file:") {
+			this.enableCaching.getRoot().style.display = "none";
+		}
 		
 		this.autoplay = new BooleanSetting(this.storage, this.root, "autoplay", "Automatically play recordings.");
 		this.recordingId = Number(this.storage.getOrInsert("recording index", "0"));

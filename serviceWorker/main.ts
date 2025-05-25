@@ -1,10 +1,11 @@
+/// <reference lib="WebWorker" />
+
+// export empty type because of tsc --isolatedModules flag
+export type {};
+declare const self: ServiceWorkerGlobalScope;
 
 const cachedResources = [
 	'/',
-	'/favicon.svg',
-	'/manifest.json',
-	'/icons/ftvt_192.png',
-	'/icons/ftvt_512.png',
 ];
 
 async function addResourcesToCache(resources:string[]) {
@@ -18,7 +19,6 @@ const putInCache = async (request: Request, response: Response) => {
 };
 
 self.addEventListener('install', (event) => {
-	// @ts-ignore
 	event.waitUntil(addResourcesToCache(cachedResources));
 });
 
@@ -32,10 +32,11 @@ async function cacheFirst(request: Request, event: ExtendableEvent) {
 	return responseFromNetwork;
 };
 
-self.addEventListener("fetch", (event: Event) => {
-	// @ts-ignore
+self.addEventListener("fetch", (event) => {
 	event.respondWith(cacheFirst(event.request, event));
 });
+
+const broadcastChannel = new BroadcastChannel("FTVT-channel");
 
 self.addEventListener("message", async (event) => {
 	if (event.data) {
@@ -47,7 +48,9 @@ self.addEventListener("message", async (event) => {
 				}
 				break;
 			case "update caches":
+				console.log(event);
 				await cache.addAll(cachedResources);
+				broadcastChannel.postMessage({type:"done"});
 		}
 	}
 });

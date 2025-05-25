@@ -138,10 +138,12 @@ class BooleanSetting {
 	}
 }
 
-async function toggleCaching(enable: boolean, checkbox: HTMLInputElement ,downloadButton: HTMLButtonElement) {
+async function toggleCaching(enable: boolean, checkbox: HTMLInputElement ,downloadButton: HTMLButtonElement, channel: BroadcastChannel) {
 	if (enable) {
 		try {
-			await navigator.serviceWorker.register("serviceWorker.js");
+			if (! navigator.serviceWorker.controller) {
+				await navigator.serviceWorker.register("serviceWorker.js");
+			}
 			downloadButton.disabled = false;
 		} catch (e) {
 			alert("Could not register serviceWorker: " + e)
@@ -149,7 +151,11 @@ async function toggleCaching(enable: boolean, checkbox: HTMLInputElement ,downlo
 			return;
 		}
 	} else {
-		downloadButton.disabled = true;
+		//downloadButton.disabled = true;
+			channel.addEventListener("message", (event) => {
+				console.log(event);
+				alert("received response" + event);
+			});
 		if (navigator.serviceWorker.controller) {
 			navigator.serviceWorker.controller.postMessage({
 				type: 'delete caches',
@@ -181,6 +187,7 @@ export class Settings {
 	autoplay: BooleanSetting;
 	clipSpectrum: BooleanSetting;
 	db: Database;
+	broadcastChannel: BroadcastChannel;
 
 	private constructor() {
 		this.root = document.createElement("div");
@@ -219,11 +226,11 @@ export class Settings {
 		requestUpdateButton.innerText = "Attempt Update";
 		requestUpdateButton.classList.add("FTVT-wideButton");
 		if (! navigator.serviceWorker.controller) {
-			requestUpdateButton.disabled = true;
+			//requestUpdateButton.disabled = true;
 		}
 		requestUpdateButton.addEventListener("click", (event)=>{
 			requestBackgroundUpdate();
-			alert("Update requested.");
+			//alert("Update requested.");
 		});
 		this.root.appendChild(requestUpdateButton);
 
@@ -236,7 +243,8 @@ export class Settings {
 		});
 		this.root.appendChild(deleteRecordingsDBButton);
 
-		this.enableCaching.addToggleListener((b, checkbox) => {toggleCaching(b, checkbox, requestUpdateButton);});
+		this.broadcastChannel = new BroadcastChannel("FTVT-channel");
+		this.enableCaching.addToggleListener((b, checkbox) => {toggleCaching(b, checkbox, requestUpdateButton, this.broadcastChannel);});
 
 	}
 	

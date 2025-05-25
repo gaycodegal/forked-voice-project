@@ -6,6 +6,7 @@ import {frequencyToHTML} from "./notes"
 import {TextDisplayElement} from "./texts"
 import {NoteDisplay} from "./note_display"
 import {Settings} from "./settings"
+import {Database} from "./database"
 
 export class TableManager {
 
@@ -143,11 +144,14 @@ export class TableManager {
 		return [td, audio];
 	}
 
-	renderNotes() : HTMLTableCellElement {
+	renderNotes(id: number) : HTMLTableCellElement {
 		const tdNote = document.createElement("td");
 		let noteField = document.createElement("textarea");
 		noteField.title = "personal notes";
 		noteField.placeholder = "Space for your own notes…";
+		noteField.addEventListener("change", (event) => {
+			this.settings.db.updateNotes(id, noteField.value);
+		});
 		tdNote.appendChild(noteField);
 		return tdNote;
 	}
@@ -161,7 +165,7 @@ export class TableManager {
 		tr.appendChild(this.renderMetaCell(stats));
 		const [playbackCell, audio] = this.renderPlayback(recording, tr, stats)
 		tr.appendChild(playbackCell);
-		tr.appendChild(this.renderNotes());
+		tr.appendChild(this.renderNotes(stats.id));
 
 		return [tr, audio];
 	}

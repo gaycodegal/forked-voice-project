@@ -108,4 +108,13 @@ export class Database {
 		};
 		return true;
 	}
+
+	updateNotes(id: number, notes: string): boolean {
+		if (!this.db) {
+			return false;
+		}
+		const transaction = this.db.transaction(["notes"], "readwrite");
+		transaction.objectStore("notes").put(notes, id.toFixed(0));
+		return true;
+	}
 }

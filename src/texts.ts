@@ -12,13 +12,23 @@ function clearSelector(element: HTMLSelectElement) {
 	}
 }
 
+interface Text {
+	language: string;
+	languageCode: string;
+	title: string;
+	text: string;
+}
+
 export class TextDisplayElement {
 	root: HTMLDivElement;
 	languageSelector: HTMLSelectElement;
 	textSelector: HTMLSelectElement;
 	textDisplay: HTMLQuoteElement;
 
+	texts: {[language: string]: {[title: string]: string}};
+
 	constructor(settings: Settings) {
+		this.texts = structuredClone(TEXTS_TABLE);
 		this.root = document.createElement("div");
 		this.root.classList.add("FTVT-textDisplay");
 		let selectorDiv = document.createElement("div");
@@ -37,9 +47,9 @@ export class TextDisplayElement {
 
 		this.textDisplay = document.createElement("blockquote");
 		this.root.appendChild(this.textDisplay);
-		for(let language in TEXTS_TABLE) {
+		for(let language in this.texts) {
 			const option = new Option(language);
-			const languageCode = TEXTS_TABLE[language]['languageCode'];
+			const languageCode = this.texts[language]['languageCode'];
 			option.lang = languageCode;
 			this.languageSelector.add(option);
 		}
@@ -54,6 +64,7 @@ export class TextDisplayElement {
 		this.textSelector.addEventListener("change", (event) => {
 			this.getSelectedText();
 		});
+		new TextAdditionDialog(this, this.root);
 	}
 
 	getRoot(): HTMLDivElement {
@@ -71,8 +82,8 @@ export class TextDisplayElement {
 	getSelectedText() {
 		const lang = this.languageSelector.value;
 		let text = this.textSelector.value;
-		if (lang in TEXTS_TABLE && text in TEXTS_TABLE[lang]){
-			this.textDisplay.innerHTML = TEXTS_TABLE[lang][text];
+		if (lang in this.texts && text in this.texts[lang]){
+			this.textDisplay.innerHTML = this.texts[lang][text];
 		} else {
 			this.textDisplay.innerHTML = "";
 		}
@@ -80,9 +91,9 @@ export class TextDisplayElement {
 
 	onLanguageSelect() {
 		const language = this.languageSelector.value;
-		const languageCode = TEXTS_TABLE[language]['languageCode'];
+		const languageCode = this.texts[language]['languageCode'];
 		clearSelector(this.textSelector);
-		for(let key in TEXTS_TABLE[language]) {
+		for(let key in this.texts[language]) {
 			if (key != "languageCode") {
 				this.textSelector.add(new Option(key));
 			}
@@ -91,4 +102,120 @@ export class TextDisplayElement {
 		this.textDisplay.lang = languageCode;
 		this.textSelector.dispatchEvent(new Event("change"));
 	}
+
+	selectLanguage(language: string) {
+		this.languageSelector.value = language;
+		this.onLanguageSelect();
+	}
+	selectText(language: string, name: string) {
+		this.selectLanguage(language);
+		this.textSelector.value = name;
+		this.textSelector.dispatchEvent(new Event("change"));
+	}
+
+	addText(language: string, languageCode: string, name: string, content: string): boolean {
+		if (!(language in this.texts)) {
+			this.texts[language] = {"languageCode": languageCode};
+			const option = new Option(language);
+			option.lang = languageCode;
+			this.languageSelector.add(option);
+		} else if (name in this.texts[language]) {
+			alert("Error: There is already a text titled “"+name+"”");
+			return false;
+		}
+		this.texts[language][name] = content;
+		if (this.getSelectedLanguage() == language) {
+			const option = new Option(name);
+			option.lang = languageCode;
+			this.textSelector.add(option);
+		}
+		this.selectText(language, name);
+		return true;
+	}
 }
+
+export class TextAdditionDialog {
+	root: HTMLDivElement;
+	languageInput: HTMLInputElement;
+	languageCodeInput: HTMLInputElement;
+	nameInput: HTMLInputElement;
+	textInput: HTMLTextAreaElement;
+	manager: TextDisplayElement;
+
+	constructor(manager: TextDisplayElement, parent: HTMLElement|null = null) {
+		this.manager = manager;
+		this.root = document.createElement("div");
+		this.root.classList.add("FTVT-textAdditionDialog");
+
+		this.languageInput = document.createElement("input");
+		const languageInputLabel = document.createElement("label");
+		languageInputLabel.innerHTML = "<span>Language:</span>";
+		this.languageInput.placeholder = "e.g. “English”, “Deutsch”, “Nederlands”, …"
+		languageInputLabel.appendChild(this.languageInput);
+		this.root.appendChild(languageInputLabel);
+
+		this.languageCodeInput = document.createElement("input");
+		const languageCodeInputLabel = document.createElement("label");
+		languageCodeInputLabel.innerHTML = "<span>Language-Code:</span>";
+		this.languageCodeInput.placeholder = "e.g. “en”, “de”, “nl”, …"
+		languageCodeInputLabel.appendChild(this.languageCodeInput);
+		this.root.appendChild(languageCodeInputLabel);
+
+		this.nameInput = document.createElement("input");
+		const nameInputLabel = document.createElement("label");
+		nameInputLabel.innerHTML = "<span>Name:</span>";
+		this.nameInput.placeholder = "The name of the Text, e.g. “Rainbow Passage”";
+		nameInputLabel.appendChild(this.nameInput);
+		this.root.appendChild(nameInputLabel);
+		
+		this.textInput = document.createElement("textarea");
+		const textInputLabel = document.createElement("label");
+		textInputLabel.innerHTML = "<span>Text:</span>";
+		textInputLabel.appendChild(this.textInput);
+		this.root.appendChild(textInputLabel);
+
+		const addButton = document.createElement("button");
+		addButton.innerText = "Add Text";
+		addButton.classList.add("FTVT-wideButton");
+		this.root.appendChild(addButton);
+		addButton.addEventListener("click", (event) => {
+			this.addText();
+		});
+
+		//const storeButton = document.createElement("button");
+		//storeButton.innerText = "Store Text";
+		//storeButton.classList.add("FTVT-wideButton");
+		//this.root.appendChild(storeButton);
+
+		if (parent) {
+			parent.appendChild(this.root);
+		}
+	}
+
+	addText() {
+		let errors = "";
+		if (!this.languageInput.value) {
+			errors += "No language set.\n";
+		}
+		if (!this.nameInput.value) {
+			errors += "Text has no name.\n";
+		}
+		if (!this.textInput.value) {
+			errors += "Text is empty.\n";
+		}
+		if (errors != "") {
+			alert("Error:\n" + errors);
+			return;
+		}
+		const success = this.manager.addText(this.languageInput.value, this.languageCodeInput.value, this.nameInput.value, this.textInput.value);
+		if (success) {
+			this.nameInput.value = "";
+			this.textInput.value = "";
+		}
+	}
+
+	getRoot(): HTMLDivElement {
+		return this.root;
+	}
+}
+

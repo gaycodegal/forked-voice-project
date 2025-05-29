@@ -132,10 +132,6 @@ class BooleanSetting {
 	addToggleListener(callback: (b: boolean, checkbox: HTMLInputElement) => void) {
 		this.callbacks.push(callback);
 	}
-
-	disable() {
-		this.checkbox.disabled = true;
-	}
 }
 
 async function toggleCaching(enable: boolean, checkbox: HTMLInputElement ,downloadButton: HTMLButtonElement, channel: BroadcastChannel) {
@@ -151,11 +147,11 @@ async function toggleCaching(enable: boolean, checkbox: HTMLInputElement ,downlo
 			return;
 		}
 	} else {
-		//downloadButton.disabled = true;
-			channel.addEventListener("message", (event) => {
-				console.log(event);
-				alert("received response" + event);
-			});
+		downloadButton.disabled = true;
+		channel.addEventListener("message", (event) => {
+			console.log(event);
+			alert("received response" + event);
+		});
 		if (navigator.serviceWorker.controller) {
 			navigator.serviceWorker.controller.postMessage({
 				type: 'delete caches',
@@ -222,17 +218,22 @@ export class Settings {
 
 		this.clipSpectrum = new BooleanSetting(this.storage, this.root, "clip spectrum", "Clip spectrum colors to threshold.");
 
-		let requestUpdateButton = document.createElement("button");
-		requestUpdateButton.innerText = "Attempt Update";
-		requestUpdateButton.classList.add("FTVT-wideButton");
-		if (! navigator.serviceWorker.controller) {
-			//requestUpdateButton.disabled = true;
+		if (window.location.protocol != "file:") {
+			let requestUpdateButton = document.createElement("button");
+			requestUpdateButton.innerText = "Attempt Update";
+			requestUpdateButton.classList.add("FTVT-wideButton");
+			if (! navigator.serviceWorker.controller) {
+				requestUpdateButton.disabled = true;
+			}
+			requestUpdateButton.addEventListener("click", (event)=>{
+				requestBackgroundUpdate();
+				alert("Update requested.");
+			});
+			this.root.appendChild(requestUpdateButton);
+			this.enableCaching.addToggleListener((b, checkbox) => {
+				toggleCaching(b, checkbox, requestUpdateButton, this.broadcastChannel);
+			});
 		}
-		requestUpdateButton.addEventListener("click", (event)=>{
-			requestBackgroundUpdate();
-			//alert("Update requested.");
-		});
-		this.root.appendChild(requestUpdateButton);
 
 		let deleteRecordingsDBButton = document.createElement("button");
 		deleteRecordingsDBButton.innerText = "Delete Recordings Database";
@@ -244,7 +245,6 @@ export class Settings {
 		this.root.appendChild(deleteRecordingsDBButton);
 
 		this.broadcastChannel = new BroadcastChannel("FTVT-channel");
-		this.enableCaching.addToggleListener((b, checkbox) => {toggleCaching(b, checkbox, requestUpdateButton, this.broadcastChannel);});
 
 	}
 	

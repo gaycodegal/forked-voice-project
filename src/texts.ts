@@ -5,7 +5,7 @@ import { TEXTS_TABLE } from "./raw_texts";
 
 import {Settings} from "./settings";
 
-import {escapeHTML, filterSafeHTML} from "./escape_html";
+import {escapeHTML, rawTextToHTML} from "./escape_html";
 
 function clearSelector(element: HTMLSelectElement) {
 	var i, L = element.options.length - 1;
@@ -213,7 +213,7 @@ export class TextAdditionDialog {
 			escapeHTML(this.languageInput.value),
 			escapeHTML(this.languageCodeInput.value),
 			escapeHTML(this.nameInput.value),
-			filterSafeHTML(this.textInput.value)
+			rawTextToHTML(this.textInput.value)
 		);
 		if (success) {
 			this.nameInput.value = "";

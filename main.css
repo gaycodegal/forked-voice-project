@@ -354,17 +354,40 @@ body {
 			margin: 0;
 			border: solid var(--accent-col);
 			border-width: var(--border-width);
+			border-bottom: none;
 			color: var(--main-col);
 			background-color: var(--accent-bg-col);
-			border-radius: var(--border-radius);
-			border-top-left-radius: 0;
-			border-top-right-radius: 0;
 			hyphens: auto;
 			p {
 				margin-top: 0.3em;
 				margin-bottom: 0.3em;
 			}
 		}
+	}
+	.FTVT-bottom-controls {
+		display: flex;
+		border-radius: 0;
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+		margin: 0;
+		padding: 0;
+		button, input {
+			margin: 0;
+			flex-grow: 1;
+			flex-shrink: 1;
+			border-radius: 0;
+			border-left-width: calc(var(--border-width) / 2);
+			border-right-width: calc(var(--border-width) / 2);
+		}
+		:first-child {
+			border-bottom-left-radius: var(--border-radius);
+			border-left-width: var(--border-width);
+		}
+		:last-child {
+			border-bottom-right-radius: var(--border-radius);
+			border-right-width: var(--border-width);
+		}
+
 	}
 	#FTVT-settings {
 		font-size: 2em;
@@ -394,36 +417,49 @@ body {
 		text-align: center;
 	}
 	.FTVT-textAdditionDialog {
-		margin-top: 10px;
-		border-width: var(--border-width);
-		border-style: solid;
-		border-radius: var(--border-radius);
-		border-color: var(--accent-col);
-		background-color: var(--accent-bg-col);
-		padding: 10px;
-		label{
-			margin-left: 0;
-			margin-right: 0;
-			padding-left: 0;
-			padding-right: 0;
-			border: none;
-			background-color: transparent;
-			display: flex;
-			flex-wrap: wrap;
-			span {
-				width: 8em;
-			}
-			input, textarea {
-				width: calc(100% - 8em);
-				margin: 0;
-				flex-shrink: 1;
-				flex-grow: 1;
-			}
-			
-			textarea {
-				resize: vertical;
-				font-size: 1em;
+		padding: 0;
+		margin: auto;
+		border: none;
+		background: none;
+		width: 80%;
+		max-width: calc(0.8 * var(--max-width));
+		.FTVT-textAdditionDialogFormDiv {
+			border-width: var(--border-width);
+			border-style: solid;
+			border-radius: var(--border-radius);
+			border-color: var(--accent-col);
+			border-bottom-left-radius: 0;
+			border-bottom-right-radius: 0;
+			border-bottom: none;
+			background-color: var(--accent-bg-col);
+			padding: 10px;
+			label{
+				margin-left: 0;
+				margin-right: 0;
+				padding-left: 0;
+				padding-right: 0;
+				border: none;
+				background-color: transparent;
+				display: flex;
+				flex-wrap: wrap;
+				span {
+					width: 8em;
+				}
+				input, textarea {
+					width: calc(100% - 8em);
+					margin: 0;
+					flex-shrink: 1;
+					flex-grow: 1;
+				}
+				textarea {
+					font-family: sans-serif;
+				}
 				
+				textarea {
+					resize: vertical;
+					font-size: 1em;
+					
+				}
 			}
 		}
 	}

@@ -66,7 +66,15 @@ export class TextDisplayElement {
 		this.textSelector.addEventListener("change", (event) => {
 			this.getSelectedText();
 		});
-		new TextAdditionDialog(this, this.root);
+
+		const addDialog = new TextAdditionDialog(this, this.root);
+		const bottomControls = document.createElement("div");
+		bottomControls.classList.add("FTVT-bottom-controls");
+		this.root.appendChild(bottomControls);
+		const addButton = document.createElement("button");
+		addButton.innerText = "➕";
+		addButton.addEventListener("click", (event) => {addDialog.show();});
+		bottomControls.appendChild(addButton);
 	}
 
 	getRoot(): HTMLDivElement {
@@ -137,7 +145,7 @@ export class TextDisplayElement {
 }
 
 export class TextAdditionDialog {
-	root: HTMLDivElement;
+	root: HTMLDialogElement;
 	languageInput: HTMLInputElement;
 	languageCodeInput: HTMLInputElement;
 	nameInput: HTMLInputElement;
@@ -146,48 +154,64 @@ export class TextAdditionDialog {
 
 	constructor(manager: TextDisplayElement, parent: HTMLElement|null = null) {
 		this.manager = manager;
-		this.root = document.createElement("div");
+		this.root = document.createElement("dialog");
+		this.root.setAttribute("closedby", "any");
 		this.root.classList.add("FTVT-textAdditionDialog");
+
+		const formDiv = document.createElement("div");
+		formDiv.classList.add("FTVT-textAdditionDialogFormDiv");
+		this.root.appendChild(formDiv);
+
 
 		this.languageInput = document.createElement("input");
 		const languageInputLabel = document.createElement("label");
 		languageInputLabel.innerHTML = "<span>Language:</span>";
 		this.languageInput.placeholder = "e.g. “English”, “Deutsch”, “Nederlands”, …"
 		languageInputLabel.appendChild(this.languageInput);
-		this.root.appendChild(languageInputLabel);
+		formDiv.appendChild(languageInputLabel);
 
 		this.languageCodeInput = document.createElement("input");
 		const languageCodeInputLabel = document.createElement("label");
 		languageCodeInputLabel.innerHTML = "<span>Language-Code:</span>";
 		this.languageCodeInput.placeholder = "e.g. “en”, “de”, “nl”, …"
 		languageCodeInputLabel.appendChild(this.languageCodeInput);
-		this.root.appendChild(languageCodeInputLabel);
+		formDiv.appendChild(languageCodeInputLabel);
 
 		this.nameInput = document.createElement("input");
 		const nameInputLabel = document.createElement("label");
 		nameInputLabel.innerHTML = "<span>Name:</span>";
 		this.nameInput.placeholder = "The name of the Text, e.g. “Rainbow Passage”";
 		nameInputLabel.appendChild(this.nameInput);
-		this.root.appendChild(nameInputLabel);
+		formDiv.appendChild(nameInputLabel);
 		
 		this.textInput = document.createElement("textarea");
+		this.textInput.rows = 10;
+		this.textInput.placeholder = "Lorem Ipsum…"
 		const textInputLabel = document.createElement("label");
 		textInputLabel.innerHTML = "<span>Text:</span>";
 		textInputLabel.appendChild(this.textInput);
-		this.root.appendChild(textInputLabel);
+		formDiv.appendChild(textInputLabel);
+
+		const bottomControls = document.createElement("div");
+		bottomControls.classList.add("FTVT-bottom-controls");
+		this.root.appendChild(bottomControls);
 
 		const addButton = document.createElement("button");
-		addButton.innerText = "Add Text";
-		addButton.classList.add("FTVT-wideButton");
-		this.root.appendChild(addButton);
+		addButton.innerText = "➕";
+		bottomControls.appendChild(addButton);
 		addButton.addEventListener("click", (event) => {
+			this.root.close();
 			this.addText();
 		});
 
 		//const storeButton = document.createElement("button");
-		//storeButton.innerText = "Store Text";
-		//storeButton.classList.add("FTVT-wideButton");
-		//this.root.appendChild(storeButton);
+		//storeButton.innerText = "💾";
+		//bottomControls.appendChild(storeButton);
+
+		const cancelButton = document.createElement("button");
+		cancelButton.innerText = "❌";
+		cancelButton.addEventListener("click", (event) => {this.root.close();});
+		bottomControls.appendChild(cancelButton);
 
 		if (parent) {
 			parent.appendChild(this.root);
@@ -210,9 +234,9 @@ export class TextAdditionDialog {
 			return;
 		}
 		const success = this.manager.addText(
-			escapeHTML(this.languageInput.value),
-			escapeHTML(this.languageCodeInput.value),
-			escapeHTML(this.nameInput.value),
+			(this.languageInput.value),
+			(this.languageCodeInput.value),
+			(this.nameInput.value),
 			rawTextToHTML(this.textInput.value)
 		);
 		if (success) {
@@ -221,8 +245,12 @@ export class TextAdditionDialog {
 		}
 	}
 
-	getRoot(): HTMLDivElement {
+	getRoot(): HTMLDialogElement {
 		return this.root;
+	}
+
+	show() {
+		this.root.showModal();
 	}
 }
 

@@ -17,7 +17,9 @@ export class UserInterface {
 
 	public static async construct(root: HTMLElement) {
 		const settings = await Settings.construct();
-		return new UserInterface(root, settings);
+		const ret = new UserInterface(root, settings);
+		await ret.textDisplay.loadStoredTexts();
+		return ret;
 	}
 
 	private constructor(root: HTMLElement, settings: Settings) {

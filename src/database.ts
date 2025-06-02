@@ -1,5 +1,7 @@
 import {RecordStats, Recording} from "./recording"
 
+import {Text} from "./texts"
+
 interface NotesEntry {
 	id: number;
 	notes: string;
@@ -48,6 +50,7 @@ export class Database {
 				const db = event.target.result; // Literally from MDN…
 				const statsStore = db.createObjectStore("recordings", {keyPath: "id"});
 				const notesStore = db.createObjectStore("notes", {keyPath: "id"});
+				const textsStore = db.createObjectStore("texts", {keyPath: ["language","title"]});
 			};
 		});
 		return !!this.db;
@@ -151,6 +154,19 @@ export class Database {
 		return true;
 	}
 
+	addText(language: string, languageCode: string|null, title: string, content: string) {
+		if (this.db == null) {
+			return;
+		}
+		const transaction = this.db.transaction("texts", "readwrite");
+		transaction.objectStore("texts").add({
+			language: language,
+			languageCode: languageCode,
+			title: title,
+			content: content
+		});
+	}
+
 	async getRecordings(): Promise<Recording[]> {
 		const recordings : Recording[] = await new Promise((resolve, reject) => {
 			if (this.db == null) {
@@ -177,5 +193,30 @@ export class Database {
 			}
 		}
 		return recordings;
+	}
+
+	async getTexts(): Promise<Text[]> {
+		return new Promise((resolve, reject) => {
+			if (this.db == null) {
+				return resolve([]);
+			}
+			const transaction = this.db.transaction(["texts"]);
+			const objectStore = transaction.objectStore("texts");
+			const request = objectStore.getAll();
+			request.onsuccess = (event) => {
+				resolve(request.result);
+			};
+			request.onerror = (event) => {
+				resolve([]);
+			}
+		});
+	}
+
+	async deleteText(language: string, title: string) {
+		if (this.db == null) {
+			return;
+		}
+		const transaction = this.db.transaction("texts", "readwrite");
+		transaction.objectStore("texts").delete([language, title]);
 	}
 }

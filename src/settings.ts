@@ -198,8 +198,8 @@ export class Settings {
 		this.enableStorage.addToggleListener((b, _) => {this.storage.setAvailable(b);});
 
 		this.db = new Database("recordings", null);
-		this.enableRecordingsStorage = new BooleanSetting(this.storage, this.root, "enable recordings storage",
-			"Store new recordings (locally).", false);
+		this.enableRecordingsStorage = new BooleanSetting(this.storage, this.root, "enable database",
+			"Store data (locally).", false);
 		this.enableRecordingsStorage.addToggleListener((b, checkbox) => {
 			this.db.setAvailable(b && checkbox.checked);
 		});
@@ -236,7 +236,7 @@ export class Settings {
 		}
 
 		let deleteRecordingsDBButton = document.createElement("button");
-		deleteRecordingsDBButton.innerText = "Delete Recordings Database";
+		deleteRecordingsDBButton.innerText = "Delete Stored Data";
 		deleteRecordingsDBButton.classList.add("FTVT-wideButton");
 		deleteRecordingsDBButton.addEventListener("click", (event) => {
 			this.enableRecordingsStorage.setValue(false);

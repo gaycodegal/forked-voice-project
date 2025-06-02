@@ -14,11 +14,11 @@ function clearSelector(element: HTMLSelectElement) {
 	}
 }
 
-interface Text {
+export interface Text {
 	language: string;
 	languageCode: string;
 	title: string;
-	text: string;
+	content: string;
 }
 
 export class TextDisplayElement {
@@ -26,10 +26,13 @@ export class TextDisplayElement {
 	languageSelector: HTMLSelectElement;
 	textSelector: HTMLSelectElement;
 	textDisplay: HTMLQuoteElement;
+	removeButton: HTMLButtonElement;
+	settings: Settings;
 
 	texts: {[language: string]: {[title: string]: string}};
 
 	constructor(settings: Settings) {
+		this.settings = settings;
 		this.texts = structuredClone(TEXTS_TABLE);
 		this.root = document.createElement("div");
 		this.root.classList.add("FTVT-textDisplay");
@@ -71,10 +74,23 @@ export class TextDisplayElement {
 		const bottomControls = document.createElement("div");
 		bottomControls.classList.add("FTVT-bottom-controls");
 		this.root.appendChild(bottomControls);
+
 		const addButton = document.createElement("button");
 		addButton.innerText = "➕";
 		addButton.addEventListener("click", (event) => {addDialog.show();});
 		bottomControls.appendChild(addButton);
+
+		this.removeButton = document.createElement("button");
+		this.removeButton.innerText = "🗑️";
+		this.removeButton.addEventListener("click", (event) => {this.removeCurrent();});
+		bottomControls.appendChild(this.removeButton);
+	}
+	async loadStoredTexts() {
+		const texts = await  this.settings.db.getTexts();
+		for (const text of texts) {
+			this.addText(text.language, text.languageCode, text.title, text.content, false);
+		}
+		this.getSelectedText();
 	}
 
 	getRoot(): HTMLDivElement {
@@ -94,7 +110,20 @@ export class TextDisplayElement {
 		let text = this.textSelector.value;
 		if (lang in this.texts && text in this.texts[lang]){
 			this.textDisplay.innerHTML = this.texts[lang][text];
+			if (lang in TEXTS_TABLE && text in TEXTS_TABLE[lang]) {
+				this.removeButton.disabled = true;
+			} else {
+				this.removeButton.disabled = false;
+			}
+		} else if (lang in this.texts && Object.keys(this.texts[lang]).length > 1) {
+			const textName = Object.keys(this.texts[lang])[1];
+			this.selectText(lang, textName);
+		} else if (Object.keys(this.texts).length > 0) {
+			const newLang = Object.keys(this.texts)[0];
+			const textName = Object.keys(this.texts[lang])[1];
+			this.selectText(newLang, textName);
 		} else {
+			// this should NEVER happen!
 			this.textDisplay.innerHTML = "";
 		}
 	}
@@ -123,7 +152,7 @@ export class TextDisplayElement {
 		this.textSelector.dispatchEvent(new Event("change"));
 	}
 
-	addText(language: string, languageCode: string, name: string, content: string): boolean {
+	addText(language: string, languageCode: string, name: string, content: string, store: boolean): boolean {
 		if (!(language in this.texts)) {
 			this.texts[language] = {"languageCode": languageCode};
 			const option = new Option(language);
@@ -140,7 +169,28 @@ export class TextDisplayElement {
 			this.textSelector.add(option);
 		}
 		this.selectText(language, name);
+		if (store) {
+			this.storeText(language, languageCode, name, content);
+		}
 		return true;
+	}
+
+	storeText(language: string, languageCode: string, name: string, content: string) {
+		this.settings.db.addText(language, languageCode, name, content);
+	}
+
+	removeCurrent() {
+		const language = this.languageSelector.value;
+		const text = this.textSelector.value;
+		delete this.texts[language][text];
+		this.textSelector.remove(this.textSelector.selectedIndex);
+
+		if (Object.keys(this.texts[language]).length <= 1) {
+			delete this.texts[language];
+			this.languageSelector.remove(this.languageSelector.selectedIndex);
+		}
+		this.settings.db.deleteText(language, text);
+		this.getSelectedText();
 	}
 }
 
@@ -204,9 +254,13 @@ export class TextAdditionDialog {
 			this.addText();
 		});
 
-		//const storeButton = document.createElement("button");
-		//storeButton.innerText = "💾";
-		//bottomControls.appendChild(storeButton);
+		const storeButton = document.createElement("button");
+		storeButton.innerText = "💾";
+		bottomControls.appendChild(storeButton);
+		storeButton.addEventListener("click", (event) => {
+			this.root.close();
+			this.addText(true);
+		});
 
 		const cancelButton = document.createElement("button");
 		cancelButton.innerText = "❌";
@@ -218,7 +272,7 @@ export class TextAdditionDialog {
 		}
 	}
 
-	addText() {
+	addText(store: boolean = false) {
 		let errors = "";
 		if (!this.languageInput.value) {
 			errors += "No language set.\n";
@@ -237,7 +291,8 @@ export class TextAdditionDialog {
 			(this.languageInput.value),
 			(this.languageCodeInput.value),
 			(this.nameInput.value),
-			rawTextToHTML(this.textInput.value)
+			rawTextToHTML(this.textInput.value),
+			store
 		);
 		if (success) {
 			this.nameInput.value = "";

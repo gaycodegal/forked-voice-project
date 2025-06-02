@@ -13,13 +13,11 @@ export function rawTextToHTML(raw: string): string {
 	let ret = "";
 	for (const part of raw.split(/\n\n+/)) {
 		const matchResult = part.match(/^@([a-zA-Z\-_])@(.*)$/)
-		console.log(part);
 		if (matchResult == null) {
 			ret += "<p>" + escapeHTML(part) + "</p>";
 		} else {
 			ret += "<p lang=\"" + matchResult[1] + "\">" +escapeHTML(matchResult[2]) + "</p>\n";
 		}
 	}
-	console.log(ret);
 	return ret;
 }

@@ -18,7 +18,7 @@ main.js: $(SOURCES) $(DATA) legal.json
 	tsc --strict src/main.ts --noEmit  --resolveJsonModule --esModuleInterop -t esnext --moduleResolution bundler
 	esbuild --bundle src/main.ts --outfile=$@
 
-deployable:
+deployable: legal.json
 	esbuild --bundle --minify src/main.ts --outfile=main.js
 	./embed_resources.py -i main.html -o bundeled.html
 	esbuild --bundle serviceWorker/main.ts --outfile=serviceWorker.js

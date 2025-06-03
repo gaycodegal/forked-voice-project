@@ -7,6 +7,11 @@ interface NotesEntry {
 	notes: string;
 }
 
+interface Language {
+	name: string;
+	code: string;
+}
+
 export class Database {
 	db: IDBDatabase | null;
 	name: string;
@@ -35,7 +40,7 @@ export class Database {
 	async tryOpen(): Promise<boolean> {
 		await this.close();
 		this.db = await new Promise((resolve, reject) => {
-			const openRequest = window.indexedDB.open(this.name);
+			const openRequest = window.indexedDB.open(this.name, 3);
 			if (openRequest == null) {
 				reject(null);
 			}
@@ -48,9 +53,18 @@ export class Database {
 			openRequest.onupgradeneeded = (event) => {
 				// @ts-ignore
 				const db = event.target.result; // Literally from MDN…
-				const statsStore = db.createObjectStore("recordings", {keyPath: "id"});
-				const notesStore = db.createObjectStore("notes", {keyPath: "id"});
-				const textsStore = db.createObjectStore("texts", {keyPath: ["language","title"]});
+				if (!db.objectStoreNames.contains("recordings")) {
+					const statsStore = db.createObjectStore("recordings", {keyPath: "id"});
+				}
+				if (!db.objectStoreNames.contains("notes")) {
+					const notesStore = db.createObjectStore("notes", {keyPath: "id"});
+				}
+				if (!db.objectStoreNames.contains("texts")) {
+					const textsStore = db.createObjectStore("texts", {keyPath: ["languageCode","title"]});
+				}
+				if (!db.objectStoreNames.contains("langs")) {
+					const langsStore = db.createObjectStore("langs", {keyPath: "code"});
+				}
 			};
 		});
 		return !!this.db;
@@ -154,13 +168,12 @@ export class Database {
 		return true;
 	}
 
-	addText(language: string, languageCode: string|null, title: string, content: string) {
+	addText(languageCode: string|null, title: string, content: string) {
 		if (this.db == null) {
 			return;
 		}
 		const transaction = this.db.transaction("texts", "readwrite");
 		transaction.objectStore("texts").add({
-			language: language,
 			languageCode: languageCode,
 			title: title,
 			content: content
@@ -218,5 +231,32 @@ export class Database {
 		}
 		const transaction = this.db.transaction("texts", "readwrite");
 		transaction.objectStore("texts").delete([language, title]);
+	}
+
+	async addLanguage(code: string, name: string) {
+		if (this.db == null) {
+			return;
+		}
+		const transaction = this.db.transaction("langs", "readwrite");
+		transaction.objectStore("langs").add({
+			name: name,
+			code: code
+		});
+	}
+	async getLanguages(): Promise<Language[]> {
+		return new Promise((resolve, reject) => {
+			if (this.db == null) {
+				return resolve([]);
+			}
+			const transaction = this.db.transaction(["langs"]);
+			const objectStore = transaction.objectStore("langs");
+			const request = objectStore.getAll();
+			request.onsuccess = (event) => {
+				resolve(request.result);
+			};
+			request.onerror = (event) => {
+				resolve([]);
+			}
+		});
 	}
 }

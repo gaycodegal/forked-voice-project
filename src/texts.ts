@@ -7,6 +7,8 @@ import {Settings} from "./settings";
 
 import {escapeHTML, rawTextToHTML} from "./escape_html";
 
+import {LanguageManager, LanguageSelector} from "./languageSelector";
+
 function clearSelector(element: HTMLSelectElement) {
 	var i, L = element.options.length - 1;
 	for(i = L; i >= 0; i--) {
@@ -15,7 +17,6 @@ function clearSelector(element: HTMLSelectElement) {
 }
 
 export interface Text {
-	language: string;
 	languageCode: string;
 	title: string;
 	content: string;
@@ -28,11 +29,14 @@ export class TextDisplayElement {
 	textDisplay: HTMLQuoteElement;
 	removeButton: HTMLButtonElement;
 	settings: Settings;
+	addDialog: TextAdditionDialog;
+	languageManager: LanguageManager;
 
 	texts: {[language: string]: {[title: string]: string}};
 
 	constructor(settings: Settings) {
 		this.settings = settings;
+		this.languageManager = new LanguageManager(settings);
 		this.texts = structuredClone(TEXTS_TABLE);
 		this.root = document.createElement("div");
 		this.root.classList.add("FTVT-textDisplay");
@@ -53,9 +57,7 @@ export class TextDisplayElement {
 		this.textDisplay = document.createElement("blockquote");
 		this.root.appendChild(this.textDisplay);
 		for(let language in this.texts) {
-			const option = new Option(language);
-			const languageCode = this.texts[language]['languageCode'];
-			option.lang = languageCode;
+			const option = this.languageManager.makeOption(language);
 			this.languageSelector.add(option);
 		}
 		settings.registerInput("language", this.languageSelector);
@@ -65,19 +67,18 @@ export class TextDisplayElement {
 			this.getSelectedText();
 		});
 		settings.registerInput("display-text", this.textSelector);
-		this.getSelectedText();
 		this.textSelector.addEventListener("change", (event) => {
 			this.getSelectedText();
 		});
 
-		const addDialog = new TextAdditionDialog(this, this.root);
+		this.addDialog = new TextAdditionDialog(this, this.root);
 		const bottomControls = document.createElement("div");
 		bottomControls.classList.add("FTVT-bottom-controls");
 		this.root.appendChild(bottomControls);
 
 		const addButton = document.createElement("button");
 		addButton.innerText = "➕";
-		addButton.addEventListener("click", (event) => {addDialog.show();});
+		addButton.addEventListener("click", (event) => {this.addDialog.show();});
 		bottomControls.appendChild(addButton);
 
 		this.removeButton = document.createElement("button");
@@ -86,11 +87,14 @@ export class TextDisplayElement {
 		bottomControls.appendChild(this.removeButton);
 	}
 	async loadStoredTexts() {
-		const texts = await  this.settings.db.getTexts();
+		await this.languageManager.load();
+		//await this.settings.db.addLanguage("en_NYA", "Catspeak");
+		const texts = await this.settings.db.getTexts();
 		for (const text of texts) {
-			this.addText(text.language, text.languageCode, text.title, text.content, false);
+			this.addText(text.languageCode, text.title, text.content, false);
 		}
 		this.getSelectedText();
+		await this.addDialog.loadLanguages();
 	}
 
 	getRoot(): HTMLDivElement {
@@ -115,12 +119,12 @@ export class TextDisplayElement {
 			} else {
 				this.removeButton.disabled = false;
 			}
-		} else if (lang in this.texts && Object.keys(this.texts[lang]).length > 1) {
-			const textName = Object.keys(this.texts[lang])[1];
+		} else if (lang in this.texts && Object.keys(this.texts[lang]).length > 0) {
+			const textName = Object.keys(this.texts[lang])[0];
 			this.selectText(lang, textName);
 		} else if (Object.keys(this.texts).length > 0) {
 			const newLang = Object.keys(this.texts)[0];
-			const textName = Object.keys(this.texts[lang])[1];
+			const textName = Object.keys(this.texts[lang])[0];
 			this.selectText(newLang, textName);
 		} else {
 			// this should NEVER happen!
@@ -129,16 +133,15 @@ export class TextDisplayElement {
 	}
 
 	onLanguageSelect() {
-		const language = this.languageSelector.value;
-		const languageCode = this.texts[language]['languageCode'];
+		const language= this.getSelectedLanguage();
 		clearSelector(this.textSelector);
 		for(let key in this.texts[language]) {
 			if (key != "languageCode") {
 				this.textSelector.add(new Option(key));
 			}
 		}
-		this.textSelector.lang = languageCode;
-		this.textDisplay.lang = languageCode;
+		this.textSelector.lang = language;
+		this.textDisplay.lang = language;
 		this.textSelector.dispatchEvent(new Event("change"));
 	}
 
@@ -152,35 +155,30 @@ export class TextDisplayElement {
 		this.textSelector.dispatchEvent(new Event("change"));
 	}
 
-	addText(language: string, languageCode: string, name: string, content: string, store: boolean): boolean {
-		if (!(language in this.texts)) {
-			this.texts[language] = {"languageCode": languageCode};
-			const option = new Option(language);
-			option.lang = languageCode;
+	addText(languageCode: string, name: string, content: string, store: boolean): boolean {
+		if (!(languageCode in this.texts)) {
+			this.texts[languageCode] = {"languageCode": languageCode};
+			const option = this.languageManager.makeOption(languageCode);
 			this.languageSelector.add(option);
-		} else if (name in this.texts[language]) {
+		} else if (name in this.texts[languageCode]) {
 			alert("Error: There is already a text titled “"+name+"”");
 			return false;
 		}
-		this.texts[language][name] = content;
-		if (this.getSelectedLanguage() == language) {
+		this.texts[languageCode][name] = content;
+		if (this.getSelectedLanguage() == languageCode) {
 			const option = new Option(name);
 			option.lang = languageCode;
 			this.textSelector.add(option);
 		}
-		this.selectText(language, name);
+		this.selectText(languageCode, name);
 		if (store) {
-			this.storeText(language, languageCode, name, content);
+			this.settings.db.addText(languageCode, name, content);
 		}
 		return true;
 	}
 
-	storeText(language: string, languageCode: string, name: string, content: string) {
-		this.settings.db.addText(language, languageCode, name, content);
-	}
-
 	removeCurrent() {
-		const language = this.languageSelector.value;
+		const language = this.getSelectedLanguage();
 		const text = this.textSelector.value;
 		delete this.texts[language][text];
 		this.textSelector.remove(this.textSelector.selectedIndex);
@@ -196,8 +194,7 @@ export class TextDisplayElement {
 
 export class TextAdditionDialog {
 	root: HTMLDialogElement;
-	languageInput: HTMLInputElement;
-	languageCodeInput: HTMLInputElement;
+	languageSelector: LanguageSelector;
 	nameInput: HTMLInputElement;
 	textInput: HTMLTextAreaElement;
 	manager: TextDisplayElement;
@@ -213,19 +210,10 @@ export class TextAdditionDialog {
 		this.root.appendChild(formDiv);
 
 
-		this.languageInput = document.createElement("input");
 		const languageInputLabel = document.createElement("label");
 		languageInputLabel.innerHTML = "<span>Language:</span>";
-		this.languageInput.placeholder = "e.g. “English”, “Deutsch”, “Nederlands”, …"
-		languageInputLabel.appendChild(this.languageInput);
+		this.languageSelector = manager.languageManager.makeSelector(languageInputLabel);
 		formDiv.appendChild(languageInputLabel);
-
-		this.languageCodeInput = document.createElement("input");
-		const languageCodeInputLabel = document.createElement("label");
-		languageCodeInputLabel.innerHTML = "<span>Language-Code:</span>";
-		this.languageCodeInput.placeholder = "e.g. “en”, “de”, “nl”, …"
-		languageCodeInputLabel.appendChild(this.languageCodeInput);
-		formDiv.appendChild(languageCodeInputLabel);
 
 		this.nameInput = document.createElement("input");
 		const nameInputLabel = document.createElement("label");
@@ -251,14 +239,6 @@ export class TextAdditionDialog {
 		bottomControls.appendChild(addButton);
 		addButton.addEventListener("click", (event) => {
 			this.root.close();
-			this.addText();
-		});
-
-		const storeButton = document.createElement("button");
-		storeButton.innerText = "💾";
-		bottomControls.appendChild(storeButton);
-		storeButton.addEventListener("click", (event) => {
-			this.root.close();
 			this.addText(true);
 		});
 
@@ -272,11 +252,13 @@ export class TextAdditionDialog {
 		}
 	}
 
+	async loadLanguages() {
+		//await this.languageSelector.load();
+		//this.show();
+	}
+
 	addText(store: boolean = false) {
 		let errors = "";
-		if (!this.languageInput.value) {
-			errors += "No language set.\n";
-		}
 		if (!this.nameInput.value) {
 			errors += "Text has no name.\n";
 		}
@@ -288,8 +270,7 @@ export class TextAdditionDialog {
 			return;
 		}
 		const success = this.manager.addText(
-			(this.languageInput.value),
-			(this.languageCodeInput.value),
+			this.languageSelector.getCode(),
 			(this.nameInput.value),
 			rawTextToHTML(this.textInput.value),
 			store

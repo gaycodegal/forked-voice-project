@@ -18,8 +18,8 @@ body {
 		width: calc(var(--max-width) - 2em);
 		margin-left: auto;
 		margin-right: auto;
-		border-top: 3px solid var(--accent-col);
-		border-bottom: 3px solid var(--accent-col);
+		border-top: var(--border-width) solid var(--accent-col);
+		border-bottom: var(--border-width) solid var(--accent-col);
 		border-collapse: collapse;
 		margin-bottom: 2em;
 
@@ -34,8 +34,8 @@ body {
 		}
 
 		thead {
-			border-top: 3px solid var(--accent-col);
-			border-bottom: 3px solid var(--accent-col);
+			border-top: var(--border-width) solid var(--accent-col);
+			border-bottom: var(--border-width) solid var(--accent-col);
 		}
 		tbody td {
 			height: 11em;
@@ -263,7 +263,7 @@ body {
 		max-height: 90vh;
 		overflow-y: scroll;
 		background-color: var(--bg-col);
-		border: solid 3px var(--accent-col);
+		border: solid var(--border-width) var(--accent-col);
 		border-radius: var(--border-radius);
 	}
 	.FTVT-language {
@@ -289,7 +289,7 @@ body {
 	label {
 		background-color: var(--accent-bg-col);
 		border-radius: var(--border-radius);
-		border: var(--accent-col) solid;
+		border: var(--accent-col) solid var(--border-width);
 		line-height: 2em;
 		padding-left:0.5em;
 		padding-right: 0.5em;
@@ -340,6 +340,7 @@ body {
 				border-bottom: none;
 				border-right: none;
 				flex-shrink: 0;
+				flex-grow: 0;
 			}
 			.FTVT-textSelector {
 				border-radius: 0;
@@ -461,6 +462,28 @@ body {
 					
 				}
 			}
+		}
+	}
+
+	.FTVT-languageSelector {
+		flex-grow: 1;
+		flex-shrink: 1;
+		display: flex;
+		select {
+			flex-grow: 1;
+			flex-shrink: 1;
+			text-overflow: ellipsis;
+			overflow-x: hidden;
+			max-width: var(--max-width);
+			border-top-right-radius: 0;
+			border-bottom-right-radius: 0;
+			border-right-width: calc(var(--border-width) / 2);
+		}
+		button {
+			border-top-left-radius: 0;
+			border-bottom-left-radius: 0;
+			border-left-width: calc(var(--border-width) / 2);
+			margin: 0;
 		}
 	}
 }

@@ -1,6 +1,6 @@
 :root {
 	--border-radius: 10px;
-	--border-width: 3px;
+	--border-width: 4px;
 	--max-width: 100rem;
 	--button-width: calc((var(--max-width) - 1em - 11*10px)/12);
 	font-family: system-ui, sans-serif;

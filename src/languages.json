@@ -1,0 +1,7 @@
+{
+	"languageCodes":[
+		{"name": "English", "code": "en"},
+		{"name": "Deutsch", "code": "de"},
+		{"name": "Nederlands", "code": "nl"}
+	]
+}

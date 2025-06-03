@@ -95,7 +95,7 @@ export class Recorder {
 			"average": stableSum(frequencyData) / frequencyData.length,
 			"quantiles": this.computeQuantiles(frequencyData),
 			"target": this.targetFrequencySelector.getValue(),
-			"language": this.textDisplay.getSelectedLanguage(),
+			"language": this.textDisplay.getSelectedLanguageName(),
 			"textName": this.textDisplay.getSelectedTextName(),
 			"startTime": this.startTime,
 			"endTime": this.endTime

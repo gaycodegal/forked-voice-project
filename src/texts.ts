@@ -109,6 +109,15 @@ export class TextDisplayElement {
 		return this.languageSelector.value;
 	}
 
+	getSelectedLanguageName(): string {
+		const name = this.languageManager.getNameForCode(this.getSelectedLanguage());
+		if (name == null) {
+			return "unknown";
+		} else {
+			return name;
+		}
+	}
+
 	getSelectedText() {
 		const lang = this.languageSelector.value;
 		let text = this.textSelector.value;

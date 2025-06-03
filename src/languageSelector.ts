@@ -33,11 +33,14 @@ export class LanguageManager {
 		return option;
 	}
 
-	putLanguage(name: string, code: string) {
+	putLanguage(name: string, code: string, addToDB: boolean = false) {
 		if (!(code in this.codeDict)) {
 			this.codeDict[code] = name;
 			this.nameDict[name] = code;
 			this.selectors.forEach((s, i) => {s.selector.add(this.makeOption(code));});
+			if (addToDB) {
+				this.settings.db.addLanguage(code, name);
+			}
 		}
 	}
 
@@ -60,6 +63,27 @@ export class LanguageManager {
 		return ret;
 	}
 
+	addLanguage(name: string, code: string): string|null {
+		let errors = "";
+		if (name == "") {
+			errors += "Name is empty.\n"
+		} else if (name in this.nameDict) {
+			errors += "Name already in use.\n";
+		}
+
+		if (code == "") {
+			errors += "Code is empty.\n"
+		} else if (code in this.codeDict) {
+			errors += "Code already in use.\n";
+		}
+
+		if (!!errors.length) {
+			return errors;
+		} else {
+			this.putLanguage(name, code, true);
+			return null;
+		}
+	}
 }
 
 export class LanguageSelector {
@@ -81,13 +105,61 @@ export class LanguageSelector {
 		const addButton = document.createElement("button");
 		this.root.appendChild(addButton);
 		addButton.innerText="➕";
-		addButton.title = "add text";
+		addButton.title = "add Language";
 		addButton.addEventListener("click", (event) => {
 			this.addLanguage();
 		});
 
 		this.addDialog = document.createElement("dialog");
 		this.root.appendChild(this.addDialog);
+
+		const addDialogMain = document.createElement("div");
+		addDialogMain.classList.add("FTVT-newLanguageFormMain");
+		this.addDialog.appendChild(addDialogMain);
+
+		let newLangNameLabel = document.createElement("label");
+		addDialogMain.appendChild(newLangNameLabel);
+		let newLangNameSpan = document.createElement("span");
+		newLangNameLabel.appendChild(newLangNameSpan);
+		newLangNameSpan.innerText = "Name: ";
+		let newLangName = document.createElement("input");
+		newLangNameLabel.appendChild(newLangName);
+		newLangName.placeholder = "e.g. “Malti”";
+		newLangName.setAttribute("lang", "");
+
+
+		let newLangCodeLabel = document.createElement("label");
+		addDialogMain.appendChild(newLangCodeLabel);
+		let newLangCodeSpan = document.createElement("span");
+		newLangCodeLabel.appendChild(newLangCodeSpan);
+		newLangCodeSpan.innerText = "Code: ";
+		let newLangCode = document.createElement("input");
+		newLangCodeLabel.appendChild(newLangCode);
+		newLangCode.placeholder = "e.g. “mt”";
+
+		const newLangBottomControls = document.createElement("div");
+		this.addDialog.appendChild(newLangBottomControls);
+		newLangBottomControls.classList.add("FTVT-bottom-controls");
+		const newLangAddButton = document.createElement("button");
+		newLangAddButton.innerText = "➕";
+		newLangAddButton.addEventListener("click", (event) => {
+			const errors = this.manager.addLanguage(newLangName.value, newLangCode.value);
+			if (errors == null) {
+				newLangName.value = "";
+				newLangCode.value = "";
+				this.addDialog.close();
+			} else {
+				alert("Error: Could not add language!\n" + errors);
+			}
+		});
+		newLangBottomControls.appendChild(newLangAddButton);
+
+		const newLangCancelButton = document.createElement("button");
+		newLangCancelButton.innerText = "❌";
+		newLangCancelButton.addEventListener("click", (event) => {
+			this.addDialog.close();
+		});
+		newLangBottomControls.appendChild(newLangCancelButton);
 	}
 
 	getCode(): string {
@@ -95,7 +167,6 @@ export class LanguageSelector {
 	}
 
 	addLanguage() {
-		alert("Not yet implemented.");
-		//this.addDialog.show();
+		this.addDialog.showModal();
 	}
 }

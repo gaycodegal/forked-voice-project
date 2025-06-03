@@ -34,4 +34,4 @@ icons/ftvt_512.png: favicon.svg
 
 legal.json : | legal.json.sample
 	@echo "WARNING: Using sample-file as fallback for legal.json; PLEASE edit it to describe the actual situation, the GDPR legaly requires you to do that!"
-	cp $< $@
+	cp legal.json.sample $@

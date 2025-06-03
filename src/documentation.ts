@@ -1,4 +1,5 @@
 import version from "../version.json";
+import {DataProtection} from "../legal.json";
 
 export const DOCUMENTATION = {
 'about':
@@ -90,8 +91,10 @@ If not, see <a href=https://www.gnu.org/licenses/'>https://www.gnu.org/licenses/
 </div>",
 
 
-'license':
-"<div id='FTVT-license' popover='auto' class='FTVT-popover'> \
+'legal':
+"<div id='FTVT-legal' popover='auto' class='FTVT-popover'> \
+<h2>Privacy Statement</h2> \
+" + DataProtection.join("\n") + " \
 <h2>GNU AFFERO GENERAL PUBLIC LICENSE</h2> \
 <p>Version 3, 19 November 2007</p> \
 \

@@ -64,15 +64,15 @@ export class UserInterface {
 
 		let showSettingsButton = document.createElement("button");
 		mainControlsDiv.appendChild(showSettingsButton);
-		showSettingsButton.outerHTML="<button popovertarget='FTVT-settings'>⚙️</button>";
+		showSettingsButton.outerHTML="<button popovertarget='FTVT-settings' title='Settings'>⚙️</button>";
 		
 		let showAboutButton = document.createElement("button");
 		mainControlsDiv.appendChild(showAboutButton);
-		showAboutButton.outerHTML="<button popovertarget='FTVT-about'>ℹ️</button>";
+		showAboutButton.outerHTML="<button popovertarget='FTVT-about' title='About this Application'>ℹ️</button>";
 		
-		let showLicenseButton = document.createElement("button");
-		mainControlsDiv.appendChild(showLicenseButton);
-		showLicenseButton.outerHTML="<button popovertarget='FTVT-license' title='show License'>⚖️</button>";
+		let showLegalButton = document.createElement("button");
+		mainControlsDiv.appendChild(showLegalButton);
+		showLegalButton.outerHTML="<button popovertarget='FTVT-legal' title='Legal Information'>⚖️</button>";
 
 		controlsDiv.appendChild(mainControlsDiv);
 
@@ -90,9 +90,9 @@ function createDocumentation(): HTMLDivElement {
 	let about_div = document.createElement("div");
 	ret.appendChild(about_div);
 	about_div.outerHTML=DOCUMENTATION["about"];
-	let license_div = document.createElement("div");
-	ret.appendChild(license_div);
-	license_div.outerHTML=DOCUMENTATION["license"];
+	let legal_div = document.createElement("div");
+	ret.appendChild(legal_div);
+	legal_div.outerHTML=DOCUMENTATION["legal"];
 	return ret;
 }
 

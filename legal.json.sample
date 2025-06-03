@@ -1,0 +1,6 @@
+{
+	"DataProtection": [
+		"<p>This web-application does not collect personal information; the same may or may not be true for the webserver that delivered it to you, please check with the administrator for that.</p>
+		"<p>(They are supposed to replace the above message with something specific to their site, but given that you see <em>this</em> text, evidently failed to do so. Most likely they just forgot, but please feel encouraged by the developer to send them a <strong>friendly</strong> message.)</p>"
+	]
+}

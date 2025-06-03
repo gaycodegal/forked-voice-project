@@ -34,7 +34,7 @@ export class TextDisplayElement {
 
 	texts: {[language: string]: {[title: string]: string}};
 
-	constructor(settings: Settings) {
+	private constructor(settings: Settings) {
 		this.settings = settings;
 		this.languageManager = new LanguageManager(settings);
 		this.texts = structuredClone(TEXTS_TABLE);
@@ -60,16 +60,7 @@ export class TextDisplayElement {
 			const option = this.languageManager.makeOption(language);
 			this.languageSelector.add(option);
 		}
-		settings.registerInput("language", this.languageSelector);
 		this.onLanguageSelect();
-		this.languageSelector.addEventListener("change", (event) => {
-			this.onLanguageSelect();
-			this.getSelectedText();
-		});
-		settings.registerInput("display-text", this.textSelector);
-		this.textSelector.addEventListener("change", (event) => {
-			this.getSelectedText();
-		});
 
 		this.addDialog = new TextAdditionDialog(this, this.root);
 		const bottomControls = document.createElement("div");
@@ -86,15 +77,25 @@ export class TextDisplayElement {
 		this.removeButton.addEventListener("click", (event) => {this.removeCurrent();});
 		bottomControls.appendChild(this.removeButton);
 	}
-	async loadStoredTexts() {
-		await this.languageManager.load();
-		//await this.settings.db.addLanguage("en_NYA", "Catspeak");
-		const texts = await this.settings.db.getTexts();
+	static async construct(settings: Settings): Promise<TextDisplayElement> {
+		const ret = await new TextDisplayElement(settings);
+		await ret.languageManager.load();
+		const texts = await ret.settings.db.getTexts();
 		for (const text of texts) {
-			this.addText(text.languageCode, text.title, text.content, false);
+			ret.addText(text.languageCode, text.title, text.content, false);
 		}
-		this.getSelectedText();
-		await this.addDialog.loadLanguages();
+		ret.settings.registerInput("language", ret.languageSelector);
+		ret.onLanguageSelect();
+		ret.settings.registerInput("display-text", ret.textSelector);
+		ret.languageSelector.addEventListener("change", (event) => {
+			ret.onLanguageSelect();
+			ret.getSelectedText();
+		});
+		ret.textSelector.addEventListener("change", (event) => {
+			ret.getSelectedText();
+		});
+		ret.getSelectedTextOrFallback();
+		return ret;
 	}
 
 	getRoot(): HTMLDivElement {
@@ -118,7 +119,7 @@ export class TextDisplayElement {
 		}
 	}
 
-	getSelectedText() {
+	getSelectedText(): boolean {
 		const lang = this.languageSelector.value;
 		let text = this.textSelector.value;
 		if (lang in this.texts && text in this.texts[lang]){
@@ -128,12 +129,23 @@ export class TextDisplayElement {
 			} else {
 				this.removeButton.disabled = false;
 			}
-		} else if (lang in this.texts && Object.keys(this.texts[lang]).length > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	getSelectedTextOrFallback() {
+		if (this.getSelectedText()) {
+			return;
+		}
+		const lang = this.languageSelector.value;
+		let text = this.textSelector.value;
+		if (lang in this.texts && Object.keys(this.texts[lang]).length > 0) {
 			const textName = Object.keys(this.texts[lang])[0];
 			this.selectText(lang, textName);
 		} else if (Object.keys(this.texts).length > 0) {
 			const newLang = Object.keys(this.texts)[0];
-			const textName = Object.keys(this.texts[lang])[0];
+			const textName = Object.keys(this.texts[newLang])[0];
 			this.selectText(newLang, textName);
 		} else {
 			// this should NEVER happen!
@@ -179,7 +191,6 @@ export class TextDisplayElement {
 			option.lang = languageCode;
 			this.textSelector.add(option);
 		}
-		this.selectText(languageCode, name);
 		if (store) {
 			this.settings.db.addText(languageCode, name, content);
 		}
@@ -197,7 +208,9 @@ export class TextDisplayElement {
 			this.languageSelector.remove(this.languageSelector.selectedIndex);
 		}
 		this.settings.db.deleteText(language, text);
-		this.getSelectedText();
+		this.getSelectedTextOrFallback();
+		this.textSelector.dispatchEvent(new Event("change"));
+		this.languageSelector.dispatchEvent(new Event("change"));
 	}
 }
 
@@ -261,11 +274,6 @@ export class TextAdditionDialog {
 		}
 	}
 
-	async loadLanguages() {
-		//await this.languageSelector.load();
-		//this.show();
-	}
-
 	addText(store: boolean = false) {
 		let errors = "";
 		if (!this.nameInput.value) {
@@ -278,15 +286,18 @@ export class TextAdditionDialog {
 			alert("Error:\n" + errors);
 			return;
 		}
+		const languageCode = this.languageSelector.getCode();
+		const name = this.nameInput.value;
 		const success = this.manager.addText(
-			this.languageSelector.getCode(),
-			(this.nameInput.value),
+			languageCode,
+			name,
 			rawTextToHTML(this.textInput.value),
 			store
 		);
 		if (success) {
 			this.nameInput.value = "";
 			this.textInput.value = "";
+			this.manager.selectText(languageCode, name);
 		}
 	}
 

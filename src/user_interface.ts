@@ -17,12 +17,12 @@ export class UserInterface {
 
 	public static async construct(root: HTMLElement) {
 		const settings = await Settings.construct();
-		const ret = new UserInterface(root, settings);
-		await ret.textDisplay.loadStoredTexts();
+		const textDisplay = await TextDisplayElement.construct(settings);
+		const ret = new UserInterface(root, settings, textDisplay);
 		return ret;
 	}
 
-	private constructor(root: HTMLElement, settings: Settings) {
+	private constructor(root: HTMLElement, settings: Settings, textDisplay: TextDisplayElement) {
 		this.root = root
 		root.appendChild(createDocumentation());
 		this.settings= settings;
@@ -43,7 +43,7 @@ export class UserInterface {
 		this.canvasControls = new CanvasControls(this.settings);
 		controlsDiv.appendChild(this.canvasControls.getRoot());
 
-		this.textDisplay = new TextDisplayElement(this.settings);
+		this.textDisplay = textDisplay;
 		controlsDiv.appendChild(this.textDisplay.getRoot());
 
 		let mainControlsDiv = document.createElement("div");

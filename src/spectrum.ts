@@ -47,6 +47,9 @@ export class Spectrum {
 		this.canvasControls.togglePlayButton.addEventListener("click", (event) => {
 			this.toggleMainInputPlayback();
 		});
+		this.canvasControls.toggleRecordButton.addEventListener("click", (event) => {
+			this.drawVerticalLine();
+		});
 		this.settings = ui.settings;
 		this.recorder = recorder;
 		this.targetFrequencyManager= targetFrequencyManager;
@@ -54,7 +57,7 @@ export class Spectrum {
 
 		this.canvas.width = document.body.clientWidth;
 		new ResizeObserver((_) => {this.resizeCanvas();}).observe(document.body);
-		
+
 		let [analyser, hertzPerBin] = this.createAnalyser(mediaStream);
 		this.mainAnalyser = analyser;
 		this.hertzPerBin = hertzPerBin;

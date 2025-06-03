@@ -26,7 +26,8 @@ export class CanvasControls {
 		this.root.appendChild(this.toggleRecordButton);
 
 		this.togglePlayButton = document.createElement("button");
-		this.togglePlayButton.innerHTML="⏯️";
+		this.togglePlayButton.innerHTML= "⏯️";
+		this.togglePlayButton.title = "Pause/Unpause spectrum display";
 		this.root.appendChild(this.togglePlayButton);
 
 		let freqOutLabel = document.createElement("label");

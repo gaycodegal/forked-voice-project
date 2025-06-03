@@ -69,11 +69,13 @@ export class TextDisplayElement {
 
 		const addButton = document.createElement("button");
 		addButton.innerText = "➕";
+		addButton.title = "Add (custom) text";
 		addButton.addEventListener("click", (event) => {this.addDialog.show();});
 		bottomControls.appendChild(addButton);
 
 		this.removeButton = document.createElement("button");
 		this.removeButton.innerText = "🗑️";
+		this.removeButton.title = "Delete text";
 		this.removeButton.addEventListener("click", (event) => {this.removeCurrent();});
 		bottomControls.appendChild(this.removeButton);
 	}
@@ -241,16 +243,24 @@ export class TextAdditionDialog {
 		const nameInputLabel = document.createElement("label");
 		nameInputLabel.innerHTML = "<span>Name:</span>";
 		this.nameInput.placeholder = "The name of the Text, e.g. “Rainbow Passage”";
+		this.nameInput.lang = this.languageSelector.getCode();
 		nameInputLabel.appendChild(this.nameInput);
 		formDiv.appendChild(nameInputLabel);
 		
 		this.textInput = document.createElement("textarea");
 		this.textInput.rows = 10;
+		this.textInput.lang = this.languageSelector.getCode();
 		this.textInput.placeholder = "Lorem Ipsum…"
 		const textInputLabel = document.createElement("label");
 		textInputLabel.innerHTML = "<span>Text:</span>";
 		textInputLabel.appendChild(this.textInput);
 		formDiv.appendChild(textInputLabel);
+
+		this.languageSelector.selector.addEventListener("change", (event) => {
+			const newLang = this.languageSelector.getCode();
+			this.nameInput.lang = newLang;
+			this.textInput.lang = newLang;
+		});
 
 		const bottomControls = document.createElement("div");
 		bottomControls.classList.add("FTVT-bottom-controls");
@@ -258,6 +268,7 @@ export class TextAdditionDialog {
 
 		const addButton = document.createElement("button");
 		addButton.innerText = "➕";
+		addButton.title = "Add text";
 		bottomControls.appendChild(addButton);
 		addButton.addEventListener("click", (event) => {
 			this.root.close();
@@ -266,6 +277,7 @@ export class TextAdditionDialog {
 
 		const cancelButton = document.createElement("button");
 		cancelButton.innerText = "❌";
+		cancelButton.title = "Cancel";
 		cancelButton.addEventListener("click", (event) => {this.root.close();});
 		bottomControls.appendChild(cancelButton);
 

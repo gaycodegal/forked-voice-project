@@ -127,6 +127,7 @@ export class TableManager {
 
 		const downloadLink = document.createElement("a");
 		downloadLink.innerText = "⬇️";
+		downloadLink.title = "Download Recording";
 		downloadLink.setAttribute("download",
 			"voice_recording_" + stats.startTime.toLocaleString("en-SE").replace(", ", "_") + ".ogg");
 		downloadLink.classList.add("downloadLink");
@@ -134,7 +135,8 @@ export class TableManager {
 		downloadLink.role = "button";
 		td.appendChild(downloadLink);
 		const removeButton = document.createElement("button");
-		removeButton.innerHTML = "❌";
+		removeButton.innerHTML = "🗑️";
+		removeButton.title = "Delete this Recording";
 		removeButton.onclick = () => {
 			tr.remove();
 			this.settings.db.deleteRecording(stats.id);

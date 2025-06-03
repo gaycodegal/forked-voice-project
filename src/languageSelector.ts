@@ -100,6 +100,7 @@ export class LanguageSelector {
 		parent.appendChild(this.root);
 
 		this.selector = document.createElement("select");
+		this.selector.title = "Language of new text";
 		this.root.appendChild(this.selector);
 
 		const addButton = document.createElement("button");
@@ -142,6 +143,7 @@ export class LanguageSelector {
 		newLangBottomControls.classList.add("FTVT-bottom-controls");
 		const newLangAddButton = document.createElement("button");
 		newLangAddButton.innerText = "➕";
+		newLangAddButton.title = "Add new language";
 		newLangAddButton.addEventListener("click", (event) => {
 			const errors = this.manager.addLanguage(newLangName.value, newLangCode.value);
 			if (errors == null) {
@@ -156,6 +158,7 @@ export class LanguageSelector {
 
 		const newLangCancelButton = document.createElement("button");
 		newLangCancelButton.innerText = "❌";
+		newLangCancelButton.title = "Cancel";
 		newLangCancelButton.addEventListener("click", (event) => {
 			this.addDialog.close();
 		});

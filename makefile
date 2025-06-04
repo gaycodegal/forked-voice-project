@@ -4,7 +4,7 @@ SW_SOURCES=$(wildcard serviceWorker/*.ts)
 
 .PHONY: all uncheckedBuild clean
 
-all: deployable out/main.html out/icons/ftvt_512.png out/icons/ftvt_192.png out/serviceWorker.js
+all: deployable out/main.html out/main.js out/icons/ftvt_512.png out/icons/ftvt_192.png out/serviceWorker.js
 
 out:
 	mkdir -p out
@@ -16,7 +16,7 @@ out/serviceWorker.js: $(SW_SOURCES) out
 	tsc --strict serviceWorker/main.ts --noEmit -t es6 --lib es2019,es6,dom,webworker --skipLibCheck
 	esbuild --bundle serviceWorker/main.ts --outfile=$@
 
-out/main.html: static/main.html out/main.css out/custom.css out/main.js static/main.css static/custom.css  out
+out/main.html: static/main.html out/main.css out/custom.css out
 	cp $< $@
 
 out/main.css: static/main.css out
@@ -29,7 +29,7 @@ out/main.js: $(SOURCES) $(DATA) legal.json
 	tsc --strict src/main.ts --noEmit  --resolveJsonModule --esModuleInterop -t esnext --moduleResolution bundler
 	esbuild --bundle src/main.ts --outfile=$@
 
-deployable: out legal.json
+deployable: out legal.json out/main.html
 	esbuild --bundle --minify src/main.ts --outfile=out/main-minified.js
 	./embed_resources.py -i out/main.html -o out/bundeled.html -m
 	esbuild --bundle serviceWorker/main.ts --outfile=out/serviceWorker.js

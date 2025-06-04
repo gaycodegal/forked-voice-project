@@ -1,9 +1,8 @@
-import {UserInterface} from "./user_interface"
-import {Recorder} from "./recording"
-import {Spectrum} from "./spectrum"
-import {TargetFrequencyManager} from "./target_frequency"
-import {TableManager} from "./render_table"
-
+import {UserInterface} from "./UserInterface"
+import {Recorder} from "./Recorder"
+import {Spectrum} from "./Spectrum"
+import {TargetFrequencyManager} from "./TargetFrequencyManager"
+import {TableManager} from "./TableManager"
 
 window.addEventListener("load", async (event) => {
 	let root = document.getElementById("FTVT-root")

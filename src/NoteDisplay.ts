@@ -1,5 +1,5 @@
-import {Note} from "./notes";
-import {Gender} from "./gender_pitch";
+import {Note} from "./MusicalNote";
+import {Gender} from "./Gender";
 
 export class NoteDisplay {
 	root: HTMLOutputElement;

@@ -1,7 +1,5 @@
-import {Settings} from "./settings"
-
+import {Settings} from "./Settings"
 import {languageCodes} from "./languages.json"
-
 
 export class LanguageManager {
 	settings: Settings;

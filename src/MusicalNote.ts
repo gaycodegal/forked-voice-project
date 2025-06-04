@@ -1,9 +1,11 @@
-import { frequencyToColor } from "./gender_pitch"
-
+import { frequencyToColor } from "./Gender"
 
 const TUNING_PITCH = 440;
 
-export const NOTE_NAMES : {[index: string]:  string} = {"-9": "C", "-8" : "C♯", "-7": "D", "-6": "D♯", "-5": "E", "-4": "F", "-3": "F♯" , "-2": "G", "-1": "G♯", "0": "A", "1": "A♯", "2": "B"};
+export const NOTE_NAMES : {[index: string]:  string} = {
+	"-9": "C", "-8" : "C♯", "-7": "D", "-6": "D♯",
+	"-5": "E", "-4": "F", "-3": "F♯" , "-2": "G",
+	"-1": "G♯", "0": "A", "1": "A♯", "2": "B"};
 
 export class Note {
 	index: number;

@@ -1,4 +1,4 @@
-import {Color} from "./color"
+import {Color} from "./Color"
 
 const ENBY_FREQUENCY_COLOR = Color.load("enby-freq-color", new Color(64,128,64));
 const MASC_FREQUENCY_COLOR = Color.load("masc-freq-color", new Color(64,64,255));

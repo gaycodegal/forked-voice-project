@@ -1,15 +1,14 @@
-import {stableSum} from "./utils"
-import {UserInterface} from "./user_interface"
-import {RecordStats, Quantiles} from "./recording"
-import {Gender, Genders} from "./gender_pitch"
-import {frequencyToHTML} from "./notes"
-import {TextDisplayElement} from "./texts"
-import {NoteDisplay} from "./note_display"
-import {Settings} from "./settings"
-import {Database} from "./database"
+import {stableSum} from "./Utils"
+import {UserInterface} from "./UserInterface"
+import {RecordStats, Quantiles} from "./Recorder"
+import {Gender, Genders} from "./Gender"
+import {frequencyToHTML} from "./MusicalNote"
+import {TextDisplayElement} from "./TextDisplay"
+import {NoteDisplay} from "./NoteDisplay"
+import {Settings} from "./Settings"
+import {Database} from "./Database"
 
 export class TableManager {
-
 	numRecordings : number = 0;
 	resultsTable: HTMLElement;
 	textDisplay: TextDisplayElement;
@@ -26,6 +25,7 @@ export class TableManager {
 	addAudioRegistrationFunction(f: {(e: HTMLAudioElement): void}) {
 		this.registerAudioCallbacks.push(f);
 	}
+
 	registerAudio(e: HTMLAudioElement) {
 		for (const f of this.registerAudioCallbacks) {
 			f(e);
@@ -39,7 +39,12 @@ export class TableManager {
 	}
 
 	renderShares(tr: HTMLTableRowElement, stats: RecordStats) {
-		const total = stats.shares[Genders.UltraFem] + stats.shares[Genders.Fem] + stats.shares[Genders.Enby] + stats.shares[Genders.Masc] + stats.shares[Genders.InfraMasc];
+		const total =
+			stats.shares[Genders.UltraFem]
+			+ stats.shares[Genders.Fem]
+			+ stats.shares[Genders.Enby]
+			+ stats.shares[Genders.Masc]
+			+ stats.shares[Genders.InfraMasc];
 		for (const gender of Gender.genders){ 
 			let td = document.createElement("td");
 			td.classList.add("NumericTableField");
@@ -157,7 +162,6 @@ export class TableManager {
 		tdNote.appendChild(noteField);
 		return tdNote;
 	}
-
 
 	renderRecording(stats: RecordStats, recording: Blob, notes: string="") : [HTMLTableRowElement, HTMLAudioElement] {
 		let tr = document.createElement("tr");

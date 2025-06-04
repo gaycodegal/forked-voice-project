@@ -1,5 +1,4 @@
-
-import {Database} from "./database"
+import {Database} from "./Database"
 
 class Storage {
 	public static NAME = "enable storage";

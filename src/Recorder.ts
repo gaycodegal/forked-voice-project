@@ -1,12 +1,11 @@
-
-import {Note} from "./notes"
-import {TableManager} from "./render_table"
-import {Gender, Genders} from "./gender_pitch"
-import {UserInterface} from "./user_interface"
-import {toIndex, stableSum} from "./utils"
-import {TextDisplayElement} from "./texts"
-import {Settings} from "./settings"
-import {FrequencyInputElement} from "./inputs"
+import {Note} from "./MusicalNote"
+import {TableManager} from "./TableManager"
+import {Gender, Genders} from "./Gender"
+import {UserInterface} from "./UserInterface"
+import {toIndex, stableSum} from "./Utils"
+import {TextDisplayElement} from "./TextDisplay"
+import {Settings} from "./Settings"
+import {FrequencyInputElement} from "./InputWidgets"
 
 type GenderShare = {[key in Genders]: number};
 export type Quantiles = {[key in string]: number};

@@ -1,8 +1,7 @@
-
-import {Note} from "./notes"
-import {frequencyToColor} from "./gender_pitch"
-import {Settings} from "./settings"
-import {NoteDisplay} from "./note_display"
+import {Note} from "./MusicalNote"
+import {frequencyToColor} from "./Gender"
+import {Settings} from "./Settings"
+import {NoteDisplay} from "./NoteDisplay"
 
 export class CanvasControls {
 	root: HTMLDivElement;

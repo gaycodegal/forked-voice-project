@@ -1,13 +1,8 @@
-
-import {UserInterface} from "./user_interface";
-
-import { TEXTS_TABLE } from "./raw_texts";
-
-import {Settings} from "./settings";
-
-import {escapeHTML, rawTextToHTML} from "./escape_html";
-
-import {LanguageManager, LanguageSelector} from "./languageSelector";
+import {UserInterface} from "./UserInterface";
+import {TEXTS_TABLE} from "./DefaultTexts";
+import {Settings} from "./Settings";
+import {escapeHTML, rawTextToHTML} from "./EscapeText";
+import {LanguageManager, LanguageSelector} from "./LanguageManager";
 
 function clearSelector(element: HTMLSelectElement) {
 	var i, L = element.options.length - 1;

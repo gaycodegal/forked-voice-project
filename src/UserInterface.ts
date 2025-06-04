@@ -1,8 +1,8 @@
-import {DOCUMENTATION} from "./documentation"
-import {TextDisplayElement} from "./texts"
-import {CanvasControls} from "./canvas_controls"
-import {Settings} from "./settings"
-import {FrequencyInputElement} from "./inputs";
+import {DOCUMENTATION} from "./Documentation"
+import {TextDisplayElement} from "./TextDisplay"
+import {CanvasControls} from "./CanvasControls"
+import {Settings} from "./Settings"
+import {FrequencyInputElement} from "./InputWidgets";
 
 export class UserInterface {
 	root: HTMLElement;
@@ -55,7 +55,8 @@ export class UserInterface {
 		this.playButton.title="Play Target Sound";
 		mainControlsDiv.appendChild(this.playButton);
 
-		this.targetFrequencySelector = new FrequencyInputElement(mainControlsDiv, "🎯", "Target Frequency", 250, this.settings, "target frequency");
+		this.targetFrequencySelector = new FrequencyInputElement(
+			mainControlsDiv, "🎯", "Target Frequency", 250, this.settings, "target frequency");
 		// createTargetFrequencyBlock(mainControlsDiv, this.settings);
 
 		let mainControlsSpacer = document.createElement("span");

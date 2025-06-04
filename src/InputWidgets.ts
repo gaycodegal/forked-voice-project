@@ -1,6 +1,6 @@
-import {Settings} from "./settings";
-import {Note} from "./notes";
-import {Gender} from "./gender_pitch";
+import {Settings} from "./Settings";
+import {Note} from "./MusicalNote";
+import {Gender} from "./Gender";
 
 export class NumericInputElement {
 	root: HTMLLabelElement;

@@ -1,4 +1,3 @@
-
 export function escapeHTML(raw: string): string {
 	raw = raw.replaceAll("&", "&amp;");
 	raw = raw.replaceAll("<", "&lt;");
@@ -7,7 +6,6 @@ export function escapeHTML(raw: string): string {
 	raw = raw.replaceAll("'", "&apos;");
 	return raw;
 }
-
 
 export function rawTextToHTML(raw: string): string {
 	let ret = "";

@@ -26,11 +26,11 @@ out/custom.css: static/custom.css out
 	cp $< $@
 
 out/main.js: $(SOURCES) $(DATA) legal.json
-	tsc --strict src/main.ts --noEmit  --resolveJsonModule --esModuleInterop -t esnext --moduleResolution bundler
-	esbuild --bundle src/main.ts --outfile=$@
+	tsc --strict src/Main.ts --noEmit  --resolveJsonModule --esModuleInterop -t esnext --moduleResolution bundler
+	esbuild --bundle src/Main.ts --outfile=$@
 
 deployable: out legal.json out/main.html out/icons/ftvt_192.png out/icons/ftvt_512.png
-	esbuild --bundle --minify src/main.ts --outfile=out/main-minified.js
+	esbuild --bundle --minify src/Main.ts --outfile=out/main-minified.js
 	./embed_resources.py -i out/main.html -o out/bundeled.html -m
 	esbuild --bundle serviceWorker/main.ts --outfile=out/serviceWorker.js
 

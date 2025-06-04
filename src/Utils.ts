@@ -19,5 +19,3 @@ export function stableSum(data: number[], low: number = 0, high: number = -1, sp
 export function toIndex(pos: number, length: number): number {
 	return Math.min(length, (Math.max(0, Math.round(pos*length))));
 }
-
-

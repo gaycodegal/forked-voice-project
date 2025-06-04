@@ -1,8 +1,8 @@
-import {Note} from "./notes"
-import {frequencyToColor} from "./gender_pitch"
-import {FrequencyInputElement} from "./inputs";
-import {UserInterface} from "./user_interface"
-import {Settings} from "./settings"
+import {Note} from "./MusicalNote"
+import {frequencyToColor} from "./Gender"
+import {FrequencyInputElement} from "./InputWidgets";
+import {UserInterface} from "./UserInterface"
+import {Settings} from "./Settings"
 
 export class TargetFrequencyManager {
 	settings: Settings;

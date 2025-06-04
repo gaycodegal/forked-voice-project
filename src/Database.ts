@@ -1,6 +1,5 @@
-import {RecordStats, Recording} from "./recording"
-
-import {Text} from "./texts"
+import {RecordStats, Recording} from "./Recorder"
+import {Text} from "./TextDisplay"
 
 interface NotesEntry {
 	id: number;

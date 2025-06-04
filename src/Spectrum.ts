@@ -1,14 +1,13 @@
-import {BaseFrequencyIndices} from "./frequencies"
-import {TargetFrequencyManager} from "./target_frequency"
-import {frequencyToColor} from "./gender_pitch"
-import {UserInterface} from "./user_interface"
-import {Recorder} from "./recording"
-import {Color} from "./color"
-import {mainFrequencyIndex} from "./frequencies"
-import {Note} from "./notes"
-import {TableManager} from "./render_table"
-import {CanvasControls} from "./canvas_controls"
-import {Settings} from "./settings"
+import {BaseFrequencyIndices, mainFrequencyIndex} from "./MainFrequency"
+import {TargetFrequencyManager} from "./TargetFrequencyManager"
+import {frequencyToColor} from "./Gender"
+import {UserInterface} from "./UserInterface"
+import {Recorder} from "./Recorder"
+import {Color} from "./Color"
+import {Note} from "./MusicalNote"
+import {TableManager} from "./TableManager"
+import {CanvasControls} from "./CanvasControls"
+import {Settings} from "./Settings"
 
 function getMediaStream(e: HTMLAudioElement): MediaStream {
 	// @ts-ignore
@@ -23,7 +22,7 @@ function getMediaStream(e: HTMLAudioElement): MediaStream {
 
 export class Spectrum {
 	maxDisplayFrequency : number = 1600;
-	hertzPerBin    : number = 0;
+	hertzPerBin : number = 0;
 	playbackInput : boolean = true;
 	baseBand : BaseFrequencyIndices;
 	canvas: HTMLCanvasElement;
@@ -130,10 +129,12 @@ export class Spectrum {
 	stopMainInputPlayback() {
 		this.playbackInput = false;
 	}
+
 	startMainInputPlayback() {
 		this.drawVerticalLine();
 		this.playbackInput = true;
 	}
+	
 	toggleMainInputPlayback() {
 		if (this.playbackInput) {
 			this.stopMainInputPlayback();

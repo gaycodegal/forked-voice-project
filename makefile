@@ -29,7 +29,7 @@ out/main.js: $(SOURCES) $(DATA) legal.json
 	tsc --strict src/main.ts --noEmit  --resolveJsonModule --esModuleInterop -t esnext --moduleResolution bundler
 	esbuild --bundle src/main.ts --outfile=$@
 
-deployable: out legal.json out/main.html
+deployable: out legal.json out/main.html out/icons/ftvt_192.png out/icons/ftvt_512.png
 	esbuild --bundle --minify src/main.ts --outfile=out/main-minified.js
 	./embed_resources.py -i out/main.html -o out/bundeled.html -m
 	esbuild --bundle serviceWorker/main.ts --outfile=out/serviceWorker.js

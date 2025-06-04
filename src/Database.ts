@@ -39,7 +39,7 @@ export class Database {
 	async tryOpen(): Promise<boolean> {
 		await this.close();
 		this.db = await new Promise((resolve, reject) => {
-			const openRequest = window.indexedDB.open(this.name, 3);
+			const openRequest = window.indexedDB.open(this.name, 1);
 			if (openRequest == null) {
 				reject(null);
 			}

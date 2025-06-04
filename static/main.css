@@ -207,8 +207,11 @@ body {
 			background-color: var(--accent-bg-col-2);
 		}
 	}
+	button[disabled], input[disabled], label:has(input[disabled]) {
+		background-color: var(--bg-col);
+	}
 	button[disabled]:hover, input[disabled]:hover, label:has(input[disabled]):hover {
-		background-color: var(--accent-bg-col);
+		background-color: var(--bg-col);
 	}
 
 	input[type="number"] {

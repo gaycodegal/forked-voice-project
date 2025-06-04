@@ -2,34 +2,49 @@ SOURCES=$(wildcard src/*.ts)
 DATA=$(wildcard src/*.json)
 SW_SOURCES=$(wildcard serviceWorker/*.ts)
 
-.PHONY: all uncheckedBuild
+.PHONY: all uncheckedBuild clean
 
-all: bundeled.html main.js icons/ftvt_512.png icons/ftvt_192.png serviceWorker.js
+all: deployable out/main.html out/icons/ftvt_512.png out/icons/ftvt_192.png out/serviceWorker.js
 
-serviceWorker.js: $(SW_SOURCES)
+out:
+	mkdir -p out
+
+clean:
+	rm -rf out
+
+out/serviceWorker.js: $(SW_SOURCES) out
 	tsc --strict serviceWorker/main.ts --noEmit -t es6 --lib es2019,es6,dom,webworker --skipLibCheck
 	esbuild --bundle serviceWorker/main.ts --outfile=$@
 
-bundeled.html: main.html main.js main.css custom.css legal.json
-	./embed_resources.py -i main.html -o $@
+out/main.html: static/main.html out/main.css out/custom.css out/main.js static/main.css static/custom.css  out
+	cp $< $@
 
+out/main.css: static/main.css out
+	cp $< $@
 
-main.js: $(SOURCES) $(DATA) legal.json
+out/custom.css: static/custom.css out
+	cp $< $@
+
+out/main.js: $(SOURCES) $(DATA) legal.json
 	tsc --strict src/main.ts --noEmit  --resolveJsonModule --esModuleInterop -t esnext --moduleResolution bundler
 	esbuild --bundle src/main.ts --outfile=$@
 
-deployable: legal.json
-	esbuild --bundle --minify src/main.ts --outfile=main.js
-	./embed_resources.py -i main.html -o bundeled.html
-	esbuild --bundle serviceWorker/main.ts --outfile=serviceWorker.js
+deployable: out legal.json
+	esbuild --bundle --minify src/main.ts --outfile=out/main-minified.js
+	./embed_resources.py -i out/main.html -o out/bundeled.html -m
+	esbuild --bundle serviceWorker/main.ts --outfile=out/serviceWorker.js
 
-icons:
-	mkdir icons
+out/mainfest.json: mainfest.json
+	cp $< $@
 
-icons/ftvt_192.png: favicon.svg
+out/icons: out
+	mkdir -p $@
+
+out/icons/ftvt_192.png: icons/favicon.svg out/icons
 	inkscape $< -o $@ -w 192 -h 192
 
-icons/ftvt_512.png: favicon.svg
+out/icons/ftvt_512.png: icons/favicon.svg out/icons out/icons/ftvt_192.png
+	# Depends on the 192px version because inkscape seems to choke badly if it's run twice in parallel…
 	inkscape $< -o $@ -w 512 -h 512
 
 legal.json : | legal.json.sample

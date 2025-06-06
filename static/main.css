@@ -3,6 +3,12 @@ body {
 	margin: 0;
 }
 
+@media (display-mode: standalone) {
+	header, footer {
+		display: none;
+	}
+}
+
 #FTVT-root{
 	.documentation {
 		max-width: 20cm;
@@ -194,6 +200,7 @@ body {
 	select {
 		color: var(--accent-col);
 		background-color: var(--accent-bg-col);
+		border-style: solid;
 		border-color: var(--accent-col);
 		border-width: var(--border-width);
 		border-radius: var(--border-radius);
@@ -283,11 +290,6 @@ body {
 	.FTVT-flexSpacer{
 		flex-grow: 1;
 		flex-shrink: 1;
-	}
-	@media (display-mode: standalone) {
-		header, footer {
-			display: none;
-		}
 	}
 	label {
 		background-color: var(--accent-bg-col);

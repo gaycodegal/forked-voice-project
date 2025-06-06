@@ -10,6 +10,7 @@ window.addEventListener("load", async (event) => {
 		alert("No element with root-id found");
 		return;
 	}
+	root.innerHTML = "";
 	let ui = await UserInterface.construct(root);
 	let tableManager = new TableManager(ui);
 	await tableManager.loadOldRecordings();

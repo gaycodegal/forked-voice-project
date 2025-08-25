@@ -50,3 +50,14 @@ out/icons/ftvt_512.png: icons/favicon.svg out/icons out/icons/ftvt_192.png
 legal.json : | legal.json.sample
 	@echo "WARNING: Using sample-file as fallback for legal.json; PLEASE edit it to describe the actual situation, the GDPR legaly requires you to do that!"
 	cp legal.json.sample $@
+
+serve:
+	python3 -m http.server -d out
+
+build-and-serve:
+	$(MAKE) || echo 'build failed'
+	date
+	$(MAKE) serve
+
+watch:
+	watchexec -r -w src -e ts,js,css,html -- make build-and-serve

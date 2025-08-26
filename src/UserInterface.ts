@@ -3,8 +3,10 @@ import {TextDisplayElement} from "./TextDisplay"
 import {CanvasControls} from "./CanvasControls"
 import {Settings} from "./Settings"
 import {FrequencyInputElement} from "./InputWidgets";
+import {makeVerticallyResizable} from "./Utils";
 
 export class UserInterface {
+	public static CANVAS_HEIGHT_KEY = "CanvasHeight";
 	root: HTMLElement;
 	settings: Settings;
 	canvas: HTMLCanvasElement;
@@ -28,13 +30,14 @@ export class UserInterface {
 		this.settings= settings;
 		root.appendChild(this.settings.getRoot());
 
-		let canvasDiv = document.createElement("div");
+		let canvasDiv = createCanvasDiv(settings);
+
 		this.canvas = document.createElement("canvas");
 		this.canvas.id="FTVT-canvas"
 		this.canvas.width = document.body.clientWidth;
 		this.canvas.height = 1188; // what I had locally, this is only an initial value anyways, so no need to be perfect.
-		canvasDiv.appendChild(this.canvas)
-		this.root.appendChild(canvasDiv)
+		canvasDiv.appendChild(this.canvas);
+		this.root.appendChild(canvasDiv);
 
 		let controlsDiv = document.createElement("div");
 		this.root.appendChild(controlsDiv);
@@ -129,4 +132,11 @@ function createResultsTable(parent: HTMLElement): HTMLElement {
 	tableDiv.appendChild(table);
 	parent.appendChild(tableDiv);
 	return tbody;
+}
+
+function createCanvasDiv(settings: Settings) {
+	console.log(window.settings = settings);
+	const canvasDiv = document.createElement("div");
+	makeVerticallyResizable(canvasDiv, settings, UserInterface.CANVAS_HEIGHT_KEY);
+	return canvasDiv;
 }

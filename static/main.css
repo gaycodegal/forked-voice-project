@@ -248,6 +248,12 @@ body {
 		margin: 0;
 	}
 
+	.VerticallyResizable {
+		resize: vertical;
+		overflow: scroll;
+		scrollbar-width: thin;
+	}
+
 	canvas {
 		border-top: solid var(--accent-col);
 		border-bottom: solid var(--accent-col);

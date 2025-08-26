@@ -3,6 +3,7 @@ import {TEXTS_TABLE} from "./DefaultTexts";
 import {Settings} from "./Settings";
 import {escapeHTML, rawTextToHTML} from "./EscapeText";
 import {LanguageManager, LanguageSelector} from "./LanguageManager";
+import {makeVerticallyResizable} from "./Utils";
 
 function clearSelector(element: HTMLSelectElement) {
 	var i, L = element.options.length - 1;
@@ -18,6 +19,7 @@ export interface Text {
 }
 
 export class TextDisplayElement {
+	public static BLOCK_QUOTE_HEIGHT_KEY = "QuoteHeight";
 	root: HTMLDivElement;
 	languageSelector: HTMLSelectElement;
 	textSelector: HTMLSelectElement;
@@ -50,6 +52,8 @@ export class TextDisplayElement {
 		this.root.appendChild(selectorDiv);
 
 		this.textDisplay = document.createElement("blockquote");
+		makeVerticallyResizable(this.textDisplay, settings, TextDisplayElement.BLOCK_QUOTE_HEIGHT_KEY);
+
 		this.root.appendChild(this.textDisplay);
 		for(let language in this.texts) {
 			const option = this.languageManager.makeOption(language);

@@ -51,6 +51,9 @@ legal.json : | legal.json.sample
 	@echo "WARNING: Using sample-file as fallback for legal.json; PLEASE edit it to describe the actual situation, the GDPR legaly requires you to do that!"
 	cp legal.json.sample $@
 
+bundle:
+	zip
+
 serve:
 	python3 -m http.server -d out
 

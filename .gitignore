@@ -1,3 +1,8 @@
 legal.json
 out
 release.zip
+
+# emacs
+*~
+\#*\#
+.\#*

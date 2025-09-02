@@ -56,7 +56,26 @@ export class Recorder {
 		this.button.addEventListener("click", (event) => {
 			this.toggleRecording();
 		});
+		ui.canvasControls.openFileButton.addEventListener("click", (event) => {
+			this.uploadRecording();
+		});
 		this.mediaRecorder = new MediaRecorder(mediaStream);
+	}
+
+	uploadRecording() {
+		const fileInput = document.createElement("input");
+		fileInput.type = "file";
+		fileInput.onchange = ()=>{
+			const files = fileInput.files;
+			this.importFiles(Array.from(files));
+		};
+		fileInput.click();
+	}
+
+	importFiles(files: Array) {
+		files.forEach(file => {
+			this.tableManager.addNewRecording(this.statsFromFile(file), file);
+		});
 	}
 
 	computeQuantiles(unsortedData: number[]): Quantiles {
@@ -99,6 +118,36 @@ export class Recorder {
 			"startTime": this.startTime,
 			"endTime": this.endTime
 		};
+	}
+
+	statsFromFile(file) {
+		let stats : GenderShare = {
+			[Genders.UltraFem]: 0,
+			[Genders.Fem]: 0,
+			[Genders.Enby]: 0,
+			[Genders.Masc]: 0,
+			[Genders.InfraMasc]: 0
+		};
+
+		return {
+			"id": this.settings.newRecordingId(),
+			"shares": stats,
+			"average": 1,
+			"quantiles": {
+				"5%": 1,
+				"10%": 1,
+				"20%": 1,
+				"50%": 1,
+				"80%": 1,
+				"90%": 1,
+				"95%": 1,
+			},
+			"target": this.targetFrequencySelector.getValue(),
+			"language": "N/A",
+			"textName": file.name,
+			"startTime": new Date(file.lastModified),
+			"endTime": new Date(file.lastModified)
+		}
 	}
 
 	startRecording() {

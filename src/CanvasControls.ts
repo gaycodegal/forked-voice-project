@@ -29,6 +29,12 @@ export class CanvasControls {
 		this.togglePlayButton.title = "Pause/Unpause spectrum display";
 		this.root.appendChild(this.togglePlayButton);
 
+		this.openFileButton = document.createElement("button");
+		this.openFileButton.innerHTML= "📂";
+		this.openFileButton.title = "Choose local audio to analyze";
+		this.root.appendChild(this.openFileButton);
+
+
 		let freqOutLabel = document.createElement("label");
 		freqOutLabel.innerHTML = "<span style='flex-grow: 1;'>Main Frequency: </span>";
 		this.noteDisplay = new NoteDisplay(null);

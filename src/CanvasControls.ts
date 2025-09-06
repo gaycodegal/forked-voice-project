@@ -7,6 +7,7 @@ export class CanvasControls {
 	root: HTMLDivElement;
 	toggleRecordButton: HTMLButtonElement;
 	togglePlayButton: HTMLButtonElement;
+	openFileButton: HTMLButtonElement;
 	noteDisplay: NoteDisplay;
 	volumeSelector: HTMLInputElement;
 

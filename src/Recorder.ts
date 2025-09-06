@@ -66,13 +66,13 @@ export class Recorder {
 		const fileInput = document.createElement("input");
 		fileInput.type = "file";
 		fileInput.onchange = ()=>{
-			const files = fileInput.files;
+			const files = fileInput.files ?? [];
 			this.importFiles(Array.from(files));
 		};
 		fileInput.click();
 	}
 
-	importFiles(files: Array) {
+	importFiles(files: Array<File>) {
 		files.forEach(file => {
 			this.tableManager.addNewRecording(this.statsFromFile(file), file);
 		});
@@ -120,7 +120,7 @@ export class Recorder {
 		};
 	}
 
-	statsFromFile(file) {
+	statsFromFile(file: File) {
 		let stats : GenderShare = {
 			[Genders.UltraFem]: 0,
 			[Genders.Fem]: 0,

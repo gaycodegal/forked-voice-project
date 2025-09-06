@@ -135,7 +135,6 @@ function createResultsTable(parent: HTMLElement): HTMLElement {
 }
 
 function createCanvasDiv(settings: Settings) {
-	console.log(window.settings = settings);
 	const canvasDiv = document.createElement("div");
 	makeVerticallyResizable(canvasDiv, settings, UserInterface.CANVAS_HEIGHT_KEY);
 	return canvasDiv;

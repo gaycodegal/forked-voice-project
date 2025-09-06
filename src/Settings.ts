@@ -19,6 +19,14 @@ class Storage {
 		}
 	}
 
+	getOrNull(key: string): string|null {
+		if (!this.available) {
+			return null;
+		}
+		const value = localStorage.getItem(key);
+		return value;
+	}
+
 	getOr(key: string, fallback: string) {
 		if (!this.available) {
 			return fallback;

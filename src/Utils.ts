@@ -1,3 +1,5 @@
+import {Settings} from "./Settings"
+
 /// sums the values in the provided array, but does so in a way that ensure numeric stability
 export function stableSum(data: number[], low: number = 0, high: number = -1, split: number = 10) : number{
 	if (high < 0) {
@@ -20,13 +22,14 @@ export function toIndex(pos: number, length: number): number {
 	return Math.min(length, (Math.max(0, Math.round(pos*length))));
 }
 
-export function makeVerticallyResizable(target: HTMLElement, settings: Settings, storageKey: String, minHeight: number = 100) {
+export function makeVerticallyResizable(target: HTMLElement, settings: Settings, storageKey: string, minHeight: number = 100) {
 	target.classList.add("VerticallyResizable");
-	const targetHeight = settings.storage.getOr(storageKey, null);
+	const targetHeight = settings.storage.getOrNull(storageKey);
 	if (targetHeight !== null) {
 		target.style.height = `${targetHeight}px`;
 	}
-	addResizeEventListener(target, (target, {height}) => {
+	addResizeEventListener(target, (target: HTMLElement,
+									{height}: {height: number}) => {
 		settings.storage.update(storageKey,
 								Math.max(minHeight, height)
 									.toString());
